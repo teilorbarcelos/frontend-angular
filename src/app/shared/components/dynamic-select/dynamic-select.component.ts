@@ -5,7 +5,6 @@ import {
   signal, 
   viewChild, 
   ElementRef, 
-  AfterViewInit, 
   OnDestroy,
   effect,
   inject,
@@ -126,7 +125,7 @@ import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angul
     </div>
   `,
 })
-export class DynamicSelectComponent<T extends { id: string | number }> implements ControlValueAccessor, AfterViewInit, OnDestroy {
+export class DynamicSelectComponent<T extends { id: string | number }> implements ControlValueAccessor, OnDestroy {
   @Input() label?: string;
   @Input() placeholder = "Selecione...";
   @Input() multiple = false;
@@ -168,7 +167,18 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
   constructor() {
     effect(() => {
       if (this.isOpen() && !this.state().initialized && !this.state().isLoading) {
-        this.engine.initialLoad();
+        queueMicrotask(() => {
+          this.engine.initialLoad();
+        });
+      }
+    });
+
+    effect(() => {
+      const target = this.observerTarget();
+      if (target && this.isOpen()) {
+        this.setupObserver(target.nativeElement);
+      } else {
+        this.cleanupObserver();
       }
     });
 
@@ -188,17 +198,6 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
 
     this.engine.subscribe((newState: any) => {
       this.state.set(newState);
-    });
-  }
-
-  ngAfterViewInit() {
-    effect(() => {
-      const target = this.observerTarget();
-      if (target && this.isOpen()) {
-        this.setupObserver(target.nativeElement);
-      } else {
-        this.cleanupObserver();
-      }
     });
   }
 

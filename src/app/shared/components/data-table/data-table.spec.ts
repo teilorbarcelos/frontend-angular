@@ -28,11 +28,19 @@ describe('DataTableComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    fixture.destroy();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render headers and data', () => {
+  it('should render headers and data', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
     const headers = fixture.nativeElement.querySelectorAll('th');
     expect(headers.length).toBe(2);
     expect(headers[0].textContent).toContain('Name');
@@ -42,9 +50,12 @@ describe('DataTableComponent', () => {
     expect(rows[0].textContent).toContain('John');
   });
 
-  it('should show loading state', () => {
+  it('should show loading state', async () => {
     fixture.componentRef.setInput('isLoading', true);
     fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    
     const spinner = fixture.nativeElement.querySelector('.animate-spin');
     expect(spinner).toBeTruthy();
   });
@@ -63,10 +74,15 @@ describe('DataTableComponent', () => {
     nameHeader.click();
     expect(spy).toHaveBeenCalledWith({ orderBy: 'name', orderDirection: 'asc' });
 
-    // Mock current sorting to test toggle
+    // Second click: desc
     fixture.componentRef.setInput('sorting', { orderBy: 'name', orderDirection: 'asc' });
     nameHeader.click();
     expect(spy).toHaveBeenCalledWith({ orderBy: 'name', orderDirection: 'desc' });
+
+    // Third click: undefined
+    fixture.componentRef.setInput('sorting', { orderBy: 'name', orderDirection: 'desc' });
+    nameHeader.click();
+    expect(spy).toHaveBeenCalledWith({ orderBy: undefined, orderDirection: undefined });
   });
 
   it('should not emit onSortChange when clicking non-sortable header', () => {
@@ -90,6 +106,10 @@ describe('DataTableComponent', () => {
     const prevBtn = fixture.nativeElement.querySelector('button[title="Anterior"]');
     prevBtn.click();
     expect(spy).toHaveBeenCalledWith(0);
+
+    const pageButtons = fixture.nativeElement.querySelectorAll('.flex.items-center.space-x-1.px-2 button');
+    pageButtons[1].click(); // Click page 2 (index 1)
+    expect(spy).toHaveBeenCalledWith(1);
   });
 
   it('should calculate page numbers correctly', () => {

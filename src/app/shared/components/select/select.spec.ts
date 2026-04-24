@@ -54,4 +54,12 @@ describe('SelectComponent', () => {
     component.writeValue('2');
     expect(component.control.value).toBe('2');
   });
+
+  it('should handle disabled state', () => {
+    component.setDisabledState(true);
+    expect(component.control.disabled).toBe(true);
+    
+    component.setDisabledState(false);
+    expect(component.control.enabled).toBe(true);
+  });
 });

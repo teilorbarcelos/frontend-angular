@@ -43,6 +43,16 @@ describe('ToastContainerComponent', () => {
     expect(toasts[1].textContent).toContain('Error Toast');
   });
 
+  it('should apply toast-exit class when closing', () => {
+    mockToastService.toasts.set([
+      { id: '1', message: 'Closing Toast', type: 'info', duration: 3000, isClosing: true }
+    ]);
+    fixture.detectChanges();
+    
+    const toast = fixture.nativeElement.querySelector('.rounded-xl');
+    expect(toast.classList.contains('toast-exit')).toBe(true);
+  });
+
   it('should call toastService.remove when close button is clicked', () => {
     mockToastService.toasts.set([
       { id: '1', message: 'Success Toast', type: 'success', duration: 3000 }
@@ -66,10 +76,20 @@ describe('ToastContainerComponent', () => {
     expect(progressBar.style.animationDuration).toBe('3000ms');
   });
 
-  it('should get correct icon based on type', () => {
+  it('should get correct classes based on type', () => {
     expect(component.getIcon('success')).toBeTruthy();
     expect(component.getIcon('error')).toBeTruthy();
     expect(component.getIcon('warning')).toBeTruthy();
     expect(component.getIcon('info')).toBeTruthy();
+
+    expect(component.getProgressBarClasses('success')).toContain('emerald');
+    expect(component.getProgressBarClasses('error')).toContain('red');
+    expect(component.getProgressBarClasses('warning')).toContain('amber');
+    expect(component.getProgressBarClasses('info' as any)).toContain('indigo');
+
+    expect(component.getTypeClasses('success')).toContain('emerald');
+    expect(component.getTypeClasses('error')).toContain('red');
+    expect(component.getTypeClasses('warning')).toContain('amber');
+    expect(component.getTypeClasses('info' as any)).toContain('indigo');
   });
 });
