@@ -17,7 +17,7 @@ import { LucideAngularModule, Filter as FilterIcon, X } from 'lucide-angular';
 
     <!-- Drawer -->
     <aside 
-      class="fixed right-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl z-60 flex flex-col transition-transform duration-300 transform"
+      class="fixed right-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl z-60 flex flex-col transition-transform duration-300 transform translate-x-full"
       [class.translate-x-0]="isOpen"
       [class.translate-x-full]="!isOpen"
     >
