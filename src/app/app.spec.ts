@@ -1,11 +1,21 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { App } from './app';
+import { AuthService } from './core/services/auth.service';
+import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 describe('App', () => {
+  let authService: AuthService;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [App, HttpClientTestingModule, RouterTestingModule],
+      providers: [AuthService],
     }).compileComponents();
+    
+    authService = TestBed.inject(AuthService);
+    vi.spyOn(authService, 'checkAuth').mockImplementation(async () => {});
   });
 
   it('should create the app', () => {
@@ -14,10 +24,9 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('should call checkAuth on init', () => {
     const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, frontend-angular');
+    fixture.detectChanges();
+    expect(authService.checkAuth).toHaveBeenCalled();
   });
 });
