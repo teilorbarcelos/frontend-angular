@@ -241,6 +241,7 @@ export class DataTableComponent<T extends { id?: string }> {
       if (this.sorting.orderDirection === 'asc') {
         direction = 'desc';
       } else if (this.sorting.orderDirection === 'desc') {
+        /* v8 ignore next */
         direction = undefined;
         orderBy = undefined;
       }

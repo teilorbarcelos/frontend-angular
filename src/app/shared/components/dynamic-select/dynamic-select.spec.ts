@@ -224,4 +224,29 @@ describe('DynamicSelectComponent', () => {
     
     expect(spy).toHaveBeenCalledWith(mockItems[0]);
   });
+
+  it('should handle writeValue with various formats', () => {
+    const spy = vi.spyOn((component as any).engine, 'setValue');
+    
+    component.writeValue(['1', '2']);
+    expect(spy).toHaveBeenCalledWith(['1', '2']);
+    
+    component.writeValue(null);
+    expect(spy).toHaveBeenCalledWith([]);
+    
+    component.writeValue('');
+    expect(spy).toHaveBeenCalledWith([]);
+  });
+
+  it('should handle search with empty value', () => {
+    component.searchControl.setValue(null);
+    expect(component.state().search).toBe('');
+  });
+
+  it('should return placeholder in displayValue when multiple', () => {
+    fixture.componentRef.setInput('multiple', true);
+    fixture.componentRef.setInput('placeholder', 'Multi select');
+    fixture.detectChanges();
+    expect(component.displayValue()).toBe('Multi select');
+  });
 });

@@ -135,8 +135,10 @@ describe('ProductFormPageComponent', () => {
     
     expect(component.getError('name')).toBe('Este campo é obrigatório');
     
-    control?.setErrors({ min: true });
-    expect(component.getError('name')).toBe('Valor inválido');
+    const priceControl = component.productForm.get('price');
+    priceControl?.markAsTouched();
+    priceControl?.setErrors({ min: true });
+    expect(component.getError('price')).toBe('Valor inválido');
   });
 
   it('should trigger cancel from footer button', () => {

@@ -1,0 +1,106 @@
+
+> frontend-angular@0.0.0 test:coverage
+> ng test --watch=false --coverage
+
+❯ Building...
+✔ Building...
+Application bundle generation failed. [1.973 seconds] - 2026-04-24T22:00:10.089Z
+
+▲ [WARNING] NG8113: FilterDrawerComponent is not used within the template of ProductFiltersComponent [plugin angular-compiler]
+
+    src/app/features/product/components/product-filters.component.ts:11:47:
+      11 │ ...ReactiveFormsModule, FilterDrawerComponent, DateRangePickerComp...
+         ╵                         ~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] NG8113: DateRangePickerComponent is not used within the template of ProductFiltersComponent [plugin angular-compiler]
+
+    src/app/features/product/components/product-filters.component.ts:11:70:
+      11 │ ...FilterDrawerComponent, DateRangePickerComponent, SelectComponent],
+         ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] NG8113: SelectComponent is not used within the template of ProductFiltersComponent [plugin angular-compiler]
+
+    src/app/features/product/components/product-filters.component.ts:11:96:
+      11 │ ...FilterDrawerComponent, DateRangePickerComponent, SelectComponent],
+         ╵                                                     ~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] NG8113: ListPageHeaderComponent is not used within the template of ProductListPageComponent [plugin angular-compiler]
+
+    src/app/features/product/product-list-page.component.ts:23:4:
+      23 │     ListPageHeaderComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] NG8113: DataTableComponent is not used within the template of ProductListPageComponent [plugin angular-compiler]
+
+    src/app/features/product/product-list-page.component.ts:24:4:
+      24 │     DataTableComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] NG8113: StatusBadgeComponent is not used within the template of ProductListPageComponent [plugin angular-compiler]
+
+    src/app/features/product/product-list-page.component.ts:25:4:
+      25 │     StatusBadgeComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] NG8113: DataTableActionsComponent is not used within the template of ProductListPageComponent [plugin angular-compiler]
+
+    src/app/features/product/product-list-page.component.ts:26:4:
+      26 │     DataTableActionsComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] NG8113: ProductFiltersComponent is not used within the template of ProductListPageComponent [plugin angular-compiler]
+
+    src/app/features/product/product-list-page.component.ts:27:4:
+      27 │     ProductFiltersComponent
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG5002: Opening tag "app-filter-drawer" not terminated. [plugin angular-compiler]
+
+    src/app/features/product/components/product-filters.component.ts:13:4:
+      13 │     <app-filter-drawer
+         ╵     ~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG5002: Unexpected closing tag "app-filter-drawer". It may happen when the tag has already been closed by another tag. For more info see https://www.w3.org/TR/html5/syntax.html#closing-elements-that-have-implied-end-tags [plugin angular-compiler]
+
+    src/app/features/product/components/product-filters.component.ts:39:4:
+      39 │     </app-filter-drawer>
+         ╵     ~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG5002: Opening tag "app-list-page-header" not terminated. [plugin angular-compiler]
+
+    src/app/features/product/product-list-page.component.ts:33:4:
+      33 │     <app-list-page-header
+         ╵     ~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG5002: Unexpected closing tag "app-list-page-header". It may happen when the tag has already been closed by another tag. For more info see https://www.w3.org/TR/html5/syntax.html#closing-elements-that-have-implied-end-tags [plugin angular-compiler]
+
+    src/app/features/product/product-list-page.component.ts:43:5:
+      43 │     ></app-list-page-header>
+         ╵      ~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG5002: Opening tag "app-data-table" not terminated. [plugin angular-compiler]
+
+    src/app/features/product/product-list-page.component.ts:52:4:
+      52 │     <app-data-table
+         ╵     ~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG5002: Unexpected closing tag "app-data-table". It may happen when the tag has already been closed by another tag. For more info see https://www.w3.org/TR/html5/syntax.html#closing-elements-that-have-implied-end-tags [plugin angular-compiler]
+
+    src/app/features/product/product-list-page.component.ts:89:4:
+      89 │     </app-data-table>
+         ╵     ~~~~~~~~~~~~~~~~~
+
+

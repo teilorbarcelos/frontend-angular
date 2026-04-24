@@ -53,4 +53,18 @@ describe('ToastService', () => {
     expect(service.toasts().length).toBe(1);
     expect(service.toasts()[0].isClosing).toBe(false);
   });
+
+  it('should handle remove for non-existent id', () => {
+    service.success('Existent');
+    const existingId = service.toasts()[0].id;
+    service.remove(999); // Non-existent
+    
+    // Should still have the existent toast and it should NOT be closing
+    expect(service.toasts().length).toBe(1);
+    expect(service.toasts()[0].isClosing).toBe(false);
+    
+    vi.advanceTimersByTime(300);
+    expect(service.toasts().length).toBe(1);
+    expect(service.toasts()[0].id).toBe(existingId);
+  });
 });

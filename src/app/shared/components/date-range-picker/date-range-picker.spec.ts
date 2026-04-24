@@ -117,15 +117,20 @@ describe('DateRangePickerComponent', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should handle clearing the picker in onClose', () => {
+  it('should handle clearing the picker in onClose (length 0)', () => {
     const spy = vi.fn();
     component.registerOnChange(spy);
     const fp = (component as any).fpInstance;
-    if (Array.isArray(fp.config.onClose)) {
-      fp.config.onClose[0]([]);
-    } else if (typeof fp.config.onClose === 'function') {
-      fp.config.onClose([]);
-    }
+    const onClose = Array.isArray(fp.config.onClose) ? fp.config.onClose[0] : fp.config.onClose;
+    onClose([]);
     expect(spy).toHaveBeenCalledWith(null);
+  });
+
+  it('should cover the default flatpickr import branch', () => {
+    // This is to hit (flatpickr.default || flatpickr)
+    const element = document.createElement('div');
+    (component as any).fpInstance = null;
+    (component as any).initFlatpickr(element);
+    expect((component as any).fpInstance).toBeTruthy();
   });
 });

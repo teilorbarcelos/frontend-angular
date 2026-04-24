@@ -144,9 +144,38 @@ describe('DataTableComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-
     const cell = fixture.nativeElement.querySelector('tbody td');
     expect(cell.innerHTML).toContain('Yes');
     expect(cell.querySelector('.active')).toBeTruthy();
+  });
+
+  it('should return correct sort icons', () => {
+    component.sorting = { orderBy: 'name', orderDirection: 'asc' };
+    expect(component.getSortIcon('name')).toBeTruthy();
+    
+    component.sorting = { orderBy: 'name', orderDirection: 'desc' };
+    expect(component.getSortIcon('name')).toBeTruthy();
+    
+    expect(component.getSortIcon('other')).toBeTruthy();
+  });
+
+  it('should handle sorting cycle: asc -> desc -> undefined', () => {
+    const spy = vi.spyOn(component.onSortChange, 'emit');
+    const nameHeader = fixture.nativeElement.querySelectorAll('th')[0];
+    
+    // Start with asc
+    fixture.componentRef.setInput('sorting', { orderBy: 'name', orderDirection: 'asc' });
+    nameHeader.click();
+    expect(spy).toHaveBeenCalledWith({ orderBy: 'name', orderDirection: 'desc' });
+
+    // Move to desc -> undefined
+    fixture.componentRef.setInput('sorting', { orderBy: 'name', orderDirection: 'desc' });
+    nameHeader.click();
+    expect(spy).toHaveBeenCalledWith({ orderBy: undefined, orderDirection: undefined });
+    
+    // Move to undefined -> asc
+    fixture.componentRef.setInput('sorting', { orderBy: undefined, orderDirection: undefined });
+    nameHeader.click();
+    expect(spy).toHaveBeenCalledWith({ orderBy: 'name', orderDirection: 'asc' });
   });
 });

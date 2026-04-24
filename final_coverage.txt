@@ -1,0 +1,207 @@
+
+> frontend-angular@0.0.0 test:coverage
+> ng test --watch=false --coverage
+
+❯ Building...
+✔ Building...
+Initial chunk files                                                 | Names                                                            |  Raw size
+styles.css                                                          | styles                                                           |  60.49 kB | 
+spec-app-shared-components-dynamic-select-dynamic-select.js         | spec-app-shared-components-dynamic-select-dynamic-select         |  29.33 kB | 
+chunk-NYZT2YQU.js                                                   | -                                                                |  27.27 kB | 
+spec-app-features-product-product-list-page.js                      | spec-app-features-product-product-list-page                      |  21.66 kB | 
+spec-app-features-product-product-form-page.js                      | spec-app-features-product-product-form-page                      |  18.62 kB | 
+chunk-U2HRXJMY.js                                                   | -                                                                |  12.82 kB | 
+spec-app-shared-components-toast-container-toast-container.js       | spec-app-shared-components-toast-container-toast-container       |  12.42 kB | 
+spec-app-shared-components-password-input-password-input.js         | spec-app-shared-components-password-input-password-input         |   9.51 kB | 
+spec-app-shared-components-action-menu-portal-action-menu-portal.js | spec-app-shared-components-action-menu-portal-action-menu-portal |   8.49 kB | 
+spec-app-shared-components-breadcrumb-breadcrumb.js                 | spec-app-shared-components-breadcrumb-breadcrumb                 |   8.30 kB | 
+chunk-UIEVGD67.js                                                   | -                                                                |   8.10 kB | 
+chunk-J4PKTGL6.js                                                   | -                                                                |   7.61 kB | 
+chunk-PRLT7E2N.js                                                   | -                                                                |   7.00 kB | 
+chunk-K7UE2RXN.js                                                   | -                                                                |   6.75 kB | 
+spec-app-shared-components-data-table-data-table.js                 | spec-app-shared-components-data-table-data-table                 |   6.36 kB | 
+chunk-X7WVAIV4.js                                                   | -                                                                |   6.04 kB | 
+chunk-RBPOVCBL.js                                                   | -                                                                |   5.81 kB | 
+chunk-OOWOCSWV.js                                                   | -                                                                |   5.29 kB | 
+spec-app-shared-components-data-table-actions-data-table-actions.js | spec-app-shared-components-data-table-actions-data-table-actions |   5.28 kB | 
+chunk-RSTWSNOR.js                                                   | -                                                                |   4.75 kB | 
+spec-app-shared-components-date-range-picker-date-range-picker.js   | spec-app-shared-components-date-range-picker-date-range-picker   |   4.47 kB | 
+spec-app-features-product-product.service.js                        | spec-app-features-product-product.service                        |   4.41 kB | 
+chunk-DSXWY2SF.js                                                   | -                                                                |   4.29 kB | 
+spec-app-core-services-auth.service.js                              | spec-app-core-services-auth.service                              |   4.09 kB | 
+chunk-OIIXO3IF.js                                                   | -                                                                |   3.61 kB | 
+chunk-7BKRONE7.js                                                   | -                                                                |   2.96 kB | 
+spec-app-features-product-components-product-filters.js             | spec-app-features-product-components-product-filters             |   2.88 kB | 
+chunk-JBO3ADEQ.js                                                   | -                                                                |   2.86 kB | 
+spec-app-shared-components-filter-drawer-filter-drawer.js           | spec-app-shared-components-filter-drawer-filter-drawer           |   2.68 kB | 
+spec-app-shared-components-list-page-header-list-page-header.js     | spec-app-shared-components-list-page-header-list-page-header     |   2.64 kB | 
+spec-app-app.js                                                     | spec-app-app                                                     |   2.54 kB | 
+spec-app-shared-components-select-select.js                         | spec-app-shared-components-select-select                         |   2.44 kB | 
+spec-app-shared-components-modal-modal.js                           | spec-app-shared-components-modal-modal                           |   2.19 kB | 
+spec-app-shared-components-input-input.js                           | spec-app-shared-components-input-input                           |   2.15 kB | 
+spec-app-core-services-toast.service.js                             | spec-app-core-services-toast.service                             |   2.02 kB | 
+spec-app-shared-components-button-button.js                         | spec-app-shared-components-button-button                         |   1.94 kB | 
+spec-app-shared-components-search-input-search-input.js             | spec-app-shared-components-search-input-search-input             |   1.91 kB | 
+chunk-2QYMKV65.js                                                   | -                                                                |   1.89 kB | 
+chunk-THXZ6VGR.js                                                   | -                                                                |   1.85 kB | 
+spec-app-core-services-action-menu.service.js                       | spec-app-core-services-action-menu.service                       |   1.69 kB | 
+spec-app-shared-components-status-badge-status-badge.js             | spec-app-shared-components-status-badge-status-badge             |   1.39 kB | 
+chunk-RMPLTOXV.js                                                   | -                                                                |   1.34 kB | 
+init-testbed.js                                                     | init-testbed                                                     |   1.21 kB | 
+vitest-mock-patch.js                                                | vitest-mock-patch                                                | 969 bytes | 
+
+                                                                    | Initial total                                                    | 332.31 kB
+
+Application bundle generation complete. [2.072 seconds] - 2026-04-24T22:02:15.453Z
+
+
+ RUN  v4.1.5 /home/teilor/MyProjects/frontend-angular
+      Coverage enabled with v8
+
+ ✓ |frontend-angular| src/app/shared/components/action-menu-portal/action-menu-portal.spec.ts (8 tests) 141ms
+ ✓ |frontend-angular| src/app/shared/components/button/button.spec.ts (6 tests) 161ms
+ ✓ |frontend-angular| src/app/shared/components/toast-container/toast-container.spec.ts (6 tests) 210ms
+ ✓ |frontend-angular| src/app/shared/components/data-table-actions/data-table-actions.spec.ts (12 tests) 260ms
+ ✓ |frontend-angular| src/app/shared/components/password-input/password-input.spec.ts (6 tests) 137ms
+stderr | src/app/features/product/product-form-page.spec.ts > ProductFormPageComponent > should handle error loading product
+Error loading product Error: API Error
+    at /home/teilor/MyProjects/frontend-angular/src/app/features/product/product-form-page.spec.ts:71:68
+    at Observable.init [as _subscribe] (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/observable/throwError.js:8:64)
+    at Observable._trySubscribe (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:41:25)
+    at /home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:35:31
+    at Object.errorContext (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/util/errorContext.js:22:9)
+    at Observable.subscribe (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:26:24)
+    at /home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/firstValueFrom.js:24:16
+    at new Promise (<anonymous>)
+    at firstValueFrom (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/firstValueFrom.js:8:12)
+    at _ProductFormPageComponent.loadProduct (/home/teilor/MyProjects/frontend-angular/src/app/features/product/product-form-page.component.ts:134:38)
+
+ ✓ |frontend-angular| src/app/shared/components/breadcrumb/breadcrumb.spec.ts (4 tests) 200ms
+ ✓ |frontend-angular| src/app/shared/components/status-badge/status-badge.spec.ts (4 tests) 24ms
+ ✓ |frontend-angular| src/app/shared/components/select/select.spec.ts (8 tests) 223ms
+ ✓ |frontend-angular| src/app/shared/components/modal/modal.spec.ts (6 tests) 115ms
+ ✓ |frontend-angular| src/app/features/product/product.service.spec.ts (8 tests) 65ms
+ ✓ |frontend-angular| src/app/core/services/toast.service.spec.ts (5 tests) 33ms
+ ✓ |frontend-angular| src/app/shared/components/input/input.spec.ts (6 tests) 131ms
+ ✓ |frontend-angular| src/app/core/services/action-menu.service.spec.ts (4 tests) 24ms
+ ✓ |frontend-angular| src/app/shared/components/filter-drawer/filter-drawer.spec.ts (7 tests) 203ms
+ ✓ |frontend-angular| src/app/core/services/auth.service.spec.ts (8 tests) 48ms
+ ✓ |frontend-angular| src/app/shared/components/data-table/data-table.spec.ts (12 tests) 482ms
+stderr | src/app/features/product/product-form-page.spec.ts > ProductFormPageComponent > should handle submit error
+Error saving product Error: API Error
+    at /home/teilor/MyProjects/frontend-angular/src/app/features/product/product-form-page.spec.ts:119:71
+    at Observable.init [as _subscribe] (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/observable/throwError.js:8:64)
+    at Observable._trySubscribe (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:41:25)
+    at /home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:35:31
+    at Object.errorContext (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/util/errorContext.js:22:9)
+    at Observable.subscribe (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:26:24)
+    at /home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/firstValueFrom.js:24:16
+    at new Promise (<anonymous>)
+    at firstValueFrom (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/firstValueFrom.js:8:12)
+    at _ProductFormPageComponent.onSubmit (/home/teilor/MyProjects/frontend-angular/src/app/features/product/product-form-page.component.ts:176:15)
+
+ ✓ |frontend-angular| src/app/app.spec.ts (2 tests) 36ms
+ ✓ |frontend-angular| src/app/shared/components/dynamic-select/dynamic-select.spec.ts (20 tests) 331ms
+ ✓ |frontend-angular| src/app/shared/components/search-input/search-input.spec.ts (4 tests) 67ms
+ ✓ |frontend-angular| src/app/shared/components/list-page-header/list-page-header.spec.ts (7 tests) 198ms
+ ✓ |frontend-angular| src/app/features/product/product-form-page.spec.ts (11 tests) 481ms
+ ✓ |frontend-angular| src/app/features/product/components/product-filters.spec.ts (6 tests) 419ms
+ ✓ |frontend-angular| src/app/shared/components/date-range-picker/date-range-picker.spec.ts (14 tests) 498ms
+stderr | src/app/features/product/product-list-page.spec.ts > ProductListPageComponent > should handle toggle status error
+Error toggling status Error: API Error
+    at /home/teilor/MyProjects/frontend-angular/src/app/features/product/product-list-page.spec.ts:112:70
+    at Observable.init [as _subscribe] (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/observable/throwError.js:8:64)
+    at Observable._trySubscribe (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:41:25)
+    at /home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:35:31
+    at Object.errorContext (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/util/errorContext.js:22:9)
+    at Observable.subscribe (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:26:24)
+    at /home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/firstValueFrom.js:24:16
+    at new Promise (<anonymous>)
+    at firstValueFrom (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/firstValueFrom.js:8:12)
+    at _ProductListPageComponent.toggleStatus (/home/teilor/MyProjects/frontend-angular/src/app/features/product/product-list-page.component.ts:192:13)
+
+stderr | src/app/features/product/product-list-page.spec.ts > ProductListPageComponent > should handle delete error
+Error deleting product Error: API Error
+    at /home/teilor/MyProjects/frontend-angular/src/app/features/product/product-list-page.spec.ts:126:71
+    at Observable.init [as _subscribe] (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/observable/throwError.js:8:64)
+    at Observable._trySubscribe (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:41:25)
+    at /home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:35:31
+    at Object.errorContext (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/util/errorContext.js:22:9)
+    at Observable.subscribe (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:26:24)
+    at /home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/firstValueFrom.js:24:16
+    at new Promise (<anonymous>)
+    at firstValueFrom (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/firstValueFrom.js:8:12)
+    at _ProductListPageComponent.deleteProduct (/home/teilor/MyProjects/frontend-angular/src/app/features/product/product-list-page.component.ts:203:13)
+
+stderr | src/app/features/product/product-list-page.spec.ts > ProductListPageComponent > should handle error loading products
+Error loading products Error: API Error
+    at /home/teilor/MyProjects/frontend-angular/src/app/features/product/product-list-page.spec.ts:133:69
+    at Observable.init [as _subscribe] (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/observable/throwError.js:8:64)
+    at Observable._trySubscribe (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:41:25)
+    at /home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:35:31
+    at Object.errorContext (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/util/errorContext.js:22:9)
+    at Observable.subscribe (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/Observable.js:26:24)
+    at /home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/firstValueFrom.js:24:16
+    at new Promise (<anonymous>)
+    at firstValueFrom (/home/teilor/MyProjects/frontend-angular/node_modules/rxjs/dist/cjs/internal/firstValueFrom.js:8:12)
+    at _ProductListPageComponent.loadProducts (/home/teilor/MyProjects/frontend-angular/src/app/features/product/product-list-page.component.ts:134:42)
+
+ ✓ |frontend-angular| src/app/features/product/product-list-page.spec.ts (18 tests) 722ms
+
+ Test Files  24 passed (24)
+      Tests  192 passed (192)
+   Start at  19:02:15
+   Duration  2.75s (transform 1.30s, setup 5.57s, import 4.69s, tests 5.21s, environment 16.11s)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   98.06 |    97.91 |   91.92 |   99.67 |                   
+ app               |     100 |      100 |     100 |     100 |                   
+  app.ts           |     100 |      100 |     100 |     100 |                   
+ app/core/services |     100 |      100 |     100 |     100 |                   
+  ...nu.service.ts |     100 |      100 |     100 |     100 |                   
+  auth.service.ts  |     100 |      100 |     100 |     100 |                   
+  toast.service.ts |     100 |      100 |     100 |     100 |                   
+ ...atures/product |   93.95 |    96.29 |   77.27 |   98.85 |                   
+  ....component.ts |   96.77 |    97.36 |      80 |     100 | 157               
+  ....component.ts |      90 |    92.59 |   71.42 |   97.43 | 38,60             
+  ...ct.service.ts |     100 |      100 |     100 |     100 |                   
+ ...uct/components |   95.45 |    88.46 |   77.77 |   96.96 |                   
+  ....component.ts |   95.45 |    88.46 |   77.77 |   96.96 | 17                
+ ...duct/constants |     100 |      100 |     100 |     100 |                   
+  ....constants.ts |     100 |      100 |     100 |     100 |                   
+ ...on-menu-portal |     100 |      100 |     100 |     100 |                   
+  ....component.ts |     100 |      100 |     100 |     100 |                   
+ ...nts/breadcrumb |     100 |      100 |     100 |     100 |                   
+  ....component.ts |     100 |      100 |     100 |     100 |                   
+ ...ponents/button |     100 |      100 |     100 |     100 |                   
+  ....component.ts |     100 |      100 |     100 |     100 |                   
+ ...nts/data-table |   98.76 |       98 |   88.88 |     100 |                   
+  ....component.ts |   98.76 |       98 |   88.88 |     100 | 243               
+ ...-table-actions |   96.34 |      100 |   81.25 |     100 |                   
+  ....component.ts |   96.34 |      100 |   81.25 |     100 |                   
+ ...e-range-picker |   97.95 |    91.89 |     100 |     100 |                   
+  ....component.ts |   97.95 |    91.89 |     100 |     100 | 63,91,109         
+ ...dynamic-select |   99.25 |    98.27 |   96.55 |     100 |                   
+  ....component.ts |   99.25 |    98.27 |   96.55 |     100 | 276               
+ .../filter-drawer |     100 |      100 |     100 |     100 |                   
+  ....component.ts |     100 |      100 |     100 |     100 |                   
+ ...mponents/input |   96.77 |      100 |     100 |     100 |                   
+  ....component.ts |   96.77 |      100 |     100 |     100 |                   
+ ...st-page-header |     100 |      100 |     100 |     100 |                   
+  ....component.ts |     100 |      100 |     100 |     100 |                   
+ ...mponents/modal |     100 |      100 |     100 |     100 |                   
+  ....component.ts |     100 |      100 |     100 |     100 |                   
+ ...password-input |     100 |      100 |     100 |     100 |                   
+  ....component.ts |     100 |      100 |     100 |     100 |                   
+ ...s/search-input |     100 |      100 |     100 |     100 |                   
+  ....component.ts |     100 |      100 |     100 |     100 |                   
+ ...ponents/select |     100 |      100 |     100 |     100 |                   
+  ....component.ts |     100 |      100 |     100 |     100 |                   
+ ...s/status-badge |     100 |      100 |     100 |     100 |                   
+  ....component.ts |     100 |      100 |     100 |     100 |                   
+ ...oast-container |     100 |      100 |     100 |     100 |                   
+  ....component.ts |     100 |      100 |     100 |     100 |                   
+-------------------|---------|----------|---------|---------|-------------------

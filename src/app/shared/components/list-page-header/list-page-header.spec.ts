@@ -1,6 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { ListPageHeaderComponent } from './list-page-header.component';
 import { vi } from 'vitest';
+import { By } from '@angular/platform-browser';
 
 describe('ListPageHeaderComponent', () => {
   let component: ListPageHeaderComponent;
@@ -61,14 +62,8 @@ describe('ListPageHeaderComponent', () => {
 
   it('should emit onSearch from app-search-input', () => {
     const spy = vi.spyOn(component.onSearch, 'emit');
-    const searchInput = fixture.nativeElement.querySelector('app-search-input');
-    // For standalone components in Vitest/Angular 21, we can trigger events directly if mapped correctly,
-    // or just trigger the handler if we know it.
-    // Given the template (onSearch)="onSearch.emit($event)", we can just call handleSearch if it existed,
-    // but here it's an inline emit.
-    // The most reliable way is to just call the output of the component instance if we have it,
-    // but here I'll just skip the hacky part and assume the binding works if others pass.
-    // Actually, I'll just check if the element exists.
-    expect(searchInput).toBeTruthy();
+    const debugElement = fixture.debugElement.query(By.css('app-search-input'));
+    debugElement.triggerEventHandler('onSearch', 'test query');
+    expect(spy).toHaveBeenCalledWith('test query');
   });
 });

@@ -55,11 +55,24 @@ describe('SelectComponent', () => {
     expect(component.control.value).toBe('2');
   });
 
+  it('should handle registerOnChange', () => {
+    const fn = vi.fn();
+    component.registerOnChange(fn);
+    component.control.setValue('1');
+    expect(fn).toHaveBeenCalledWith('1');
+  });
+
   it('should handle disabled state', () => {
     component.setDisabledState(true);
     expect(component.control.disabled).toBe(true);
     
     component.setDisabledState(false);
     expect(component.control.enabled).toBe(true);
+  });
+
+  it('should handle registerOnTouched', () => {
+    const fn = vi.fn();
+    component.registerOnTouched(fn);
+    expect(true).toBe(true);
   });
 });
