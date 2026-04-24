@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FilterDrawerComponent } from '../../../shared/components/filter-drawer/filter-drawer.component';
 import { DateRangePickerComponent } from '../../../shared/components/date-range-picker/date-range-picker.component';
+import { SelectComponent } from '../../../shared/components/select/select.component';
 
 @Component({
   selector: 'app-user-filters',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FilterDrawerComponent, DateRangePickerComponent],
+  imports: [CommonModule, ReactiveFormsModule, FilterDrawerComponent, DateRangePickerComponent, SelectComponent],
   template: `
     <app-filter-drawer
       [isOpen]="isOpen"
@@ -17,18 +18,15 @@ import { DateRangePickerComponent } from '../../../shared/components/date-range-
       (onApply)="handleApply()"
     >
       <form [formGroup]="filterForm" class="space-y-6">
-        <div class="space-y-2">
-          <label for="active" class="text-sm font-medium text-gray-700">Status</label>
-          <select
-            id="active"
-            formControlName="active"
-            class="w-full h-10 px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
-          >
-            <option value="">Todos</option>
-            <option value="true">Ativo</option>
-            <option value="false">Inativo</option>
-          </select>
-        </div>
+        <app-select
+          label="Status"
+          formControlName="active"
+          placeholder="Todos"
+          [options]="[
+            { label: 'Ativo', value: 'true' },
+            { label: 'Inativo', value: 'false' }
+          ]"
+        ></app-select>
 
         <div class="space-y-2">
           <label for="createdAt" class="text-sm font-medium text-gray-700">Data de Criação</label>

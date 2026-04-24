@@ -11,6 +11,7 @@ import { UserService, User } from './user.service';
 import { RoleService, Role } from '../role/role.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
+import { PasswordInputComponent } from '../../shared/components/password-input/password-input.component';
 import { DynamicSelectComponent } from '../../shared/components/dynamic-select/dynamic-select.component';
 import { ToastService } from '../../core/services/toast.service';
 import { firstValueFrom } from 'rxjs';
@@ -24,6 +25,7 @@ import { firstValueFrom } from 'rxjs';
     ReactiveFormsModule, 
     ButtonComponent, 
     InputComponent, 
+    PasswordInputComponent,
     DynamicSelectComponent
   ],
   template: `
@@ -41,7 +43,7 @@ import { firstValueFrom } from 'rxjs';
         @if (isEditing() && isLoadingUser()) {
           <div class="p-8 text-center text-gray-500 text-sm italic">Carregando dados...</div>
         } @else {
-          <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-8">
             <app-input
               label="Nome Completo"
               formControlName="name"
@@ -54,16 +56,17 @@ import { firstValueFrom } from 'rxjs';
               type="email"
               formControlName="email"
               placeholder="user@example.com"
+              autocomplete="off"
               [error]="getError('email')"
             ></app-input>
 
-            <app-input
+            <app-password-input
               label="Senha"
-              type="password"
               formControlName="password"
+              autocomplete="new-password"
               [placeholder]="isEditing() ? 'Deixe em branco para manter a atual' : 'Senha de acesso'"
               [error]="getError('password')"
-            ></app-input>
+            ></app-password-input>
 
             <app-dynamic-select
               label="Perfil"
@@ -77,7 +80,7 @@ import { firstValueFrom } from 'rxjs';
               [error]="getError('id_role')"
             ></app-dynamic-select>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-6">
               <app-input
                 label="Telefone"
                 formControlName="phone"

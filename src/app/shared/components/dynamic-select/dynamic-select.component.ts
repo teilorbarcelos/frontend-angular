@@ -8,7 +8,8 @@ import {
   AfterViewInit, 
   OnDestroy,
   effect,
-  inject
+  inject,
+  HostListener
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule, FormControl } from '@angular/forms';
@@ -19,6 +20,9 @@ import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angul
   selector: 'app-dynamic-select',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  host: {
+    class: 'block'
+  },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -151,6 +155,7 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
   });
 
   searchControl = new FormControl('');
+  private elRef = inject(ElementRef);
   private engine!: MageSelectEngine<T>;
   private observer?: IntersectionObserver;
   private observerTarget = viewChild<ElementRef>('observerTarget');
@@ -220,6 +225,16 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
 
   toggleOpen() {
     this.isOpen.update(v => !v);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const isInside = this.elRef.nativeElement.contains(target);
+    
+    if (!isInside && this.isOpen()) {
+      this.isOpen.set(false);
+    }
   }
 
   isItemSelected(item: T): boolean {

@@ -10,6 +10,8 @@ import {
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService, User } from '../../core/services/auth.service';
+import { InputComponent } from '../../shared/components/input/input.component';
+import { PasswordInputComponent } from '../../shared/components/password-input/password-input.component';
 
 interface LoginResponse {
   token: string;
@@ -20,7 +22,7 @@ interface LoginResponse {
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, InputComponent, PasswordInputComponent],
   template: `
     <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
@@ -30,42 +32,22 @@ interface LoginResponse {
           </h2>
         </div>
         <form class="mt-8 space-y-6" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <div class="space-y-4">
-            <div>
-              <label htmlFor="email" class="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <input
-                id="email"
-                type="email"
-                formControlName="email"
-                class="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                [class.border-red-300]="isInvalid('email')"
-                [class.border-gray-300]="!isInvalid('email')"
-              />
-              @if (isInvalid('email')) {
-                <p class="mt-1 text-sm text-red-600">
-                  @if (loginForm.get('email')?.errors?.['required']) { Email is required }
-                  @else if (loginForm.get('email')?.errors?.['email']) { Invalid email address }
-                </p>
-              }
-            </div>
-            <div>
-              <label htmlFor="password" class="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                formControlName="password"
-                class="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                [class.border-red-300]="isInvalid('password')"
-                [class.border-gray-300]="!isInvalid('password')"
-              />
-              @if (isInvalid('password')) {
-                <p class="mt-1 text-sm text-red-600">Password is required</p>
-              }
-            </div>
+          <div class="space-y-6">
+            <app-input
+              label="Email address"
+              type="email"
+              formControlName="email"
+              placeholder="seu@email.com"
+              [error]="isInvalid('email') ? (loginForm.get('email')?.errors?.['required'] ? 'Email is required' : 'Invalid email address') : null"
+            ></app-input>
+
+            <app-password-input
+              label="Password"
+              formControlName="password"
+              placeholder="Sua senha"
+              autocomplete="current-password"
+              [error]="isInvalid('password') ? 'Password is required' : null"
+            ></app-password-input>
           </div>
 
           @if (errorMessage()) {

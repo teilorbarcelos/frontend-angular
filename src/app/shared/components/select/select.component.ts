@@ -7,8 +7,13 @@ import {
   FormControl 
 } from '@angular/forms';
 
+export interface SelectOption {
+  label: string;
+  value: any;
+}
+
 @Component({
-  selector: 'app-input',
+  selector: 'app-select',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   host: {
@@ -21,17 +26,19 @@ import {
           {{ label }}
         </label>
       }
-      <input
+      <select
         [id]="id"
-        [type]="type"
-        [step]="step"
-        [placeholder]="placeholder"
         [formControl]="control"
-        [attr.autocomplete]="autocomplete"
-        class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        class="block w-full h-10 px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
         [class.border-red-300]="error"
-        [class.border-gray-300]="!error"
-      />
+      >
+        @if (placeholder) {
+          <option value="">{{ placeholder }}</option>
+        }
+        @for (option of options; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
       @if (error) {
         <p class="text-sm text-red-600">{{ error }}</p>
       }
@@ -40,19 +47,17 @@ import {
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputComponent),
+      useExisting: forwardRef(() => SelectComponent),
       multi: true,
     },
   ],
 })
-export class InputComponent implements ControlValueAccessor {
+export class SelectComponent implements ControlValueAccessor {
   @Input() label = '';
   @Input() id = '';
-  @Input() type = 'text';
-  @Input() step?: string;
   @Input() placeholder = '';
+  @Input() options: SelectOption[] = [];
   @Input() error?: string | null;
-  @Input() autocomplete = 'on';
 
   control = new FormControl();
 
