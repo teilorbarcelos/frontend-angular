@@ -24,6 +24,7 @@
     "date-fns": "^4.1.0",
     "flatpickr": "^4.6.13",
     "lucide-angular": "^1.0.0",
+    "mage-select-data-engine": "^1.0.13",
     "rxjs": "~7.8.0",
     "tailwind-merge": "^3.5.0",
     "tslib": "^2.3.0",

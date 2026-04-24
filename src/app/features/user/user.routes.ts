@@ -1,15 +1,18 @@
 import { Routes } from '@angular/router';
-import { Component } from '@angular/core';
-
-@Component({
-  standalone: true,
-  template: '<div class="p-6"><h1>Users List (Em breve)</h1></div>',
-})
-class PlaceholderComponent {}
+import { UserListPageComponent } from './user-list-page.component';
+import { UserFormPageComponent } from './user-form-page.component';
 
 export const USER_ROUTES: Routes = [
   {
     path: '',
-    component: PlaceholderComponent,
+    component: UserListPageComponent,
+  },
+  {
+    path: 'new',
+    component: UserFormPageComponent,
+  },
+  {
+    path: 'update/:id',
+    component: UserFormPageComponent,
   },
 ];

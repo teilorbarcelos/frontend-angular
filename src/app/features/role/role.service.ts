@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 
 export interface RoleFeature {
   id_feature: string;
@@ -92,4 +92,28 @@ export class RoleService {
   toggleStatus(id: string, active: boolean): Observable<any> {
     return this.http.patch(`${this.baseUrl}/${id}/status`, { active });
   }
+
+  // DynamicSelect Helpers
+  mageSelect = async (page: number, query: string, options: { searchFields?: string[] }) => {
+    const size = 10;
+    const res = await firstValueFrom(this.getRoles({
+      page,
+      size,
+      searchWord: query,
+      searchFields: options.searchFields
+    }));
+    
+    return {
+      items: res.items as Role[],
+      hasMore: (page + 1) * size < res.total
+    };
+  };
+
+  mageHydrate = async (ids: string[]): Promise<Role[]> => {
+    if (!ids.length) return [];
+    const roles = await Promise.all(
+      ids.map(id => firstValueFrom(this.getRole(id)).catch(() => null))
+    );
+    return roles.filter(Boolean) as Role[];
+  };
 }
