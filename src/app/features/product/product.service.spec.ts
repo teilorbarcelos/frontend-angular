@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { ProductService } from './product.service';
-import { describe, beforeEach, afterEach, it, expect } from 'vitest';
 import { firstValueFrom } from 'rxjs';
 
 describe('ProductService', () => {
@@ -10,8 +10,11 @@ describe('ProductService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [ProductService],
+      providers: [
+        ProductService,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     });
     service = TestBed.inject(ProductService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -58,6 +61,18 @@ describe('ProductService', () => {
 
     const data = await promise;
     expect(data).toEqual([]);
+  });
+
+  it('getProducts handles searchWord without searchFields', async () => {
+    const promise = firstValueFrom(service.getProducts({ searchWord: 'test' }));
+
+    const req = httpMock.expectOne(request => 
+      request.url === '/v1/product' && 
+      request.params.get('searchWord') === 'test' &&
+      !request.params.has('searchFields')
+    );
+    req.flush([]);
+    await promise;
   });
 
   it('getProduct calls correct endpoint', async () => {

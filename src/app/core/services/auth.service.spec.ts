@@ -1,17 +1,21 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { AuthService, User } from './auth.service';
-import { describe, beforeEach, afterEach, it, expect } from 'vitest';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [AuthService],
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      providers: [
+        AuthService,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
+    
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
     localStorage.clear();
@@ -74,6 +78,24 @@ describe('AuthService', () => {
 
     expect(localStorage.getItem('token')).toBeNull();
     expect(service.isAuthenticated()).toBe(false);
+  });
+
+  it('handles checkAuth without token by logging out', async () => {
+    localStorage.removeItem('token');
+    const spy = vi.spyOn(service, 'logout');
+    
+    await service.checkAuth();
+    
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('handles hydrate failure with invalid JSON', () => {
+    localStorage.setItem('token', 'valid-token');
+    localStorage.setItem('user', 'invalid-json');
+    
+    // Create new instance to trigger constructor/hydrate
+    const newService = TestBed.runInInjectionContext(() => new AuthService());
+    expect(localStorage.getItem('token')).toBeNull();
   });
 
   it('checks permissions correctly', () => {
