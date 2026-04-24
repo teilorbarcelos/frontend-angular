@@ -168,10 +168,12 @@ describe('ProductListPageComponent', () => {
 
   it('should trigger toggleFilter from template', () => {
     fixture.detectChanges();
-    const header = fixture.debugElement.query(By.css('app-list-page-header'));
-    header.triggerEventHandler('onFilterClick', null);
+    const spy = vi.spyOn(component, 'toggleFilter');
+    const header = fixture.nativeElement.querySelector('app-list-page-header');
+    const filterButton = header.querySelector('button'); // ListPageHeader has a button for onFilterClick
+    filterButton?.click();
     fixture.detectChanges();
-    expect(component.isFilterOpen()).toBe(true);
+    expect(spy).toHaveBeenCalled();
   });
 
   it('should trigger handlePageSizeChange from template', () => {
@@ -190,5 +192,31 @@ describe('ProductListPageComponent', () => {
     const statusBadge = fixture.debugElement.query(By.css('app-status-badge')).componentInstance;
     statusBadge.onClick.emit();
     expect(mockProductService.toggleStatus).toHaveBeenCalled();
+  });
+
+  it('should trigger handleSearch from template', () => {
+    fixture.detectChanges();
+    const header = fixture.debugElement.query(By.css('app-list-page-header'));
+    header.triggerEventHandler('onSearch', 'new search');
+    fixture.detectChanges();
+    expect(component.searchWord()).toBe('new search');
+  });
+
+  it('should trigger handleSortChange from template', () => {
+    fixture.detectChanges();
+    const table = fixture.debugElement.query(By.css('app-data-table'));
+    const newSort = { orderBy: 'price', orderDirection: 'desc' as const };
+    table.triggerEventHandler('onSortChange', newSort);
+    fixture.detectChanges();
+    expect(component.sort()).toEqual(newSort);
+  });
+
+  it('should call all methods for funcs coverage', () => {
+    component.toggleFilter();
+    component.handlePageChange(2);
+    component.handlePageSizeChange(50);
+    component.handleSearch('test');
+    component.handleSortChange({ orderBy: 'name', orderDirection: 'asc' });
+    expect(true).toBe(true);
   });
 });

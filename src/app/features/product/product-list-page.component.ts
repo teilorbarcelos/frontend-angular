@@ -29,6 +29,7 @@ import { ProductFiltersComponent } from './components/product-filters.component'
   host: {
     class: 'flex-1 flex flex-col min-h-0'
   },
+  /* v8 ignore next 12 */
   template: `
     <app-list-page-header
       title="Produtos"

@@ -59,7 +59,6 @@ import { Portuguese } from 'flatpickr/dist/l10n/pt';
 })
 export class DateRangePickerComponent implements ControlValueAccessor, AfterViewInit, OnDestroy {
   @ViewChild('pickerInput') set pickerInput(content: ElementRef) {
-    /* v8 ignore next 4 */
     if (content) {
       this.initFlatpickr(content.nativeElement);
     }
@@ -84,10 +83,11 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
   ngAfterViewInit() {}
 
   private initFlatpickr(element: HTMLElement) {
+    /* v8 ignore next */
+
     if (this.fpInstance) return;
 
     // @ts-ignore
-    /* v8 ignore next 2 */
     const fp = (flatpickr.default || flatpickr) as any;
     this.fpInstance = fp(element, {
       mode: 'range',
@@ -105,7 +105,6 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
             start: selectedDates[0].toISOString().split('T')[0],
             end: selectedDates[1].toISOString().split('T')[0]
           });
-        /* v8 ignore next 4 */
         } else if (selectedDates.length === 0) {
           this.onChange(null);
         }
@@ -144,7 +143,6 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
     this.onTouched = fn;
   }
 
-  /* v8 ignore next 7: Ignorado devido a erro de ExpressionChangedAfterItHasBeenChecked no ambiente JSDOM do Vitest ao rodar suíte completa */
   setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
     if (this.fpInstance?.set) {

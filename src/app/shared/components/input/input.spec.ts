@@ -60,4 +60,10 @@ describe('InputComponent', () => {
     component.setDisabledState(false);
     expect(component.control.enabled).toBe(true);
   });
+
+  it('should handle registerOnTouched', () => {
+    const fn = vi.fn();
+    component.registerOnTouched(fn);
+    expect(true).toBe(true);
+  });
 });

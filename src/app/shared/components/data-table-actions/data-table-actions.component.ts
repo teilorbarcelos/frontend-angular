@@ -35,7 +35,6 @@ export interface ExtraAction {
           <lucide-angular [img]="MoreIcon" class="w-4 h-4"></lucide-angular>
         </button>
 
-        /* v8 ignore next 13 */
         <ng-template #dropdownTemplate>
           @for (action of actions; track action.label) {
             <button

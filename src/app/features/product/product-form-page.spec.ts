@@ -134,10 +134,14 @@ describe('ProductFormPageComponent', () => {
     control?.setErrors({ required: true });
     
     expect(component.getError('name')).toBe('Este campo é obrigatório');
-    
-    const priceControl = component.productForm.get('price');
-    priceControl?.markAsTouched();
-    priceControl?.setErrors({ min: true });
+  });
+
+  it('should return correct error message for min error', () => {
+    fixture.detectChanges();
+    const control = component.productForm.get('price')!;
+    control.markAsTouched();
+    control.setErrors({ min: { min: 10, actual: 5 } });
+    fixture.detectChanges();
     expect(component.getError('price')).toBe('Valor inválido');
   });
 

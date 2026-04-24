@@ -79,9 +79,15 @@ describe('ProductFiltersComponent', () => {
 
   it('should trigger handleClear from template', () => {
     const spy = vi.spyOn(component, 'handleClear');
-    const drawer = fixture.debugElement.query(By.css('app-filter-drawer'));
-    drawer.triggerEventHandler('onClear', null);
-    fixture.detectChanges();
+    const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
+    drawer.onClear.emit();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should trigger handleApply from template', () => {
+    const spy = vi.spyOn(component, 'handleApply');
+    const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
+    drawer.onApply.emit();
     expect(spy).toHaveBeenCalled();
   });
 });

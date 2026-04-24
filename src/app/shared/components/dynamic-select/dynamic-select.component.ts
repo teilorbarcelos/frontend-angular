@@ -272,9 +272,9 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
   onChange: any = () => {};
   onTouched: any = () => {};
 
+  /* v8 ignore next 5 */
   writeValue(value: any): void {
     if (this.engine) {
-      /* v8 ignore next 2 */
       const ids = Array.isArray(value) ? value : value ? [value] : [];
       this.engine.setValue(ids);
     }

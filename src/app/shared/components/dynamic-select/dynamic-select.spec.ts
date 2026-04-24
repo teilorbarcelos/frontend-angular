@@ -52,6 +52,16 @@ describe('DynamicSelectComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should return placeholder when value is empty', () => {
+    expect(component.displayValue()).toBe('Selecione...');
+  });
+
+  it('should handle writeValue', () => {
+    const spy = vi.spyOn((component as any).engine, 'setValue');
+    component.writeValue('test-value');
+    expect(spy).toHaveBeenCalled();
+  });
+
   it('should open dropdown and trigger initial load', async () => {
     component.toggleOpen();
     fixture.detectChanges();

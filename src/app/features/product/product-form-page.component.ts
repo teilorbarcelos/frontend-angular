@@ -153,8 +153,8 @@ export class ProductFormPageComponent implements OnInit {
     const control = this.productForm.get(field);
     if (control && control.invalid && (control.dirty || control.touched)) {
       if (control.errors?.['required']) return 'Este campo é obrigatório';
-      /* v8 ignore next 2 */
-      if (control.errors?.['min']) return 'Valor inválido';
+      /* v8 ignore next */
+    if (control.errors?.['min']) return 'Valor inválido';
     }
     return null;
   }
