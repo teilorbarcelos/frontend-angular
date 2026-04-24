@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import {
-  AlertCircle,
-  AlertTriangle,
-  CheckCircle,
+  CircleAlert,
+  TriangleAlert,
+  CircleCheck,
   Info,
   LucideAngularModule,
   X
@@ -83,9 +83,9 @@ export class ToastContainerComponent {
 
   getIcon(type: ToastType) {
     switch (type) {
-      case 'success': return CheckCircle;
-      case 'error': return AlertCircle;
-      case 'warning': return AlertTriangle;
+      case 'success': return CircleCheck;
+      case 'error': return CircleAlert;
+      case 'warning': return TriangleAlert;
       default: return Info;
     }
   }

@@ -3,20 +3,18 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import {
-  AlertCircle,
-  AlertTriangle,
   ArrowDown,
   ArrowUp,
   ArrowUpDown,
   Calendar,
-  CheckCircle,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  Edit2,
-  Filter,
-  Home,
+  CircleAlert,
+  CircleCheck,
+  Funnel,
+  House,
   Info,
   LayoutDashboard,
   LogOut,
@@ -24,11 +22,13 @@ import {
   LucideIconProvider,
   MoreHorizontal,
   Package,
+  Pen,
   Pencil,
   Plus,
   Search,
   Shield,
   Trash2,
+  TriangleAlert,
   User as UserIcon,
   Users
 } from 'lucide-angular';
@@ -46,7 +46,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: LUCIDE_ICONS,
       useValue: new LucideIconProvider({ 
-        Home, 
+        House, 
         ChevronRight, 
         ChevronLeft,
         ChevronsLeft,
@@ -64,14 +64,14 @@ export const appConfig: ApplicationConfig = {
         Shield, 
         Package,
         Search,
-        Filter,
+        Funnel,
         Plus,
-        Edit2,
+        Pen,
         Calendar,
-        CheckCircle,
-        AlertCircle,
+        CircleCheck,
+        CircleAlert,
         Info,
-        AlertTriangle
+        TriangleAlert
       })
     },
   ]
