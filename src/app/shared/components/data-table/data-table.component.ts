@@ -112,7 +112,7 @@ export interface HeaderMapItem<T> {
           <button 
             (click)="onPageChange.emit(0)"
             [disabled]="currentPage === 0"
-            class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
             title="Primeira página"
           >
             <lucide-angular [img]="ChevronsLeftIcon" class="w-5 h-5"></lucide-angular>
@@ -121,7 +121,7 @@ export interface HeaderMapItem<T> {
           <button 
             (click)="onPageChange.emit(currentPage - 1)"
             [disabled]="currentPage === 0"
-            class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
             title="Anterior"
           >
             <lucide-angular [img]="ChevronLeftIcon" class="w-5 h-5"></lucide-angular>
@@ -134,7 +134,7 @@ export interface HeaderMapItem<T> {
               } @else {
                 <button
                   (click)="onPageChange.emit(+page)"
-                  class="min-w-[36px] h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all"
+                  class="min-w-[36px] h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all cursor-pointer"
                   [class]="currentPage === +page 
                     ? 'bg-indigo-50 text-indigo-600 font-bold ring-1 ring-inset ring-indigo-500/20' 
                     : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'"
@@ -148,7 +148,7 @@ export interface HeaderMapItem<T> {
           <button 
             (click)="onPageChange.emit(currentPage + 1)"
             [disabled]="currentPage >= totalPages - 1"
-            class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
             title="Próximo"
           >
             <lucide-angular [img]="ChevronRightIcon" class="w-5 h-5"></lucide-angular>
@@ -157,7 +157,7 @@ export interface HeaderMapItem<T> {
           <button 
             (click)="onPageChange.emit(totalPages - 1)"
             [disabled]="currentPage >= totalPages - 1"
-            class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
             title="Última página"
           >
             <lucide-angular [img]="ChevronsRightIcon" class="w-5 h-5"></lucide-angular>

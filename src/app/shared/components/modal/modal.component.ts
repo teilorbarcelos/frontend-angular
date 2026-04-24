@@ -26,7 +26,7 @@ import { LucideAngularModule, X } from 'lucide-angular';
             </h3>
             <button 
               (click)="handleClose()"
-              class="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+              class="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
             >
               <lucide-angular [img]="CloseIcon" class="w-5 h-5"></lucide-angular>
             </button>

@@ -35,8 +35,11 @@ import { Portuguese } from 'flatpickr/dist/l10n/pt';
   `],
   template: `
     <div 
-      class="flex items-center w-full h-10 bg-white border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all cursor-pointer"
-      (click)="openPicker()"
+      class="flex items-center w-full h-10 bg-white border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all"
+      [class.opacity-50]="isDisabled"
+      [class.cursor-not-allowed]="isDisabled"
+      [class.cursor-pointer]="!isDisabled"
+      (click)="!isDisabled && openPicker()"
     >
       <div class="pl-3 pr-2 text-gray-400">
         <lucide-angular [img]="CalendarIcon" class="w-4 h-4"></lucide-angular>
@@ -46,8 +49,11 @@ import { Portuguese } from 'flatpickr/dist/l10n/pt';
         #pickerInput
         type="text"
         readonly
+        [disabled]="isDisabled"
         [placeholder]="placeholder"
-        class="w-full h-full bg-transparent text-sm focus:outline-none cursor-pointer px-2"
+        class="w-full h-full bg-transparent text-sm focus:outline-none px-2"
+        [class.cursor-not-allowed]="isDisabled"
+        [class.cursor-pointer]="!isDisabled"
       />
     </div>
   `,
@@ -61,6 +67,7 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
 
   @Input() placeholder = 'Selecione o intervalo';
   
+  isDisabled = false;
   private fpInstance: any;
   readonly CalendarIcon = Calendar;
 
@@ -126,6 +133,7 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
   }
 
   setDisabledState(isDisabled: boolean): void {
+    this.isDisabled = isDisabled;
     if (this.fpInstance) {
       this.fpInstance.set('clickOpens', !isDisabled);
     }

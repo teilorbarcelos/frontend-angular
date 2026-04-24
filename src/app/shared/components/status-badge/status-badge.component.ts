@@ -9,7 +9,8 @@ import { CommonModule } from '@angular/common';
     <button
       (click)="onClick.emit()"
       [class]="classes"
-      class="px-2 py-1 text-xs font-semibold rounded-full transition-colors focus:outline-none"
+      [disabled]="disabled"
+      class="px-2 py-1 text-xs font-semibold rounded-full transition-colors focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {{ active ? 'Ativo' : 'Inativo' }}
     </button>
@@ -18,6 +19,7 @@ import { CommonModule } from '@angular/common';
 export class StatusBadgeComponent {
   @Input() active = false;
   @Input() feature = '';
+  @Input() disabled = false;
   @Output() onClick = new EventEmitter<void>();
 
   get classes() {

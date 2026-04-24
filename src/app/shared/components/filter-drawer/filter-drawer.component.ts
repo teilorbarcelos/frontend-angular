@@ -28,7 +28,7 @@ import { LucideAngularModule, Filter as FilterIcon, X } from 'lucide-angular';
         </div>
         <button 
           (click)="onClose.emit()"
-          class="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+          class="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
         >
           <lucide-angular [img]="CloseIcon" class="w-5 h-5"></lucide-angular>
         </button>
@@ -41,13 +41,13 @@ import { LucideAngularModule, Filter as FilterIcon, X } from 'lucide-angular';
       <footer class="p-6 bg-gray-50 border-t border-gray-100 flex gap-3 shrink-0">
         <button
           (click)="onClear.emit()"
-          class="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          class="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
         >
           Limpar
         </button>
         <button
           (click)="onApply.emit()"
-          class="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors"
+          class="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors cursor-pointer"
         >
           Aplicar
         </button>

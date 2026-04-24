@@ -19,7 +19,7 @@ export interface ExtraAction {
       @if (actions.length === 1) {
         <button
           (click)="actions[0].onClick()"
-          class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-gray-100 rounded-lg transition-colors"
+          class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
           [title]="actions[0].label"
         >
           <lucide-angular [img]="actions[0].icon" class="w-4 h-4"></lucide-angular>
@@ -27,7 +27,7 @@ export interface ExtraAction {
       } @else if (actions.length > 1) {
         <button
           (click)="toggleDropdown($event)"
-          class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
           [class.bg-gray-100]="isOpen()"
           title="Mais ações"
         >
@@ -41,7 +41,7 @@ export interface ExtraAction {
             @for (action of actions; track action.label) {
               <button
                 (click)="handleAction(action)"
-                class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
                 [ngClass]="action.className || ''"
               >
                 <lucide-angular [img]="action.icon" class="w-4 h-4 mr-3"></lucide-angular>
@@ -61,13 +61,13 @@ export interface ExtraAction {
         <div footer class="flex items-center space-x-3">
           <button 
             (click)="isDeleteDialogOpen.set(false)"
-            class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
           >
             Cancelar
           </button>
           <button 
             (click)="confirmDelete()"
-            class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm transition-colors"
+            class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm transition-colors cursor-pointer"
           >
             Excluir
           </button>

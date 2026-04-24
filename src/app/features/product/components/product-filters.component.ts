@@ -22,7 +22,7 @@ import { DateRangePickerComponent } from '../../../shared/components/date-range-
           <select
             id="active"
             formControlName="active"
-            class="w-full h-10 px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+            class="w-full h-10 px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
           >
             <option value="">Todos</option>
             <option value="true">Ativo</option>
