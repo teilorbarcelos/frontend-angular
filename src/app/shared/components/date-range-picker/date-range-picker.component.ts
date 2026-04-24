@@ -39,7 +39,7 @@ import { Portuguese } from 'flatpickr/dist/l10n/pt';
       [class.opacity-50]="isDisabled"
       [class.cursor-not-allowed]="isDisabled"
       [class.cursor-pointer]="!isDisabled"
-      (click)="!isDisabled && openPicker()"
+      (click)="!isDisabled && openPicker($event)"
     >
       <div class="pl-3 pr-2 text-gray-400">
         <lucide-angular [img]="CalendarIcon" class="w-4 h-4"></lucide-angular>
@@ -89,6 +89,8 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
       locale: Portuguese,
       appendTo: document.body,
       static: false,
+      clickOpens: false,
+      allowInput: false,
       onClose: (selectedDates: Date[]) => {
         if (selectedDates.length === 2) {
           this.onChange({
@@ -102,7 +104,8 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
     });
   }
 
-  openPicker() {
+  openPicker(event: Event) {
+    event.stopPropagation();
     if (this.fpInstance) {
       this.fpInstance.open();
     }
