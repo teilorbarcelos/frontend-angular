@@ -12,8 +12,8 @@ describe('DataTableComponent', () => {
   ];
 
   const data = [
-    { id: '1', name: 'John', age: 30 },
-    { id: '2', name: 'Jane', age: 25 },
+    { id: '1', name: 'John', age: 30, active: true },
+    { id: '2', name: 'Jane', age: 25, active: false },
   ];
 
   beforeEach(async () => {
@@ -130,5 +130,23 @@ describe('DataTableComponent', () => {
     select.value = '50';
     select.dispatchEvent(new Event('change'));
     expect(spy).toHaveBeenCalledWith(50);
+  });
+
+  it('should render parsed item when parseItem is provided', async () => {
+    const customHeader: HeaderMapItem<any>[] = [
+      { 
+        title: 'Status', 
+        keyItem: 'active', 
+        parseItem: (val) => val ? '<span class="active">Yes</span>' : 'No' 
+      }
+    ];
+    fixture.componentRef.setInput('headerMap', customHeader);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const cell = fixture.nativeElement.querySelector('tbody td');
+    expect(cell.innerHTML).toContain('Yes');
+    expect(cell.querySelector('.active')).toBeTruthy();
   });
 });

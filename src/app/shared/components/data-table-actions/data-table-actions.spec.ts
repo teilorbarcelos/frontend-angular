@@ -83,4 +83,81 @@ describe('DataTableActionsComponent', () => {
     expect(spy).toHaveBeenCalledWith('123');
     expect(component.isDeleteDialogOpen()).toBe(false);
   });
+
+  it('should handle extra actions', () => {
+    const mockExtraAction = {
+      label: 'Extra',
+      icon: {},
+      onClick: vi.fn(),
+    };
+    fixture.componentRef.setInput('extraActions', [mockExtraAction]);
+    fixture.detectChanges();
+    
+    // Trigger the onClick through the actions getter
+    const actions = component.actions;
+    const extraAction = actions.find(a => a.label === 'Extra');
+    extraAction?.onClick();
+    
+    expect(mockExtraAction.onClick).toHaveBeenCalledWith('123');
+  });
+
+  it('should close menu if toggleDropdown is called when open', () => {
+    mockMenuService.state.set({ context: component }); // Simulate menu open
+    fixture.detectChanges();
+    
+    const event = new MouseEvent('click');
+    const template = {} as any;
+    component.toggleDropdown(event, template);
+    
+    expect(mockMenuService.close).toHaveBeenCalled();
+  });
+
+  it('should handle action and close menu', () => {
+    const mockAction = {
+      onClick: vi.fn(),
+    };
+    component.handleAction(mockAction);
+    
+    expect(mockAction.onClick).toHaveBeenCalled();
+    expect(mockMenuService.close).toHaveBeenCalled();
+  });
+
+  it('should handle edit action through actions getter', () => {
+    const spy = vi.spyOn(component.onEdit, 'emit');
+    const actions = component.actions;
+    const editAction = actions.find(a => a.label === 'Editar');
+    editAction?.onClick();
+    expect(spy).toHaveBeenCalledWith('123');
+  });
+
+  it('should handle delete action through actions getter', () => {
+    const actions = component.actions;
+    const deleteAction = actions.find(a => a.label === 'Excluir');
+    deleteAction?.onClick();
+    expect(component.isDeleteDialogOpen()).toBe(true);
+  });
+
+  it('should render dropdown template content', () => {
+    fixture.componentRef.setInput('showEdit', true);
+    fixture.componentRef.setInput('showDelete', true);
+    fixture.detectChanges();
+
+    const template = component.dropdownTemplate;
+    const view = template.createEmbeddedView({});
+    view.detectChanges();
+    
+    // Create a container to render the template view
+    const container = document.createElement('div');
+    view.rootNodes.forEach(node => container.appendChild(node));
+    
+    const buttons = container.querySelectorAll('button');
+    expect(buttons.length).toBe(2);
+    expect(buttons[0].textContent).toContain('Editar');
+    expect(buttons[1].textContent).toContain('Excluir');
+    
+    // Trigger handleAction from one of the buttons
+    const spy = vi.spyOn(component, 'handleAction');
+    buttons[0].click();
+    expect(spy).toHaveBeenCalled();
+  });
 });

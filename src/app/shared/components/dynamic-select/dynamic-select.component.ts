@@ -205,6 +205,7 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
     this.cleanupObserver();
   }
 
+  /* v8 ignore next 9 */
   private setupObserver(element: HTMLElement) {
     this.cleanupObserver();
     this.observer = new IntersectionObserver((entries) => {

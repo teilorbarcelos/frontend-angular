@@ -1,4 +1,5 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ProductListPageComponent } from './product-list-page.component';
 import { ProductService } from './product.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -133,5 +134,61 @@ describe('ProductListPageComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     expect(mockToastService.error).toHaveBeenCalled();
+  });
+
+  it('should handle page size change', () => {
+    fixture.detectChanges();
+    component.handlePageSizeChange(50);
+    expect(component.size()).toBe(50);
+    expect(component.page()).toBe(0);
+  });
+
+  it('should handle sort change', () => {
+    fixture.detectChanges();
+    const newSort = { orderBy: 'price', orderDirection: 'desc' as const };
+    component.handleSortChange(newSort);
+    expect(component.sort()).toEqual(newSort);
+  });
+
+  it('should render columns correctly in data table', async () => {
+    fixture.detectChanges(); // Trigger effect to load products
+    await fixture.whenStable();
+    fixture.detectChanges(); // Render data in table
+    
+    const compiled = fixture.nativeElement;
+    
+    // Check if status badge is present (for 'active' column)
+    const statusBadge = compiled.querySelector('app-status-badge');
+    expect(statusBadge).toBeTruthy();
+    
+    // Check if data table actions are present (for 'id' column)
+    const actions = compiled.querySelector('app-data-table-actions');
+    expect(actions).toBeTruthy();
+  });
+
+  it('should trigger toggleFilter from template', () => {
+    fixture.detectChanges();
+    const header = fixture.debugElement.query(By.css('app-list-page-header'));
+    header.triggerEventHandler('onFilterClick', null);
+    fixture.detectChanges();
+    expect(component.isFilterOpen()).toBe(true);
+  });
+
+  it('should trigger handlePageSizeChange from template', () => {
+    fixture.detectChanges();
+    const table = fixture.debugElement.query(By.css('app-data-table'));
+    table.triggerEventHandler('onPageSizeChange', 50);
+    fixture.detectChanges();
+    expect(component.size()).toBe(50);
+  });
+
+  it('should trigger toggleStatus from template', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    
+    const statusBadge = fixture.debugElement.query(By.css('app-status-badge')).componentInstance;
+    statusBadge.onClick.emit();
+    expect(mockProductService.toggleStatus).toHaveBeenCalled();
   });
 });

@@ -105,4 +105,8 @@ describe('ActionMenuPortalComponent', () => {
     window.dispatchEvent(new Event('resize'));
     expect(mockService.close).toHaveBeenCalledTimes(2);
   });
+
+  it('should return real window.innerHeight for viewportHeight', () => {
+    expect(component.viewportHeight).toBe(window.innerHeight);
+  });
 });

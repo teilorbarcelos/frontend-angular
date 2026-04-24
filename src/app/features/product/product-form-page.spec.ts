@@ -1,4 +1,5 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ProductFormPageComponent } from './product-form-page.component';
 import { ProductService } from './product.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -136,5 +137,28 @@ describe('ProductFormPageComponent', () => {
     
     control?.setErrors({ min: true });
     expect(component.getError('name')).toBe('Valor inválido');
+  });
+
+  it('should trigger cancel from footer button', () => {
+    fixture.detectChanges();
+    const spy = vi.spyOn(component, 'cancel');
+    const footerCancelBtn = fixture.debugElement.queryAll(By.css('app-button'))
+      .find(el => el.nativeElement.textContent.includes('Cancelar') && el.attributes['variant'] === 'secondary');
+    
+    footerCancelBtn?.triggerEventHandler('onClick', null);
+    fixture.detectChanges();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should render correct button text when pending', () => {
+    component.isPending.set(true);
+    fixture.detectChanges();
+    const submitBtn = fixture.nativeElement.querySelector('button[type="submit"]');
+    expect(submitBtn.textContent).toContain('Salvando...');
+    
+    component.isPending.set(false);
+    component.isEditing.set(true);
+    fixture.detectChanges();
+    expect(submitBtn.textContent).toContain('Atualizar Produto');
   });
 });
