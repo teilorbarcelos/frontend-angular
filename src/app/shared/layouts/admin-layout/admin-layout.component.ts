@@ -13,6 +13,7 @@ import {
 import { AuthService } from '../../../core/services/auth.service';
 import { BreadcrumbComponent } from '../../components/breadcrumb/breadcrumb.component';
 import { ToastContainerComponent } from '../../components/toast-container/toast-container.component';
+import { ActionMenuPortalComponent } from '../../components/action-menu-portal/action-menu-portal.component';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -23,9 +24,10 @@ function cn(...inputs: ClassValue[]) {
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, LucideAngularModule, BreadcrumbComponent, ToastContainerComponent],
+  imports: [CommonModule, RouterModule, LucideAngularModule, BreadcrumbComponent, ToastContainerComponent, ActionMenuPortalComponent],
   template: `
     <app-toast-container></app-toast-container>
+    <app-action-menu-portal></app-action-menu-portal>
     <div class="flex h-screen w-full bg-gray-50">
       <aside class="w-64 bg-white border-r border-gray-200 flex flex-col overflow-y-auto">
         <div class="h-16 flex items-center px-6 border-b border-gray-200 shrink-0">
