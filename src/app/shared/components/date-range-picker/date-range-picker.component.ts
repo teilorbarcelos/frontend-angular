@@ -86,9 +86,8 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
   private initFlatpickr(element: HTMLElement) {
     if (this.fpInstance) return;
 
-    /* v8 ignore start */
+    /* v8 ignore next 1: Fallback para diferentes formatos de empacotamento (CJS vs ESM) do flatpickr que varia conforme o ambiente de teste/build */
     const fp = (flatpickr.default || flatpickr) as any;
-    /* v8 ignore stop */
     this.fpInstance = fp(element, {
       mode: 'range',
       dateFormat: 'Y-m-d',
@@ -105,14 +104,12 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
           return;
         }
         
-        /* v8 ignore start */
         if (selectedDates.length === 2) {
           this.onChange({
             start: selectedDates[0].toISOString().split('T')[0],
             end: selectedDates[1].toISOString().split('T')[0]
           });
         }
-        /* v8 ignore stop */
       }
     });
   }

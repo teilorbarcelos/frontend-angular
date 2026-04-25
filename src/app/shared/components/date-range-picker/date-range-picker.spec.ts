@@ -140,6 +140,14 @@ describe('DateRangePickerComponent', () => {
     expect(true).toBe(true);
   });
 
+  it('should handle onClose with single date (do nothing)', () => {
+    const spy = vi.spyOn(component, 'onChange');
+    const fp = (component as any).fpInstance;
+    const onClose = Array.isArray(fp.config.onClose) ? fp.config.onClose[0] : fp.config.onClose;
+    onClose([new Date()]);
+    expect(spy).not.toHaveBeenCalled();
+  });
+
   it('should provide NG_VALUE_ACCESSOR', () => {
     const accessor = fixture.debugElement.injector.get(NG_VALUE_ACCESSOR);
     expect(accessor).toBeTruthy();
