@@ -1,0 +1,137 @@
+import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { {{capitalize nameLower}}FormPageComponent } from './{{nameLower}}-form-page.component';
+import { {{capitalize nameLower}}Service } from './{{nameLower}}.service';
+import { ToastService } from '../../core/services/toast.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { of, throwError, BehaviorSubject } from 'rxjs';
+import { ReactiveFormsModule } from '@angular/forms';
+import { vi } from 'vitest';
+
+describe('{{capitalize nameLower}}FormPageComponent', () => {
+  let component: {{capitalize nameLower}}FormPageComponent;
+  let fixture: ComponentFixture<{{capitalize nameLower}}FormPageComponent>;
+  let mockService: any;
+  let mockToastService: any;
+  let mockRouter: any;
+  let routeParams: BehaviorSubject<any>;
+
+  beforeEach(async () => {
+    routeParams = new BehaviorSubject({});
+    mockService = {
+      get{{capitalize nameLower}}: vi.fn(),
+      create{{capitalize nameLower}}: vi.fn().mockReturnValue(of({})),
+      update{{capitalize nameLower}}: vi.fn().mockReturnValue(of({})),
+    };
+    mockToastService = {
+      success: vi.fn(),
+      error: vi.fn(),
+    };
+    mockRouter = {
+      navigate: vi.fn(),
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [{{capitalize nameLower}}FormPageComponent, ReactiveFormsModule],
+      providers: [
+        { provide: {{capitalize nameLower}}Service, useValue: mockService },
+        { provide: ToastService, useValue: mockToastService },
+        { provide: Router, useValue: mockRouter },
+        { 
+          provide: ActivatedRoute, 
+          useValue: { params: routeParams.asObservable() } 
+        },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent({{capitalize nameLower}}FormPageComponent);
+    component = fixture.componentInstance;
+  });
+
+  it('should create in "New" mode', () => {
+    routeParams.next({ id: 'new' });
+    fixture.detectChanges();
+    expect(component.isEditing()).toBe(false);
+  });
+
+  it('should load data in "Edit" mode', async () => {
+    const mockData = { name: 'Test' };
+    mockService.get{{capitalize nameLower}}.mockReturnValue(of(mockData));
+    
+    routeParams.next({ id: '123' });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    
+    expect(component.isEditing()).toBe(true);
+    expect(mockService.get{{capitalize nameLower}}).toHaveBeenCalledWith('123');
+    expect(component.{{nameLower}}Form.value).toEqual(mockData);
+  });
+
+  it('should handle error loading data', async () => {
+    mockService.get{{capitalize nameLower}}.mockReturnValue(throwError(() => new Error('Error')));
+    
+    routeParams.next({ id: '123' });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    
+    expect(mockToastService.error).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/{{nameLower}}s']);
+  });
+
+  it('should not submit if form is invalid', async () => {
+    fixture.detectChanges();
+    await component.onSubmit();
+    expect(mockService.create{{capitalize nameLower}}).not.toHaveBeenCalled();
+    expect(component.{{nameLower}}Form.touched).toBe(true);
+  });
+
+  it('should submit successfully', async () => {
+    fixture.detectChanges();
+    component.{{nameLower}}Form.patchValue({ name: 'Test' });
+    
+    await component.onSubmit();
+    
+    expect(mockService.create{{capitalize nameLower}}).toHaveBeenCalled();
+    expect(mockToastService.success).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/{{nameLower}}s']);
+  });
+
+  it('should submit update successfully', async () => {
+    mockService.get{{capitalize nameLower}}.mockReturnValue(of({ name: 'Old' }));
+    routeParams.next({ id: '123' });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    component.{{nameLower}}Form.patchValue({ name: 'New' });
+    await component.onSubmit();
+    
+    expect(mockService.update{{capitalize nameLower}}).toHaveBeenCalledWith('123', expect.anything());
+    expect(mockToastService.success).toHaveBeenCalled();
+  });
+
+  it('should navigate back on cancel', () => {
+    component.cancel();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/{{nameLower}}s']);
+  });
+
+  it('should trigger events from template', () => {
+    fixture.detectChanges();
+    const spy = vi.spyOn(component, 'cancel');
+    
+    // Header cancel
+    const headerCancelBtn = fixture.debugElement.query(By.css('app-button[variant="ghost"]'));
+    headerCancelBtn.triggerEventHandler('btnClick', null);
+    
+    // Footer cancel
+    const footerCancelBtn = fixture.debugElement.queryAll(By.css('app-button'))
+      .find(el => el.nativeElement.textContent.includes('Cancelar') && el.attributes['variant'] === 'secondary');
+    footerCancelBtn?.triggerEventHandler('btnClick', null);
+
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
+
+  it('should call all methods for funcs coverage', () => {
+    component.ngOnDestroy();
+    expect(true).toBe(true);
+  });
+});

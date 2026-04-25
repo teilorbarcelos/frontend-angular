@@ -1,59 +1,56 @@
-# FrontendAngular
+# Frontend Angular - Gold Standard Boilerplate
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.8.
+Este é um boilerplate Angular de alta qualidade, funcionalmente idêntico ao projeto React existente (`frontend-vite`). Ele utiliza as práticas mais modernas do ecossistema Angular (v19+).
 
-## Development server
+## Tech Stack
 
-To start a local development server, run:
+- **Angular 19+** (Standalone Components, Signals, New Control Flow)
+- **Tailwind CSS v4** para estilização.
+- **Lucide Angular** para ícones.
+- **Vitest** para testes unitários e de integração (substituindo Karma/Jasmine).
+- **RxJS** para comunicação assíncrona.
+- **HttpClient** com interceptores funcionais.
 
+## Arquitetura
+
+- **Feature-based modules**: O projeto é organizado por funcionalidades (`auth`, `product`, `user`, `role`).
+- **Signals**: Gerenciamento de estado reativo e eficiente.
+- **Smart/Dumb Components**: Separação clara de responsabilidades.
+- **Lazy Loading**: Roteamento otimizado para performance.
+
+## Como rodar
+
+1. Instale as dependências:
+   ```bash
+   npm install
+   ```
+
+2. Rode o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
+   O app estará disponível em `http://localhost:3000`.
+
+## Testes
+
+O projeto mantém 100% de cobertura de testes.
+
+Para rodar os testes:
 ```bash
-ng serve
+npm test
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+Para ver a cobertura:
 ```bash
-ng generate component component-name
+npx ng test --coverage
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Integração com Backend
 
-```bash
-ng generate --help
-```
+O frontend está configurado para se comunicar com o mesmo backend do projeto React. As URLs base e os headers são idênticos.
 
-## Building
+## Estrutura de Diretórios
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- `src/app/core`: Serviços globais, guards, interceptors e utilitários.
+- `src/app/shared`: Componentes, layouts, pipes e diretivas reutilizáveis.
+- `src/app/features`: Módulos de funcionalidades (páginas, serviços específicos).

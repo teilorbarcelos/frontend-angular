@@ -1,0 +1,124 @@
+import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { {{capitalize nameLower}}FiltersComponent } from './{{nameLower}}-filters.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { vi } from 'vitest';
+
+describe('{{capitalize nameLower}}FiltersComponent', () => {
+  let component: {{capitalize nameLower}}FiltersComponent;
+  let fixture: ComponentFixture<{{capitalize nameLower}}FiltersComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [{{capitalize nameLower}}FiltersComponent, ReactiveFormsModule],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent({{capitalize nameLower}}FiltersComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should initialize with initialValues', () => {
+    component.initialValues = { active: 'true', createdAt_start: '2023-01-01', createdAt_end: '2023-01-02' };
+    (component as any).updateFormValues();
+    
+    expect(component.filterForm.value.active).toBe('true');
+    expect(component.filterForm.value.createdAt).toEqual({
+      start: '2023-01-01',
+      end: '2023-01-02'
+    });
+  });
+
+  it('should handle clear', () => {
+    const filterSpy = vi.spyOn(component.filtered, 'emit');
+    const closeSpy = vi.spyOn(component.closed, 'emit');
+    
+    component.handleClear();
+    
+    expect(component.filterForm.value.active).toBe('');
+    expect(filterSpy).toHaveBeenCalledWith({});
+    expect(closeSpy).toHaveBeenCalled();
+  });
+
+  it('should handle apply', () => {
+    const filterSpy = vi.spyOn(component.filtered, 'emit');
+    const closeSpy = vi.spyOn(component.closed, 'emit');
+    
+    component.filterForm.patchValue({
+      active: 'true',
+      createdAt: { start: '2023-01-01', end: '2023-01-02' }
+    });
+    
+    component.handleApply();
+    
+    expect(filterSpy).toHaveBeenCalledWith({
+      active: 'true',
+      createdAt_start: '2023-01-01',
+      createdAt_end: '2023-01-02'
+    });
+    expect(closeSpy).toHaveBeenCalled();
+  });
+
+  it('should update values onChanges', () => {
+    const spy = vi.spyOn(component as any, 'updateFormValues');
+    component.initialValues = { active: 'true' };
+    component.ngOnChanges({
+      initialValues: {
+        currentValue: { active: 'true' },
+        previousValue: {},
+        firstChange: false,
+        isFirstChange: () => false
+      }
+    });
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should handle apply with empty values', () => {
+    const filterSpy = vi.spyOn(component.filtered, 'emit');
+    component.filterForm.patchValue({
+      active: '',
+      createdAt: { start: '', end: '' }
+    });
+    component.handleApply();
+    expect(filterSpy).toHaveBeenCalledWith({});
+  });
+
+  it('should not update values onChanges if initialValues is missing', () => {
+    const spy = vi.spyOn(component as any, 'updateFormValues');
+    component.initialValues = null as any;
+    component.ngOnChanges({
+      initialValues: {
+        currentValue: null,
+        previousValue: {},
+        firstChange: false,
+        isFirstChange: () => false
+      }
+    });
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('should trigger handleClear from template', () => {
+    const spy = vi.spyOn(component, 'handleClear');
+    const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
+    drawer.cleared.emit();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should trigger handleApply from template', () => {
+    const spy = vi.spyOn(component, 'handleApply');
+    const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
+    drawer.applied.emit();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should trigger closed from template', () => {
+    const spy = vi.spyOn(component.closed, 'emit');
+    const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
+    drawer.closed.emit();
+    expect(spy).toHaveBeenCalled();
+  });
+});

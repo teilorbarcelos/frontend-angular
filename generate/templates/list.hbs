@@ -1,0 +1,133 @@
+import { Component, inject, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { {{capitalize nameLower}}Service, {{capitalize nameLower}} } from './{{nameLower}}.service';
+import { AuthService } from '../../core/services/auth.service';
+import { ListPageHeaderComponent } from '../../shared/components/list-page-header/list-page-header.component';
+import { DataTableComponent, HeaderMapItem } from '../../shared/components/data-table/data-table.component';
+import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
+import { DataTableActionsComponent } from '../../shared/components/data-table-actions/data-table-actions.component';
+import { {{upper nameLower}}_SEARCHABLE_FIELDS } from './constants/{{nameLower}}.constants';
+import { createListPageController } from '../../core/utils/list-page.utils';
+
+import { {{capitalize nameLower}}FiltersComponent } from './components/{{nameLower}}-filters.component';
+
+@Component({
+  selector: 'app-{{nameLower}}-list-page',
+  standalone: true,
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    ListPageHeaderComponent, 
+    DataTableComponent, 
+    StatusBadgeComponent, 
+    DataTableActionsComponent,
+    {{capitalize nameLower}}FiltersComponent
+  ],
+  host: {
+    class: 'flex-1 flex flex-col min-h-0'
+  },
+  template: `
+    <app-list-page-header
+      title="{{capitalize nameLower}}s"
+      [showCreate]="permissions().canCreate"
+      createLabel="Novo {{capitalize nameLower}}"
+      (searched)="handleSearch($event)"
+      (filterClick)="toggleFilter()"
+      [filterCount]="filterCount()"
+      (createClick)="navigateToCreate()"
+      class="shrink-0"
+    ></app-list-page-header>
+
+    <app-{{nameLower}}-filters
+      [isOpen]="isFilterOpen()"
+      [initialValues]="filters()"
+      (closed)="toggleFilter()"
+      (filtered)="handleFilter($event)"
+    ></app-{{nameLower}}-filters>
+
+    <app-data-table
+      [data]="items()"
+      [headerMap]="columns"
+      [isLoading]="isLoading()"
+      [totalItems]="totalItems()"
+      [currentPage]="page()"
+      [pageSize]="size()"
+      [sorting]="sort()"
+      (pageChange)="handlePageChange($event)"
+      (pageSizeChange)="handlePageSizeChange($event)"
+      (sortChange)="handleSortChange($event)"
+    >
+      <ng-template #cellTemplate let-item let-column="column" let-value="value">
+        @if (column.keyItem === 'active') {
+          <app-status-badge 
+            [active]="!!value" 
+            feature="{{nameLower}}" 
+            (btnClick)="toggleStatus(item.id, !item.active)"
+          ></app-status-badge>
+        } @else if (column.keyItem === 'id') {
+          <app-data-table-actions 
+            [id]="item.id" 
+            [showEdit]="permissions().canUpdate"
+            [showDelete]="permissions().canDelete"
+            (edit)="navigateToEdit($event)" 
+            (delete)="deleteItem($event)"
+            deleteMessage="Tem certeza que deseja excluir este item?"
+          ></app-data-table-actions>
+        } @else {
+           <div [class.truncate]="column.truncate" [class.max-w-xs]="column.truncate">
+             \{{ value }}
+           </div>
+        }
+      </ng-template>
+    </app-data-table>
+  `,
+})
+export class {{capitalize nameLower}}ListPageComponent {
+  private service = inject({{capitalize nameLower}}Service);
+  private authService = inject(AuthService);
+
+  private list = createListPageController<{{capitalize nameLower}}>({
+    feature: '{{nameLower}}',
+    baseRoute: '/{{nameLower}}s',
+    searchFields: {{upper nameLower}}_SEARCHABLE_FIELDS,
+    fetch: (params) => this.service.get{{capitalize nameLower}}s(params),
+    toggleStatus: (id, active) => this.service.toggleStatus(id, active),
+    delete: (id) => this.service.delete{{capitalize nameLower}}(id),
+  });
+
+  items = this.list.items;
+  totalItems = this.list.totalItems;
+  isLoading = this.list.isLoading;
+  isFilterOpen = this.list.isFilterOpen;
+  page = this.list.page;
+  size = this.list.size;
+  searchWord = this.list.searchWord;
+  filters = this.list.filters;
+  sort = this.list.sort;
+  filterCount = this.list.filterCount;
+
+  handleSearch(value: string) { this.list.handleSearch(value); }
+  handleFilter(filters: Record<string, unknown>) { this.list.handleFilter(filters); }
+  handlePageChange(page: number) { this.list.handlePageChange(page); }
+  handlePageSizeChange(size: number) { this.list.handlePageSizeChange(size); }
+  handleSortChange(sort: any) { this.list.handleSortChange(sort); }
+  toggleFilter() { this.list.toggleFilter(); }
+  navigateToCreate() { this.list.navigateToCreate(); }
+  navigateToEdit(id: string) { this.list.navigateToEdit(id); }
+  toggleStatus(id: string, active: boolean) { this.list.toggleStatus(id, active); }
+  deleteItem(id: string) { this.list.deleteItem(id); }
+  loadItems() { this.list.loadItems(); }
+
+  permissions = computed(() => ({
+    canCreate: this.authService.hasPermission('{{nameLower}}', 'create'),
+    canUpdate: this.authService.hasPermission('{{nameLower}}', 'create'),
+    canDelete: this.authService.hasPermission('{{nameLower}}', 'delete'),
+  }));
+
+  columns: HeaderMapItem<{{capitalize nameLower}}>[] = [
+    { title: 'Nome', keyItem: 'name', truncate: true, sortable: true },
+    { title: 'Status', keyItem: 'active', sortable: true },
+    { title: '', keyItem: 'id' },
+  ];
+}
