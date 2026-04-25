@@ -184,4 +184,11 @@ describe('UserFormPageComponent', () => {
     expect(component.getRoleLabel(role)).toBe('Admin');
     expect(component.getRoleValue(role)).toBe('r1');
   });
+
+  it('should cleanup on destroy', () => {
+    fixture.detectChanges();
+    const spy = vi.spyOn(component['formCtrl'], 'destroy');
+    component.ngOnDestroy();
+    expect(spy).toHaveBeenCalled();
+  });
 });

@@ -170,4 +170,18 @@ describe('RoleFormPageComponent', () => {
     expect(component.permissionsFormArray.at(0).value.view).toBe(true);
     expect(component.permissionsFormArray.at(1).value.view).toBe(false);
   });
+
+  it('should cleanup on destroy', () => {
+    fixture.detectChanges();
+    const spy = vi.spyOn(component['formCtrl'], 'destroy');
+    component.ngOnDestroy();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should call helper methods for coverage', () => {
+    fixture.detectChanges();
+    expect(component.permissionsFormArray).toBeTruthy();
+    expect(component.id()).toBeNull();
+    expect(component.isLoadingRole()).toBe(false);
+  });
 });

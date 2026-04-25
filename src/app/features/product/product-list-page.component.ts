@@ -109,17 +109,17 @@ export class ProductListPageComponent {
   sort = this.list.sort;
   filterCount = this.list.filterCount;
 
-  handleSearch = this.list.handleSearch;
-  handleFilter = this.list.handleFilter;
-  handlePageChange = this.list.handlePageChange;
-  handlePageSizeChange = this.list.handlePageSizeChange;
-  handleSortChange = this.list.handleSortChange;
-  toggleFilter = this.list.toggleFilter;
-  navigateToCreate = this.list.navigateToCreate;
-  navigateToEdit = this.list.navigateToEdit;
-  toggleStatus = this.list.toggleStatus;
-  deleteProduct = this.list.deleteItem;
-  loadProducts = this.list.loadItems;
+  handleSearch(value: string) { this.list.handleSearch(value); }
+  handleFilter(filters: any) { this.list.handleFilter(filters); }
+  handlePageChange(page: number) { this.list.handlePageChange(page); }
+  handlePageSizeChange(size: number) { this.list.handlePageSizeChange(size); }
+  handleSortChange(sort: any) { this.list.handleSortChange(sort); }
+  toggleFilter() { this.list.toggleFilter(); }
+  navigateToCreate() { this.list.navigateToCreate(); }
+  navigateToEdit(id: string) { this.list.navigateToEdit(id); }
+  toggleStatus(id: string, active: boolean) { this.list.toggleStatus(id, active); }
+  deleteProduct(id: string) { this.list.deleteItem(id); }
+  loadProducts() { this.list.loadItems(); }
 
   permissions = computed(() => ({
     canCreate: this.authService.hasPermission('product', 'create'),

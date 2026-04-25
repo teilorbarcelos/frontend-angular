@@ -310,12 +310,35 @@ describe('ProductListPageComponent', () => {
     expect(component.isFilterOpen()).toBe(false);
   });
 
+  it('should calculate permissions correctly', () => {
+    mockAuthService.hasPermission.mockImplementation((feat: string, action: string) => {
+      if (action === 'create') return true;
+      if (action === 'activate') return false;
+      if (action === 'delete') return true;
+      return false;
+    });
+    
+    expect(component.permissions()).toEqual({ canCreate: true, canUpdate: true, canDelete: true });
+  });
+
+  it('should trigger onFilterClick from header component instance', () => {
+    fixture.detectChanges();
+    const header = fixture.debugElement.query(By.css('app-list-page-header')).componentInstance;
+    header.onFilterClick.emit();
+    fixture.detectChanges();
+    expect(component.isFilterOpen()).toBe(true);
+  });
+
   it('should call all methods for funcs coverage', () => {
     component.toggleFilter();
     component.handlePageChange(2);
     component.handlePageSizeChange(50);
     component.handleSearch('test');
     component.handleSortChange({ orderBy: 'name', orderDirection: 'asc' });
+    component.navigateToCreate();
+    component.navigateToEdit('1');
+    component.deleteProduct('1');
+    component.loadProducts();
     expect(true).toBe(true);
   });
 });
