@@ -195,22 +195,28 @@ describe('DataTableComponent', () => {
     const spy = vi.spyOn(component.onSortChange, 'emit');
     const nameHeader = fixture.nativeElement.querySelectorAll('th')[0];
     
-    // Start from none
+    // 1. None -> Asc
     fixture.componentRef.setInput('sorting', { orderBy: undefined, orderDirection: undefined });
     fixture.detectChanges();
     nameHeader.click();
     expect(spy).toHaveBeenLastCalledWith({ orderBy: 'name', orderDirection: 'asc' });
 
-    // From asc to desc
+    // 2. Asc -> Desc
     fixture.componentRef.setInput('sorting', { orderBy: 'name', orderDirection: 'asc' });
     fixture.detectChanges();
     nameHeader.click();
     expect(spy).toHaveBeenLastCalledWith({ orderBy: 'name', orderDirection: 'desc' });
 
-    // From desc to none
+    // 3. Desc -> None
     fixture.componentRef.setInput('sorting', { orderBy: 'name', orderDirection: 'desc' });
     fixture.detectChanges();
     nameHeader.click();
     expect(spy).toHaveBeenLastCalledWith({ orderBy: undefined, orderDirection: undefined });
+    
+    // 4. Click different column (None -> Asc)
+    const ageHeader = fixture.nativeElement.querySelectorAll('th')[1];
+    // Age is not sortable, so it shouldn't emit
+    ageHeader.click();
+    expect(spy).toHaveBeenCalledTimes(3);
   });
 });

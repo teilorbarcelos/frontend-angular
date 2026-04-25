@@ -230,21 +230,20 @@ describe('ProductListPageComponent', () => {
     expect(mockProductService.toggleStatus).toHaveBeenCalled();
   });
 
+  it('should trigger toggleFilter from template', () => {
+    fixture.detectChanges();
+    const header = fixture.debugElement.query(By.css('app-list-page-header'));
+    header.triggerEventHandler('onFilterClick', null);
+    fixture.detectChanges();
+    expect(component.isFilterOpen()).toBe(true);
+  });
+
   it('should trigger handleSearch from template', () => {
     fixture.detectChanges();
     const header = fixture.debugElement.query(By.css('app-list-page-header'));
     header.triggerEventHandler('onSearch', 'new search');
     fixture.detectChanges();
     expect(component.searchWord()).toBe('new search');
-  });
-
-  it('should trigger handleSortChange from template', () => {
-    fixture.detectChanges();
-    const table = fixture.debugElement.query(By.css('app-data-table'));
-    const newSort = { orderBy: 'price', orderDirection: 'desc' as const };
-    table.triggerEventHandler('onSortChange', newSort);
-    fixture.detectChanges();
-    expect(component.sort()).toEqual(newSort);
   });
 
   it('should trigger handlePageChange from template', () => {
@@ -255,20 +254,21 @@ describe('ProductListPageComponent', () => {
     expect(component.page()).toBe(2);
   });
 
-  it('should trigger toggleFilter from template', () => {
-    fixture.detectChanges();
-    const header = fixture.debugElement.query(By.css('app-list-page-header'));
-    header.triggerEventHandler('onFilterClick', null);
-    fixture.detectChanges();
-    expect(component.isFilterOpen()).toBe(true);
-  });
-
   it('should trigger handlePageSizeChange from template', () => {
     fixture.detectChanges();
     const table = fixture.debugElement.query(By.css('app-data-table'));
     table.triggerEventHandler('onPageSizeChange', 50);
     fixture.detectChanges();
     expect(component.size()).toBe(50);
+  });
+
+  it('should trigger handleSortChange from template', () => {
+    fixture.detectChanges();
+    const table = fixture.debugElement.query(By.css('app-data-table'));
+    const newSort = { orderBy: 'price', orderDirection: 'desc' as const };
+    table.triggerEventHandler('onSortChange', newSort);
+    fixture.detectChanges();
+    expect(component.sort()).toEqual(newSort);
   });
 
   it('should toggle filter drawer when onClose triggered from filters component', async () => {

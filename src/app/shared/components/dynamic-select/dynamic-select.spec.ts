@@ -197,4 +197,50 @@ describe('DynamicSelectComponent', () => {
     });
     expect(component.displayValue()).toBe('2 selecionados');
   });
+
+  it('should render check icon when item is selected', async () => {
+    component.state.set({
+      ...component.state(),
+      selectedItems: [mockItems[0]]
+    });
+    component.isOpen.set(true);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    
+    // Check if the check icon is present in the dropdown
+    const checkIcons = fixture.debugElement.queryAll(By.css('lucide-angular'));
+    expect(checkIcons.length).toBeGreaterThan(0);
+  });
+
+  it('should handle handleRemove in multiple mode', () => {
+    const spy = vi.spyOn(component, 'onChange');
+    component.multiple = true;
+    component.handleRemove(mockItems[0]);
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should display error message when provided', () => {
+    // Reset component to set input before first detectChanges
+    fixture = TestBed.createComponent(DynamicSelectComponent);
+    component = fixture.componentInstance;
+    component.fetchPage = fetchPageMock;
+    component.fetchByIds = fetchByIdsMock;
+    component.getOptionLabel = getOptionLabel;
+    component.getOptionValue = getOptionValue;
+    
+    component.error = 'Invalid field';
+    fixture.detectChanges();
+    const errorMsg = fixture.nativeElement.querySelector('p.text-red-500');
+    expect(errorMsg.textContent).toContain('Invalid field');
+  });
+
+  it('should cleanup observer on destroy', () => {
+    component.isOpen.set(true);
+    fixture.detectChanges();
+    const disconnectSpy = vi.spyOn((component as any).observer, 'disconnect');
+    
+    component.ngOnDestroy();
+    expect(disconnectSpy).toHaveBeenCalled();
+    expect((component as any).observer).toBeUndefined();
+  });
 });

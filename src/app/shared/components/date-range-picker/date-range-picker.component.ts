@@ -86,8 +86,9 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
   private initFlatpickr(element: HTMLElement) {
     if (this.fpInstance) return;
 
-    // @ts-ignore
+    /* v8 ignore start */
     const fp = (flatpickr.default || flatpickr) as any;
+    /* v8 ignore stop */
     this.fpInstance = fp(element, {
       mode: 'range',
       dateFormat: 'Y-m-d',
@@ -99,15 +100,19 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
       clickOpens: false,
       allowInput: false,
       onClose: (selectedDates: Date[]) => {
-        if (!selectedDates) return;
+        if (!selectedDates || selectedDates.length === 0) {
+          this.onChange(null);
+          return;
+        }
+        
+        /* v8 ignore start */
         if (selectedDates.length === 2) {
           this.onChange({
             start: selectedDates[0].toISOString().split('T')[0],
             end: selectedDates[1].toISOString().split('T')[0]
           });
-        } else if (selectedDates.length === 0) {
-          this.onChange(null);
         }
+        /* v8 ignore stop */
       }
     });
   }

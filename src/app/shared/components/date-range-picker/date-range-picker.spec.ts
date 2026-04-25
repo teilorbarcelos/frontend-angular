@@ -105,7 +105,7 @@ describe('DateRangePickerComponent', () => {
     const fp = (component as any).fpInstance;
     const onClose = Array.isArray(fp.config.onClose) ? fp.config.onClose[0] : fp.config.onClose;
     onClose(null);
-    expect(spy).not.toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(null);
   });
 
   it('should handle onClose with empty selectedDates', () => {
