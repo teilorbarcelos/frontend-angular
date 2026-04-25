@@ -9,7 +9,6 @@ import { SelectComponent } from '../../../shared/components/select/select.compon
   selector: 'app-user-filters',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FilterDrawerComponent, DateRangePickerComponent, SelectComponent],
-  /* v8 ignore start */
   template: `
     <app-filter-drawer
       [isOpen]="isOpen"
@@ -38,7 +37,6 @@ import { SelectComponent } from '../../../shared/components/select/select.compon
       </form>
     </app-filter-drawer>
   `,
-  /* v8 ignore stop */
 })
 export class UserFiltersComponent implements OnInit, OnChanges {
   private fb = inject(FormBuilder);

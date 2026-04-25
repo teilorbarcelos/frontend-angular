@@ -1,4 +1,5 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { UserFiltersComponent } from './user-filters.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { vi } from 'vitest';
@@ -78,5 +79,26 @@ describe('UserFiltersComponent', () => {
     component.filterForm.patchValue({ createdAt: { start: '2023-01-01', end: '2023-01-02' } });
     component.handleApply();
     expect(spy).toHaveBeenCalledWith({ createdAt_start: '2023-01-01', createdAt_end: '2023-01-02' });
+  });
+
+  it('should trigger handleClear from template', () => {
+    const spy = vi.spyOn(component, 'handleClear');
+    const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
+    drawer.onClear.emit();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should trigger handleApply from template', () => {
+    const spy = vi.spyOn(component, 'handleApply');
+    const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
+    drawer.onApply.emit();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should trigger onClose from template', () => {
+    const spy = vi.spyOn(component.onClose, 'emit');
+    const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
+    drawer.onClose.emit();
+    expect(spy).toHaveBeenCalled();
   });
 });

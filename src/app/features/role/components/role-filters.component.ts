@@ -8,7 +8,6 @@ import { DateRangePickerComponent } from '../../../shared/components/date-range-
   selector: 'app-role-filters',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FilterDrawerComponent, DateRangePickerComponent],
-  /* v8 ignore start */
   template: `
     <app-filter-drawer
       [isOpen]="isOpen"
@@ -40,7 +39,6 @@ import { DateRangePickerComponent } from '../../../shared/components/date-range-
       </form>
     </app-filter-drawer>
   `,
-  /* v8 ignore stop */
 })
 export class RoleFiltersComponent implements OnInit, OnChanges {
   private fb = inject(FormBuilder);
