@@ -219,4 +219,16 @@ describe('DataTableComponent', () => {
     ageHeader.click();
     expect(spy).toHaveBeenCalledTimes(3);
   });
+
+  it('should go to asc when clicking a column that has undefined direction but is already the orderBy', async () => {
+    const spy = vi.spyOn(component.onSortChange, 'emit');
+    const nameHeader = fixture.nativeElement.querySelectorAll('th')[0];
+    
+    fixture.componentRef.setInput('sorting', { orderBy: 'name', orderDirection: undefined });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    
+    nameHeader.click();
+    expect(spy).toHaveBeenCalledWith({ orderBy: 'name', orderDirection: 'asc' });
+  });
 });
