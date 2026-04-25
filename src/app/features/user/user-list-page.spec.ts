@@ -164,5 +164,10 @@ describe('UserListPageComponent', () => {
     const compiled = fixture.nativeElement;
     expect(compiled.querySelector('app-status-badge')).toBeTruthy();
     expect(compiled.querySelector('app-data-table-actions')).toBeTruthy();
+    
+    // Check for generic column (name)
+    const cells = compiled.querySelectorAll('td');
+    const hasName = Array.from(cells).some((cell: any) => cell.textContent.includes('John Doe'));
+    expect(hasName).toBe(true);
   });
 });

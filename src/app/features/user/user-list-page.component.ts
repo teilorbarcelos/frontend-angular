@@ -26,7 +26,6 @@ import { UserFiltersComponent } from './components/user-filters.component';
   host: {
     class: 'flex-1 flex flex-col min-h-0'
   },
-  /* v8 ignore start */
   template: `
     <app-list-page-header
       title="Usuários"
@@ -82,7 +81,6 @@ import { UserFiltersComponent } from './components/user-filters.component';
       </ng-template>
     </app-data-table>
   `,
-  /* v8 ignore stop */
 })
 export class UserListPageComponent {
   private userService = inject(UserService);

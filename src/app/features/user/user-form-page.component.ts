@@ -109,7 +109,6 @@ import { createFormPageController } from '../../core/utils/form-page.utils';
       </div>
     </div>
   `,
-  /* v8 ignore stop */
 })
 export class UserFormPageComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);

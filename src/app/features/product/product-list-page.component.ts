@@ -27,7 +27,6 @@ import { ProductFiltersComponent } from './components/product-filters.component'
   host: {
     class: 'flex-1 flex flex-col min-h-0'
   },
-  /* v8 ignore start */
   template: `
     <app-list-page-header
       title="Produtos"
@@ -85,7 +84,6 @@ import { ProductFiltersComponent } from './components/product-filters.component'
       </ng-template>
     </app-data-table>
   `,
-  /* v8 ignore stop */
 })
 export class ProductListPageComponent {
   private productService = inject(ProductService);

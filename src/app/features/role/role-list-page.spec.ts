@@ -182,4 +182,16 @@ describe('RoleListPageComponent', () => {
     actions.onDelete.emit('1');
     expect(mockRoleService.deleteRole).toHaveBeenCalled();
   });
+
+  it('should handle missing delete permission', async () => {
+    mockAuthService.hasPermission.mockReturnValue(false);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    
+    const actions = fixture.debugElement.query(By.css('app-data-table-actions'));
+    if (actions) {
+      expect(actions.componentInstance.showDelete).toBe(false);
+    }
+  });
 });

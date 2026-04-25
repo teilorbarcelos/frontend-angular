@@ -64,20 +64,31 @@ describe('RoleFormPageComponent', () => {
   it('should create and load features in creation mode', async () => {
     await component.ngOnInit();
     fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
 
     expect(component.isEditing()).toBe(false);
     expect(component.features()).toEqual(mockFeatures);
     expect(component.permissionsFormArray.length).toBe(1);
+    
+    // Check if form is rendered
+    const form = fixture.nativeElement.querySelector('form');
+    expect(form).toBeTruthy();
   });
 
   it('should load role in edit mode', async () => {
     routeParams.next({ id: '1' });
     await component.ngOnInit();
     fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
 
     expect(component.isEditing()).toBe(true);
     expect(component.roleForm.value.name).toBe('Admin');
     expect(component.permissionsFormArray.at(0).value.view).toBe(true);
+    
+    const h1 = fixture.nativeElement.querySelector('h1');
+    expect(h1.textContent).toContain('Editar Perfil');
   });
 
   it('should handle error loading features', async () => {

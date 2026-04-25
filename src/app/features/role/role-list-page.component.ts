@@ -26,7 +26,6 @@ import { RoleFiltersComponent } from './components/role-filters.component';
   host: {
     class: 'flex-1 flex flex-col min-h-0'
   },
-  /* v8 ignore start */
   template: `
     <app-list-page-header
       title="Perfis"
@@ -82,7 +81,6 @@ import { RoleFiltersComponent } from './components/role-filters.component';
       </ng-template>
     </app-data-table>
   `,
-  /* v8 ignore stop */
 })
 export class RoleListPageComponent {
   private roleService = inject(RoleService);

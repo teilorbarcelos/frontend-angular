@@ -117,11 +117,21 @@ describe('UserFormPageComponent', () => {
     routeParams.next({ id: '1' });
     fixture.detectChanges();
     await fixture.whenStable();
+    fixture.detectChanges();
+
+    const passwordInput = fixture.debugElement.query(By.css('app-password-input'));
+    expect(passwordInput.componentInstance.placeholder).toBe('Deixe em branco para manter a atual');
 
     component.userForm.patchValue({ name: 'Updated' });
     await component.onSubmit();
     expect(mockUserService.updateUser).toHaveBeenCalled();
     expect(mockToastService.success).toHaveBeenCalled();
+  });
+
+  it('should show correct placeholder in creation mode', () => {
+    fixture.detectChanges();
+    const passwordInput = fixture.debugElement.query(By.css('app-password-input'));
+    expect(passwordInput.componentInstance.placeholder).toBe('Senha de acesso');
   });
 
   it('should handle submit error', async () => {

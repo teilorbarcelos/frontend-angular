@@ -200,6 +200,30 @@ describe('ProductListPageComponent', () => {
     // Check if data table actions are present (for 'id' column)
     const actions = compiled.querySelector('app-data-table-actions');
     expect(actions).toBeTruthy();
+
+    // Check for generic column (name)
+    const cells = compiled.querySelectorAll('td');
+    const hasName = Array.from(cells).some((cell: any) => cell.textContent.includes('P1'));
+    expect(hasName).toBe(true);
+
+    // Check for price column
+    const hasPrice = Array.from(cells).some((cell: any) => cell.textContent.includes('$ 10.00'));
+    expect(hasPrice).toBe(true);
+  });
+
+  it('should render 0.00 for null price', async () => {
+    const productsWithNullPrice = [
+      { id: '2', name: 'P2', sku: 'S2', category: 'C2', price: null, stock: 10, active: true }
+    ];
+    mockProductService.getProducts.mockReturnValue(of({ items: productsWithNullPrice, total: 1 }));
+    
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    
+    const cells = fixture.nativeElement.querySelectorAll('td');
+    const hasNullPrice = Array.from(cells).some((cell: any) => cell.textContent.includes('$ 0.00'));
+    expect(hasNullPrice).toBe(true);
   });
 
   it('should trigger toggleFilter from template', () => {
