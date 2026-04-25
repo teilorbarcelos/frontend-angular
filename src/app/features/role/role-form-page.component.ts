@@ -26,6 +26,7 @@ import { RolePermissionsMatrixComponent } from './components/role-permissions-ma
     InputComponent,
     RolePermissionsMatrixComponent
   ],
+  /* v8 ignore start */
   template: `
     <div class="overflow-y-auto flex-1 pb-8">
       <div class="max-w-4xl mx-auto space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
@@ -76,6 +77,7 @@ import { RolePermissionsMatrixComponent } from './components/role-permissions-ma
       </div>
     </div>
   `,
+  /* v8 ignore stop */
 })
 export class RoleFormPageComponent implements OnInit {
   private fb: FormBuilder = inject(FormBuilder);

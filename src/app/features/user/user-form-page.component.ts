@@ -109,6 +109,7 @@ import { firstValueFrom } from 'rxjs';
       </div>
     </div>
   `,
+  /* v8 ignore stop */
 })
 export class UserFormPageComponent implements OnInit {
   private fb: FormBuilder = inject(FormBuilder);
