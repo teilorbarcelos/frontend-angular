@@ -91,6 +91,10 @@ describe('FormPageUtils', () => {
       price.markAsTouched();
       price.setErrors({ min: true });
       expect(ctrl.getError('price')).toBe('Valor inválido');
+
+      // Generic error to cover the false branches of previous ifs
+      price.setErrors({ other: true });
+      expect(ctrl.getError('price')).toBeNull();
     });
   });
 
@@ -160,6 +164,15 @@ describe('FormPageUtils', () => {
       const ctrl = createFormPageController(config);
       ctrl.init();
       ctrl.destroy();
+    });
+  });
+
+  it('should return early in loadData if fetch is not provided', async () => {
+    config.fetch = undefined;
+    await TestBed.runInInjectionContext(async () => {
+      const ctrl = createFormPageController(config);
+      await ctrl.loadData('123');
+      expect(ctrl.isLoading()).toBe(false);
     });
   });
 });
