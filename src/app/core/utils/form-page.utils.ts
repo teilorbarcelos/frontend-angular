@@ -4,15 +4,15 @@ import { FormGroup } from '@angular/forms';
 import { Observable, firstValueFrom, Subscription } from 'rxjs';
 import { ToastService } from '../services/toast.service';
 
-export interface FormPageConfig<T, D = any> {
+export interface FormPageConfig<T, D = unknown> {
   feature: string;
   baseRoute: string;
   form: FormGroup;
   fetch?: (id: string) => Observable<T>;
-  create: (data: D) => Observable<any>;
-  update: (id: string, data: D) => Observable<any>;
+  create: (data: D) => Observable<unknown>;
+  update: (id: string, data: D) => Observable<unknown>;
   onLoadSuccess?: (data: T) => void;
-  onBeforeSave?: (data: any) => D | null | undefined;
+  onBeforeSave?: (data: unknown) => D | null | undefined;
   messages?: {
     createSuccess?: string;
     updateSuccess?: string;
@@ -21,7 +21,7 @@ export interface FormPageConfig<T, D = any> {
   };
 }
 
-export function createFormPageController<T, D = any>(config: FormPageConfig<T, D>) {
+export function createFormPageController<T, D = unknown>(config: FormPageConfig<T, D>) {
   const router = inject(Router);
   const route = inject(ActivatedRoute);
   const toastService = inject(ToastService);
@@ -34,7 +34,7 @@ export function createFormPageController<T, D = any>(config: FormPageConfig<T, D
   let routeSub: Subscription | null = null;
 
   function init() {
-    routeSub = route.params.subscribe(params => {
+    routeSub = route.params.subscribe((params) => {
       const routeId = params['id'];
       if (routeId && routeId !== 'new') {
         id.set(routeId);
@@ -56,11 +56,13 @@ export function createFormPageController<T, D = any>(config: FormPageConfig<T, D
       if (config.onLoadSuccess) {
         config.onLoadSuccess(data);
       } else {
-        config.form.patchValue(data as any);
+        config.form.patchValue(data as Record<string, unknown>);
       }
     } catch (error) {
       console.error(`Error loading ${config.feature}`, error);
-      toastService.error(config.messages?.loadError || `Erro ao carregar os dados do ${config.feature}.`);
+      toastService.error(
+        config.messages?.loadError || `Erro ao carregar os dados do ${config.feature}.`,
+      );
       router.navigate([config.baseRoute]);
     } finally {
       isLoading.set(false);
@@ -84,11 +86,11 @@ export function createFormPageController<T, D = any>(config: FormPageConfig<T, D
     }
 
     let data = config.form.value;
-    
+
     if (config.onBeforeSave) {
       const transformed = config.onBeforeSave(data);
       if (transformed === null || transformed === undefined) {
-         return; // Logic in hook handled errors or cancellation
+        return; // Logic in hook handled errors or cancellation
       }
       data = transformed;
     }
@@ -97,15 +99,23 @@ export function createFormPageController<T, D = any>(config: FormPageConfig<T, D
     try {
       if (isEditing()) {
         await firstValueFrom(config.update(id()!, data));
-        toastService.success(config.messages?.updateSuccess || `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} atualizado com sucesso!`);
+        toastService.success(
+          config.messages?.updateSuccess ||
+            `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} atualizado com sucesso!`,
+        );
       } else {
         await firstValueFrom(config.create(data));
-        toastService.success(config.messages?.createSuccess || `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} cadastrado com sucesso!`);
+        toastService.success(
+          config.messages?.createSuccess ||
+            `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} cadastrado com sucesso!`,
+        );
       }
       router.navigate([config.baseRoute]);
     } catch (error) {
       console.error(`Error saving ${config.feature}`, error);
-      toastService.error(config.messages?.saveError || `Ocorreu um erro ao salvar o ${config.feature}.`);
+      toastService.error(
+        config.messages?.saveError || `Ocorreu um erro ao salvar o ${config.feature}.`,
+      );
     } finally {
       isPending.set(false);
     }
@@ -125,6 +135,6 @@ export function createFormPageController<T, D = any>(config: FormPageConfig<T, D
     getError,
     onSubmit,
     cancel,
-    loadData
+    loadData,
   };
 }

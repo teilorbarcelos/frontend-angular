@@ -30,24 +30,30 @@ export class ProductService {
     size?: number;
     searchWord?: string;
     searchFields?: string[];
-    filters?: Record<string, any>;
+    filters?: Record<string, unknown>;
     sort?: { orderBy?: string; orderDirection?: string };
     all?: boolean;
   }): Observable<ProductResponse> {
     const { page = 0, size = 25, searchWord, searchFields, filters = {}, sort, all } = options;
-    
-    let params: any = { page, size, ...filters };
+
+    const params: Record<string, string | number | boolean> = {
+      page,
+      size,
+      ...(filters as Record<string, string | number | boolean>),
+    };
 
     if (searchWord) {
-      params.searchWord = searchWord;
+      params['searchWord'] = searchWord;
       if (searchFields) {
-        params.searchFields = searchFields.join(',');
+        params['searchFields'] = searchFields.join(',');
       }
     }
 
     if (sort?.orderBy) {
-      params.orderBy = sort.orderBy;
-      params.orderDirection = sort.orderDirection;
+      params['orderBy'] = sort.orderBy;
+      if (sort.orderDirection) {
+        params['orderDirection'] = sort.orderDirection;
+      }
     }
 
     const url = all ? `${this.baseUrl}/all` : this.baseUrl;
@@ -66,11 +72,11 @@ export class ProductService {
     return this.http.put<Product>(`${this.baseUrl}/${id}`, data);
   }
 
-  deleteProduct(id: string): Observable<any> {
+  deleteProduct(id: string): Observable<unknown> {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
 
-  toggleStatus(id: string, active: boolean): Observable<any> {
+  toggleStatus(id: string, active: boolean): Observable<unknown> {
     return this.http.patch(`${this.baseUrl}/${id}/status`, { active });
   }
 }

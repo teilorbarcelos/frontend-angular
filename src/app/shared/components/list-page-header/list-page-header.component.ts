@@ -12,14 +12,14 @@ import { SearchInputComponent } from '../search-input/search-input.component';
     <div class="flex items-center justify-between mb-6 shrink-0">
       <h1 class="text-2xl font-bold text-gray-900">{{ title }}</h1>
       <div class="flex items-center space-x-4">
-        <app-search-input 
-          (onSearch)="onSearch.emit($event)" 
+        <app-search-input
+          (searched)="searched.emit($event)"
           class="w-80"
           [placeholder]="searchPlaceholder"
         ></app-search-input>
-        <app-button 
-          variant="secondary" 
-          (onClick)="onFilterClick.emit()"
+        <app-button
+          variant="secondary"
+          (btnClick)="filterClick.emit()"
           [className]="filterCount > 0 ? 'border-indigo-500 text-indigo-600 bg-indigo-50' : ''"
         >
           <lucide-angular [img]="FilterIcon" class="w-4 h-4 mr-2"></lucide-angular>
@@ -31,7 +31,7 @@ import { SearchInputComponent } from '../search-input/search-input.component';
           }
         </app-button>
         @if (showCreate) {
-          <app-button (onClick)="onCreateClick.emit()">
+          <app-button (btnClick)="createClick.emit()">
             <lucide-angular [img]="PlusIcon" class="w-4 h-4 mr-2"></lucide-angular>
             {{ createLabel }}
           </app-button>
@@ -47,9 +47,9 @@ export class ListPageHeaderComponent {
   @Input() searchPlaceholder = 'Search...';
   @Input() showCreate = false;
 
-  @Output() onSearch = new EventEmitter<string>();
-  @Output() onFilterClick = new EventEmitter<void>();
-  @Output() onCreateClick = new EventEmitter<void>();
+  @Output() searched = new EventEmitter<string>();
+  @Output() filterClick = new EventEmitter<void>();
+  @Output() createClick = new EventEmitter<void>();
 
   readonly PlusIcon = Plus;
   readonly FilterIcon = Filter;

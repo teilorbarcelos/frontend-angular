@@ -1,13 +1,7 @@
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { 
-  FormBuilder, 
-  FormGroup, 
-  FormArray,
-  ReactiveFormsModule, 
-  Validators 
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RoleService, Role, Feature, RoleFeature } from './role.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
@@ -20,23 +14,23 @@ import { RolePermissionsMatrixComponent } from './components/role-permissions-ma
   selector: 'app-role-form-page',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterModule, 
-    ReactiveFormsModule, 
-    ButtonComponent, 
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    ButtonComponent,
     InputComponent,
-    RolePermissionsMatrixComponent
+    RolePermissionsMatrixComponent,
   ],
   template: `
     <div class="overflow-y-auto flex-1 pb-8">
-      <div class="max-w-4xl mx-auto space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div
+        class="max-w-4xl mx-auto space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200"
+      >
         <div class="flex items-center justify-between border-b border-gray-200 pb-4">
           <h1 class="text-xl font-bold text-gray-900">
             {{ isEditing() ? 'Editar Perfil' : 'Novo Perfil' }}
           </h1>
-          <app-button variant="ghost" (onClick)="cancel()">
-            Cancelar
-          </app-button>
+          <app-button variant="ghost" (onClick)="cancel()"> Cancelar </app-button>
         </div>
 
         @if ((isEditing() && isLoadingRole()) || isLoadingFeatures()) {
@@ -50,7 +44,7 @@ import { RolePermissionsMatrixComponent } from './components/role-permissions-ma
                 placeholder="Ex: Administrador"
                 [error]="getError('name')"
               ></app-input>
-              
+
               <app-input
                 label="Descrição"
                 formControlName="description"
@@ -69,7 +63,9 @@ import { RolePermissionsMatrixComponent } from './components/role-permissions-ma
                 Cancelar
               </app-button>
               <app-button type="submit" [disabled]="isPending()">
-                {{ isPending() ? 'Salvando...' : (isEditing() ? 'Atualizar Perfil' : 'Salvar Perfil') }}
+                {{
+                  isPending() ? 'Salvando...' : isEditing() ? 'Atualizar Perfil' : 'Salvar Perfil'
+                }}
               </app-button>
             </div>
           </form>
@@ -92,7 +88,10 @@ export class RoleFormPageComponent implements OnInit, OnDestroy {
   features = signal<Feature[]>([]);
   isLoadingFeatures = signal(false);
 
-  private formCtrl = createFormPageController<Role>({
+  private formCtrl = createFormPageController<
+    Role,
+    { name: string; description: string; permissions: RoleFeature[] }
+  >({
     feature: 'perfil',
     baseRoute: '/roles',
     form: this.roleForm,
@@ -105,7 +104,11 @@ export class RoleFormPageComponent implements OnInit, OnDestroy {
         description: role.description,
       });
       this.initializePermissions(role.RoleFeature);
-    }
+    },
+    onBeforeSave: (data) => {
+      const typedData = data as { name: string; description: string; permissions: RoleFeature[] };
+      return typedData;
+    },
   });
 
   id = this.formCtrl.id;
@@ -124,7 +127,7 @@ export class RoleFormPageComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     await this.loadFeatures();
     this.formCtrl.init();
-    
+
     if (!this.isEditing()) {
       this.initializePermissions();
     }
@@ -149,17 +152,19 @@ export class RoleFormPageComponent implements OnInit, OnDestroy {
 
   initializePermissions(existingPermissions: RoleFeature[] = []) {
     this.permissionsFormArray.clear();
-    
-    this.features().forEach(feature => {
-      const existing = existingPermissions.find(p => p.id_feature === feature.id);
-      
-      this.permissionsFormArray.push(this.fb.group({
-        id_feature: [feature.id],
-        view: [existing?.view ?? false],
-        create: [existing?.create ?? false],
-        delete: [existing?.delete ?? false],
-        activate: [existing?.activate ?? false],
-      }));
+
+    this.features().forEach((feature) => {
+      const existing = existingPermissions.find((p) => p.id_feature === feature.id);
+
+      this.permissionsFormArray.push(
+        this.fb.group({
+          id_feature: [feature.id],
+          view: [existing?.view ?? false],
+          create: [existing?.create ?? false],
+          delete: [existing?.delete ?? false],
+          activate: [existing?.activate ?? false],
+        }),
+      );
     });
   }
 }

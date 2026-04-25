@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-import { RoleService, Role } from './role.service';
+import { RoleService } from './role.service';
 import { firstValueFrom } from 'rxjs';
 
 describe('RoleService', () => {
@@ -10,11 +10,7 @@ describe('RoleService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        RoleService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [RoleService, provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(RoleService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -25,21 +21,24 @@ describe('RoleService', () => {
   });
 
   it('getRoles calls correct endpoint with all options', async () => {
-    const promise = firstValueFrom(service.getRoles({
-      all: true,
-      searchWord: 'test',
-      searchFields: ['name'],
-      sort: { orderBy: 'name', orderDirection: 'desc' },
-      filters: { active: true }
-    }));
+    const promise = firstValueFrom(
+      service.getRoles({
+        all: true,
+        searchWord: 'test',
+        searchFields: ['name'],
+        sort: { orderBy: 'name', orderDirection: 'desc' },
+        filters: { active: true },
+      }),
+    );
 
-    const req = httpMock.expectOne(request => 
-      request.url === '/v1/role/all' && 
-      request.params.get('searchWord') === 'test' &&
-      request.params.get('searchFields') === 'name' &&
-      request.params.get('orderBy') === 'name' &&
-      request.params.get('orderDirection') === 'desc' &&
-      request.params.get('active') === 'true'
+    const req = httpMock.expectOne(
+      (request) =>
+        request.url === '/v1/role/all' &&
+        request.params.get('searchWord') === 'test' &&
+        request.params.get('searchFields') === 'name' &&
+        request.params.get('orderBy') === 'name' &&
+        request.params.get('orderDirection') === 'desc' &&
+        request.params.get('active') === 'true',
     );
     expect(req.request.method).toBe('GET');
     req.flush({ items: [], total: 0 });
@@ -99,10 +98,11 @@ describe('RoleService', () => {
   it('getRoles handles searchWord without searchFields', async () => {
     const promise = firstValueFrom(service.getRoles({ searchWord: 'test' }));
 
-    const req = httpMock.expectOne(request => 
-      request.url === '/v1/role' && 
-      request.params.get('searchWord') === 'test' &&
-      !request.params.has('searchFields')
+    const req = httpMock.expectOne(
+      (request) =>
+        request.url === '/v1/role' &&
+        request.params.get('searchWord') === 'test' &&
+        !request.params.has('searchFields'),
     );
     req.flush({ items: [], total: 0 });
     await promise;
@@ -111,9 +111,8 @@ describe('RoleService', () => {
   it('getRoles handles sorting without orderBy', async () => {
     const promise = firstValueFrom(service.getRoles({ sort: {} }));
 
-    const req = httpMock.expectOne(request => 
-      request.url === '/v1/role' && 
-      !request.params.has('orderBy')
+    const req = httpMock.expectOne(
+      (request) => request.url === '/v1/role' && !request.params.has('orderBy'),
     );
     req.flush({ items: [], total: 0 });
     await promise;
@@ -143,12 +142,13 @@ describe('RoleService', () => {
   it('mageSelect helper works correctly', async () => {
     const promise = service.mageSelect(0, 'test', { searchFields: ['name'] });
 
-    const req = httpMock.expectOne(request => 
-      request.url === '/v1/role' && 
-      request.params.get('searchWord') === 'test' &&
-      request.params.get('searchFields') === 'name' &&
-      request.params.get('page') === '0' &&
-      request.params.get('size') === '10'
+    const req = httpMock.expectOne(
+      (request) =>
+        request.url === '/v1/role' &&
+        request.params.get('searchWord') === 'test' &&
+        request.params.get('searchFields') === 'name' &&
+        request.params.get('page') === '0' &&
+        request.params.get('size') === '10',
     );
     req.flush({ items: [{ id: '1', name: 'Admin' }], total: 1 });
 

@@ -23,7 +23,7 @@ import { createFormPageController } from '../../core/utils/form-page.utils';
           <h1 class="text-xl font-bold text-gray-900">
             \{{ isEditing() ? 'Editar {{capitalize nameLower}}' : 'Novo {{capitalize nameLower}}' }}
           </h1>
-          <app-button variant="ghost" (onClick)="cancel()">
+          <app-button variant="ghost" (btnClick)="cancel()">
             Cancelar
           </app-button>
         </div>
@@ -40,7 +40,7 @@ import { createFormPageController } from '../../core/utils/form-page.utils';
             ></app-input>
 
             <div class="pt-4 flex justify-end space-x-3">
-              <app-button type="button" variant="secondary" (onClick)="cancel()">
+              <app-button type="button" variant="secondary" (btnClick)="cancel()">
                 Cancelar
               </app-button>
               <app-button type="submit" [disabled]="isPending()">
@@ -61,7 +61,7 @@ export class {{capitalize nameLower}}FormPageComponent implements OnInit, OnDest
     name: ['', [Validators.required]],
   });
 
-  private formCtrl = createFormPageController<{{capitalize nameLower}}>({
+  private formCtrl = createFormPageController<{{capitalize nameLower}}, Omit<{{capitalize nameLower}}, 'id' | 'active'>>({
     feature: '{{nameLower}}',
     baseRoute: '/{{nameLower}}s',
     form: this.{{nameLower}}Form,

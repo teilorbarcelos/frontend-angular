@@ -32,18 +32,18 @@ import { {{capitalize nameLower}}FiltersComponent } from './components/{{nameLow
       title="{{capitalize nameLower}}s"
       [showCreate]="permissions().canCreate"
       createLabel="Novo {{capitalize nameLower}}"
-      (onSearch)="handleSearch($event)"
-      (onFilterClick)="toggleFilter()"
+      (searched)="handleSearch($event)"
+      (filterClick)="toggleFilter()"
       [filterCount]="filterCount()"
-      (onCreateClick)="navigateToCreate()"
+      (createClick)="navigateToCreate()"
       class="shrink-0"
     ></app-list-page-header>
 
     <app-{{nameLower}}-filters
       [isOpen]="isFilterOpen()"
       [initialValues]="filters()"
-      (onClose)="toggleFilter()"
-      (onFilter)="handleFilter($event)"
+      (closed)="toggleFilter()"
+      (filtered)="handleFilter($event)"
     ></app-{{nameLower}}-filters>
 
     <app-data-table
@@ -54,24 +54,24 @@ import { {{capitalize nameLower}}FiltersComponent } from './components/{{nameLow
       [currentPage]="page()"
       [pageSize]="size()"
       [sorting]="sort()"
-      (onPageChange)="handlePageChange($event)"
-      (onPageSizeChange)="handlePageSizeChange($event)"
-      (onSortChange)="handleSortChange($event)"
+      (pageChange)="handlePageChange($event)"
+      (pageSizeChange)="handlePageSizeChange($event)"
+      (sortChange)="handleSortChange($event)"
     >
       <ng-template #cellTemplate let-item let-column="column" let-value="value">
         @if (column.keyItem === 'active') {
           <app-status-badge 
             [active]="!!value" 
             feature="{{nameLower}}" 
-            (onClick)="toggleStatus(item.id, !item.active)"
+            (btnClick)="toggleStatus(item.id, !item.active)"
           ></app-status-badge>
         } @else if (column.keyItem === 'id') {
           <app-data-table-actions 
             [id]="item.id" 
             [showEdit]="permissions().canUpdate"
             [showDelete]="permissions().canDelete"
-            (onEdit)="navigateToEdit($event)" 
-            (onDelete)="deleteItem($event)"
+            (edit)="navigateToEdit($event)" 
+            (delete)="deleteItem($event)"
             deleteMessage="Tem certeza que deseja excluir este item?"
           ></app-data-table-actions>
         } @else {
@@ -108,7 +108,7 @@ export class {{capitalize nameLower}}ListPageComponent {
   filterCount = this.list.filterCount;
 
   handleSearch(value: string) { this.list.handleSearch(value); }
-  handleFilter(filters: any) { this.list.handleFilter(filters); }
+  handleFilter(filters: Record<string, unknown>) { this.list.handleFilter(filters); }
   handlePageChange(page: number) { this.list.handlePageChange(page); }
   handlePageSizeChange(size: number) { this.list.handlePageSizeChange(size); }
   handleSortChange(sort: any) { this.list.handleSortChange(sort); }

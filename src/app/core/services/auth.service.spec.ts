@@ -9,13 +9,9 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        AuthService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [AuthService, provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
-    
+
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
     localStorage.clear();
@@ -27,15 +23,15 @@ describe('AuthService', () => {
 
   it('provides authentication status when token exists', async () => {
     localStorage.setItem('token', 'valid-token');
-    const user: User = { 
-      id: '1', 
-      name: 'John', 
+    const user: User = {
+      id: '1',
+      name: 'John',
       email: 'john@test.com',
-      role: { id: '1', name: 'Admin', permissions: [] } 
+      role: { id: '1', name: 'Admin', permissions: [] },
     };
 
     const promise = service.checkAuth();
-    
+
     const req = httpMock.expectOne('/v1/auth/me');
     expect(req.request.method).toBe('GET');
     req.flush({ user });
@@ -47,11 +43,11 @@ describe('AuthService', () => {
   });
 
   it('handles login and logout', () => {
-    const user: User = { 
-      id: '1', 
-      name: 'John', 
+    const user: User = {
+      id: '1',
+      name: 'John',
       email: 'john@test.com',
-      role: { id: '1', name: 'Admin', permissions: [] } 
+      role: { id: '1', name: 'Admin', permissions: [] },
     };
 
     service.login('token123', 'refresh123', user);
@@ -68,9 +64,9 @@ describe('AuthService', () => {
 
   it('handles API error by clearing tokens', async () => {
     localStorage.setItem('token', 'invalid-token');
-    
+
     const promise = service.checkAuth();
-    
+
     const req = httpMock.expectOne('/v1/auth/me');
     req.error(new ProgressEvent('error'));
 
@@ -83,31 +79,33 @@ describe('AuthService', () => {
   it('handles checkAuth without token by logging out', async () => {
     localStorage.removeItem('token');
     const spy = vi.spyOn(service, 'logout');
-    
+
     await service.checkAuth();
-    
+
     expect(spy).toHaveBeenCalled();
   });
 
   it('handles hydrate failure with invalid JSON', () => {
     localStorage.setItem('token', 'valid-token');
     localStorage.setItem('user', 'invalid-json');
-    
+
     // Create new instance to trigger constructor/hydrate
-    const newService = TestBed.runInInjectionContext(() => new AuthService());
+    TestBed.runInInjectionContext(() => new AuthService());
     expect(localStorage.getItem('token')).toBeNull();
   });
 
   it('checks permissions correctly', () => {
-    const user: User = { 
-      id: '1', 
-      name: 'John', 
+    const user: User = {
+      id: '1',
+      name: 'John',
       email: 'john@test.com',
-      role: { 
+      role: {
         id: '1',
         name: 'Admin',
-        permissions: [{ feature: 'users', view: true, create: true, delete: false, activate: true }] 
-      } 
+        permissions: [
+          { feature: 'users', view: true, create: true, delete: false, activate: true },
+        ],
+      },
     };
 
     service.login('token123', 'refresh123', user);

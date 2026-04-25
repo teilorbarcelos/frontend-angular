@@ -1,6 +1,6 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { InputComponent } from './input.component';
-import { ReactiveFormsModule, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ReactiveFormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 describe('InputComponent', () => {
   let component: InputComponent;
@@ -24,7 +24,7 @@ describe('InputComponent', () => {
     fixture.componentRef.setInput('label', 'Test Label');
     fixture.componentRef.setInput('id', 'test-input');
     fixture.detectChanges();
-    
+
     const label = fixture.nativeElement.querySelector('label');
     expect(label.textContent).toContain('Test Label');
     expect(label.getAttribute('for')).toBe('test-input');
@@ -33,7 +33,7 @@ describe('InputComponent', () => {
   it('should show error message when provided', () => {
     fixture.componentRef.setInput('error', 'Required field');
     fixture.detectChanges();
-    
+
     const error = fixture.nativeElement.querySelector('p');
     expect(error.textContent).toContain('Required field');
     const input = fixture.nativeElement.querySelector('input');
@@ -48,7 +48,7 @@ describe('InputComponent', () => {
   it('should call onChange when input value changes', () => {
     const onChange = vi.fn();
     component.registerOnChange(onChange);
-    
+
     component.control.setValue('Typed Value');
     expect(onChange).toHaveBeenCalledWith('Typed Value');
   });
@@ -56,7 +56,7 @@ describe('InputComponent', () => {
   it('should handle disabled state', () => {
     component.setDisabledState(true);
     expect(component.control.disabled).toBe(true);
-    
+
     component.setDisabledState(false);
     expect(component.control.enabled).toBe(true);
   });

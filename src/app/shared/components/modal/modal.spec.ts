@@ -33,36 +33,36 @@ describe('ModalComponent', () => {
     expect(modalContent).toBeTruthy();
   });
 
-  it('should emit onClose when overlay is clicked', () => {
-    const spy = vi.spyOn(component.onClose, 'emit');
+  it('should emit closed when overlay is clicked', () => {
+    const spy = vi.spyOn(component.closed, 'emit');
     fixture.componentRef.setInput('isOpen', true);
     fixture.detectChanges();
-    
+
     const overlay = fixture.nativeElement.querySelector('.absolute.inset-0');
     overlay.click();
-    
+
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should emit onClose when close button is clicked', () => {
-    const spy = vi.spyOn(component.onClose, 'emit');
+  it('should emit closed when close button is clicked', () => {
+    const spy = vi.spyOn(component.closed, 'emit');
     fixture.componentRef.setInput('isOpen', true);
     fixture.detectChanges();
-    
+
     const closeBtn = fixture.nativeElement.querySelector('button');
     closeBtn.click();
-    
+
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should not emit onClose when modal content is clicked', () => {
-    const spy = vi.spyOn(component.onClose, 'emit');
+  it('should not emit closed when modal content is clicked', () => {
+    const spy = vi.spyOn(component.closed, 'emit');
     fixture.componentRef.setInput('isOpen', true);
     fixture.detectChanges();
-    
+
     const modalContent = fixture.nativeElement.querySelector('.bg-white');
     modalContent.click();
-    
+
     expect(spy).not.toHaveBeenCalled();
   });
 });

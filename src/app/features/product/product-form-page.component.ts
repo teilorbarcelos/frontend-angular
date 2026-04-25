@@ -1,12 +1,7 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { 
-  FormBuilder, 
-  FormGroup, 
-  ReactiveFormsModule, 
-  Validators 
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductService, Product } from './product.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
@@ -18,18 +13,20 @@ import { createFormPageController } from '../../core/utils/form-page.utils';
   imports: [CommonModule, RouterModule, ReactiveFormsModule, ButtonComponent, InputComponent],
   template: `
     <div class="overflow-y-auto flex-1 pb-8">
-      <div class="max-w-2xl mx-auto space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div
+        class="max-w-2xl mx-auto space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200"
+      >
         <div class="flex items-center justify-between border-b border-gray-200 pb-4">
           <h1 class="text-xl font-bold text-gray-900">
             {{ isEditing() ? 'Editar Produto' : 'Novo Produto' }}
           </h1>
-          <app-button variant="ghost" (onClick)="cancel()">
-            Cancelar
-          </app-button>
+          <app-button variant="ghost" (onClick)="cancel()"> Cancelar </app-button>
         </div>
 
         @if (isEditing() && isLoadingProduct()) {
-          <div class="p-8 text-center text-gray-500 text-sm italic">Carregando dados do produto...</div>
+          <div class="p-8 text-center text-gray-500 text-sm italic">
+            Carregando dados do produto...
+          </div>
         } @else {
           <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="space-y-8">
             <app-input
@@ -38,7 +35,7 @@ import { createFormPageController } from '../../core/utils/form-page.utils';
               placeholder="Ex: Teclado Mecânico RGB"
               [error]="getError('name')"
             ></app-input>
-            
+
             <div class="grid grid-cols-2 gap-6">
               <app-input
                 label="SKU"
@@ -86,7 +83,9 @@ import { createFormPageController } from '../../core/utils/form-page.utils';
                 Cancelar
               </app-button>
               <app-button type="submit" [disabled]="isPending()">
-                {{ isPending() ? 'Salvando...' : (isEditing() ? 'Atualizar Produto' : 'Salvar Produto') }}
+                {{
+                  isPending() ? 'Salvando...' : isEditing() ? 'Atualizar Produto' : 'Salvar Produto'
+                }}
               </app-button>
             </div>
           </form>
@@ -108,13 +107,17 @@ export class ProductFormPageComponent implements OnInit, OnDestroy {
     description: ['', [Validators.required]],
   });
 
-  private formCtrl = createFormPageController<Product>({
+  private formCtrl = createFormPageController<Product, Omit<Product, 'id' | 'active'>>({
     feature: 'produto',
     baseRoute: '/products',
     form: this.productForm,
     fetch: (id) => this.productService.getProduct(id),
     create: (data) => this.productService.createProduct(data),
     update: (id, data) => this.productService.updateProduct(id, data),
+    onBeforeSave: (data) => {
+      const typedData = data as Omit<Product, 'id' | 'active'>;
+      return typedData;
+    },
   });
 
   id = this.formCtrl.id;

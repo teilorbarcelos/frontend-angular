@@ -13,9 +13,9 @@ describe('App', () => {
       imports: [App, HttpClientTestingModule, RouterTestingModule],
       providers: [AuthService],
     }).compileComponents();
-    
+
     authService = TestBed.inject(AuthService);
-    vi.spyOn(authService, 'checkAuth').mockImplementation(async () => {});
+    vi.spyOn(authService, 'checkAuth').mockImplementation(() => Promise.resolve());
   });
 
   it('should create the app', () => {

@@ -1,15 +1,15 @@
 import { Component, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { 
-  ControlValueAccessor, 
-  NG_VALUE_ACCESSOR, 
-  ReactiveFormsModule, 
-  FormControl 
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  FormControl,
 } from '@angular/forms';
 
 export interface SelectOption {
   label: string;
-  value: any;
+  value: unknown;
 }
 
 @Component({
@@ -17,7 +17,7 @@ export interface SelectOption {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   host: {
-    class: 'block'
+    class: 'block',
   },
   template: `
     <div class="space-y-1.5">
@@ -29,6 +29,7 @@ export interface SelectOption {
       <select
         [id]="id"
         [formControl]="control"
+        (blur)="onTouched()"
         class="block w-full h-10 px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
         [class.border-red-300]="error"
       >
@@ -62,19 +63,27 @@ export class SelectComponent implements ControlValueAccessor {
 
   control = new FormControl();
 
-  writeValue(value: any): void {
+  onTouched: () => void = () => {
+    // ControlValueAccessor method
+  };
+
+  writeValue(value: unknown): void {
     this.control.setValue(value, { emitEvent: false });
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: unknown) => void): void {
     this.control.valueChanges.subscribe(fn);
   }
 
-  registerOnTouched(fn: any): void {
-    // Implement if needed
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
   }
 
   setDisabledState(isDisabled: boolean): void {
-    isDisabled ? this.control.disable() : this.control.enable();
+    if (isDisabled) {
+      this.control.disable();
+    } else {
+      this.control.enable();
+    }
   }
 }

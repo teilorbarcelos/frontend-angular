@@ -35,16 +35,16 @@ describe('DateRangePickerComponent', () => {
   it('should call onChange when dates are selected', () => {
     const spy = vi.fn();
     component.registerOnChange(spy);
-    
+
     // Simulate flatpickr onClose
     const selectedDates = [new Date('2023-01-01'), new Date('2023-01-10')];
     const fp = (component as any).fpInstance;
     const onClose = Array.isArray(fp.config.onClose) ? fp.config.onClose[0] : fp.config.onClose;
     onClose(selectedDates);
-    
+
     expect(spy).toHaveBeenCalledWith({
       start: '2023-01-01',
-      end: '2023-01-10'
+      end: '2023-01-10',
     });
   });
 
@@ -60,7 +60,7 @@ describe('DateRangePickerComponent', () => {
   it('should handle setDisabledState', () => {
     component.setDisabledState(true);
     expect(component.isDisabled).toBe(true);
-    
+
     component.setDisabledState(false);
     expect(component.isDisabled).toBe(false);
   });
@@ -135,7 +135,7 @@ describe('DateRangePickerComponent', () => {
   });
 
   it('should cover boilerplate methods', () => {
-    component.onChange();
+    component.onChange(null);
     component.onTouched();
     expect(true).toBe(true);
   });

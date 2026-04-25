@@ -19,9 +19,7 @@ describe('DataTableActionsComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [DataTableActionsComponent],
-      providers: [
-        { provide: ActionMenuService, useValue: mockMenuService }
-      ],
+      providers: [{ provide: ActionMenuService, useValue: mockMenuService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DataTableActionsComponent);
@@ -37,7 +35,7 @@ describe('DataTableActionsComponent', () => {
   it('should render single button if only one action', () => {
     fixture.componentRef.setInput('showDelete', false);
     fixture.detectChanges();
-    
+
     const buttons = fixture.nativeElement.querySelectorAll('button');
     expect(buttons.length).toBe(1);
     expect(buttons[0].getAttribute('title')).toBe('Editar');
@@ -47,7 +45,7 @@ describe('DataTableActionsComponent', () => {
     fixture.componentRef.setInput('showEdit', true);
     fixture.componentRef.setInput('showDelete', true);
     fixture.detectChanges();
-    
+
     const buttons = fixture.nativeElement.querySelectorAll('button');
     expect(buttons.length).toBe(1); // The "More" button
     expect(buttons[0].getAttribute('title')).toBe('Mais ações');
@@ -57,10 +55,10 @@ describe('DataTableActionsComponent', () => {
     fixture.componentRef.setInput('showEdit', true);
     fixture.componentRef.setInput('showDelete', true);
     fixture.detectChanges();
-    
+
     const moreBtn = fixture.nativeElement.querySelector('button');
     moreBtn.click();
-    
+
     expect(mockMenuService.open).toHaveBeenCalled();
   });
 
@@ -68,18 +66,18 @@ describe('DataTableActionsComponent', () => {
     fixture.componentRef.setInput('showEdit', false);
     fixture.componentRef.setInput('showDelete', true);
     fixture.detectChanges();
-    
+
     const deleteBtn = fixture.nativeElement.querySelector('button');
     deleteBtn.click();
-    
+
     expect(component.isDeleteDialogOpen()).toBe(true);
   });
 
-  it('should emit onDelete when confirm delete', () => {
-    const spy = vi.spyOn(component.onDelete, 'emit');
+  it('should emit delete when confirm delete', () => {
+    const spy = vi.spyOn(component.delete, 'emit');
     component.isDeleteDialogOpen.set(true);
     fixture.detectChanges();
-    
+
     component.confirmDelete();
     expect(spy).toHaveBeenCalledWith('123');
     expect(component.isDeleteDialogOpen()).toBe(false);
@@ -93,23 +91,23 @@ describe('DataTableActionsComponent', () => {
     };
     fixture.componentRef.setInput('extraActions', [mockExtraAction]);
     fixture.detectChanges();
-    
+
     // Trigger the onClick through the actions getter
     const actions = component.actions;
-    const extraAction = actions.find(a => a.label === 'Extra');
+    const extraAction = actions.find((a) => a.label === 'Extra');
     extraAction?.onClick();
-    
+
     expect(mockExtraAction.onClick).toHaveBeenCalledWith('123');
   });
 
   it('should close menu if toggleDropdown is called when open', () => {
     mockMenuService.state.set({ context: component }); // Simulate menu open
     fixture.detectChanges();
-    
+
     const event = new MouseEvent('click');
     const template = {} as any;
     component.toggleDropdown(event, template);
-    
+
     expect(mockMenuService.close).toHaveBeenCalled();
   });
 
@@ -118,22 +116,22 @@ describe('DataTableActionsComponent', () => {
       onClick: vi.fn(),
     };
     component.handleAction(mockAction);
-    
+
     expect(mockAction.onClick).toHaveBeenCalled();
     expect(mockMenuService.close).toHaveBeenCalled();
   });
 
   it('should handle edit action through actions getter', () => {
-    const spy = vi.spyOn(component.onEdit, 'emit');
+    const spy = vi.spyOn(component.edit, 'emit');
     const actions = component.actions;
-    const editAction = actions.find(a => a.label === 'Editar');
+    const editAction = actions.find((a) => a.label === 'Editar');
     editAction?.onClick();
     expect(spy).toHaveBeenCalledWith('123');
   });
 
   it('should handle delete action through actions getter', () => {
     const actions = component.actions;
-    const deleteAction = actions.find(a => a.label === 'Excluir');
+    const deleteAction = actions.find((a) => a.label === 'Excluir');
     deleteAction?.onClick();
     expect(component.isDeleteDialogOpen()).toBe(true);
   });
@@ -146,27 +144,27 @@ describe('DataTableActionsComponent', () => {
     const template = component.dropdownTemplate;
     const view = template.createEmbeddedView({});
     view.detectChanges();
-    
+
     // Create a container to render the template view
     const container = document.createElement('div');
-    view.rootNodes.forEach(node => container.appendChild(node));
-    
+    view.rootNodes.forEach((node) => container.appendChild(node));
+
     const buttons = container.querySelectorAll('button');
     expect(buttons.length).toBe(2);
     expect(buttons[0].textContent).toContain('Editar');
     expect(buttons[1].textContent).toContain('Excluir');
-    
+
     // Trigger handleAction from one of the buttons
     const spy = vi.spyOn(component, 'handleAction');
     buttons[0].click();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should close delete modal when onClose triggered from modal', () => {
+  it('should close delete modal when closed triggered from modal', () => {
     component.isDeleteDialogOpen.set(true);
     fixture.detectChanges();
     const modal = fixture.debugElement.query(By.css('app-modal')).componentInstance;
-    modal.onClose.emit();
+    modal.closed.emit();
     expect(component.isDeleteDialogOpen()).toBe(false);
   });
 
@@ -174,9 +172,11 @@ describe('DataTableActionsComponent', () => {
     const spy = vi.spyOn(component, 'confirmDelete');
     component.isDeleteDialogOpen.set(true);
     fixture.detectChanges();
-    
+
     const buttons = fixture.nativeElement.querySelectorAll('button');
-    const deleteBtn = Array.from(buttons).find((b: any) => b.textContent.includes('Excluir')) as HTMLButtonElement;
+    const deleteBtn = Array.from(buttons).find((b: any) =>
+      b.textContent.includes('Excluir'),
+    ) as HTMLButtonElement;
     deleteBtn?.click();
     expect(spy).toHaveBeenCalled();
   });
@@ -184,15 +184,17 @@ describe('DataTableActionsComponent', () => {
   it('should close delete modal when clicking cancel button', () => {
     component.isDeleteDialogOpen.set(true);
     fixture.detectChanges();
-    
+
     const buttons = fixture.nativeElement.querySelectorAll('button');
-    const cancelBtn = Array.from(buttons).find((b: any) => b.textContent.includes('Cancelar')) as HTMLButtonElement;
+    const cancelBtn = Array.from(buttons).find((b: any) =>
+      b.textContent.includes('Cancelar'),
+    ) as HTMLButtonElement;
     cancelBtn?.click();
     expect(component.isDeleteDialogOpen()).toBe(false);
   });
 
   it('should call all action onClick handlers', () => {
-    component.actions.forEach(action => {
+    component.actions.forEach((action) => {
       const spy = vi.spyOn(action, 'onClick');
       action.onClick();
       expect(spy).toHaveBeenCalled();
@@ -206,8 +208,12 @@ describe('DataTableActionsComponent', () => {
     expect(component.actions.length).toBeGreaterThanOrEqual(1);
 
     // cover all onClick handlers
-    component.actions.forEach(action => {
-      try { action.onClick(); } catch(e) {}
+    component.actions.forEach((action) => {
+      try {
+        action.onClick();
+      } catch {
+        /* ignore error */
+      }
     });
   });
 });

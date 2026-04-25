@@ -48,8 +48,8 @@ describe('ButtonComponent', () => {
     expect(btn.disabled).toBe(true);
   });
 
-  it('should emit onClick event', () => {
-    const spy = vi.spyOn(component.onClick, 'emit');
+  it('should emit btnClick event', () => {
+    const spy = vi.spyOn(component.btnClick, 'emit');
     const btn = fixture.nativeElement.querySelector('button');
     btn.click();
     expect(spy).toHaveBeenCalled();

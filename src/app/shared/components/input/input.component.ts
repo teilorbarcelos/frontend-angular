@@ -1,10 +1,10 @@
 import { Component, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { 
-  ControlValueAccessor, 
-  NG_VALUE_ACCESSOR, 
-  ReactiveFormsModule, 
-  FormControl 
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  FormControl,
 } from '@angular/forms';
 
 @Component({
@@ -12,7 +12,7 @@ import {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   host: {
-    class: 'block'
+    class: 'block',
   },
   template: `
     <div class="space-y-1.5">
@@ -58,21 +58,28 @@ export class InputComponent implements ControlValueAccessor {
 
   control = new FormControl();
 
-  onTouched: any = () => {};
+  // ControlValueAccessor methods
+  onTouched: () => void = () => {
+    // ControlValueAccessor method
+  };
 
-  writeValue(value: any): void {
+  writeValue(value: unknown): void {
     this.control.setValue(value, { emitEvent: false });
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: unknown) => void): void {
     this.control.valueChanges.subscribe(fn);
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
   setDisabledState(isDisabled: boolean): void {
-    isDisabled ? this.control.disable() : this.control.enable();
+    if (isDisabled) {
+      this.control.disable();
+    } else {
+      this.control.enable();
+    }
   }
 }

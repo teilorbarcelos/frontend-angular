@@ -33,8 +33,8 @@ describe('StatusBadgeComponent', () => {
     expect(el.textContent).toContain('Inativo');
   });
 
-  it('should emit onClick when clicked', () => {
-    const spy = vi.spyOn(component.onClick, 'emit');
+  it('should emit btnClick when clicked', () => {
+    const spy = vi.spyOn(component.btnClick, 'emit');
     const el = fixture.nativeElement.querySelector('button');
     el?.click();
     expect(spy).toHaveBeenCalled();

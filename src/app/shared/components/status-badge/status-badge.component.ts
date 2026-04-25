@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <button
-      (click)="onClick.emit()"
+      (click)="btnClick.emit()"
       [class]="classes"
       [disabled]="disabled"
       class="px-2 py-1 text-xs font-semibold rounded-full transition-colors focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
@@ -20,7 +20,7 @@ export class StatusBadgeComponent {
   @Input() active = false;
   @Input() feature = '';
   @Input() disabled = false;
-  @Output() onClick = new EventEmitter<void>();
+  @Output() btnClick = new EventEmitter<void>();
 
   get classes() {
     return this.active

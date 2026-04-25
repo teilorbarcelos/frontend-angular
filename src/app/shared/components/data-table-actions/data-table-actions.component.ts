@@ -1,12 +1,21 @@
-import { Component, Input, Output, EventEmitter, signal, ElementRef, inject, ViewChild, TemplateRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  signal,
+  inject,
+  ViewChild,
+  TemplateRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Edit2, Trash2, MoreHorizontal, X } from 'lucide-angular';
+import { LucideAngularModule, Edit2, Trash2, MoreHorizontal } from 'lucide-angular';
 import { ModalComponent } from '../modal/modal.component';
 import { ActionMenuService } from '../../../core/services/action-menu.service';
 
 export interface ExtraAction {
   label: string;
-  icon: any;
+  icon: unknown;
   onClick: (id: string) => void;
   className?: string;
 }
@@ -50,19 +59,19 @@ export interface ExtraAction {
       }
 
       <!-- Modal de Confirmação -->
-      <app-modal [isOpen]="isDeleteDialogOpen()" (onClose)="isDeleteDialogOpen.set(false)">
+      <app-modal [isOpen]="isDeleteDialogOpen()" (closed)="isDeleteDialogOpen.set(false)">
         <span title>Confirmar Exclusão</span>
         <p class="text-sm text-gray-600 leading-relaxed">
           {{ deleteMessage }}
         </p>
         <div footer class="flex items-center space-x-3">
-          <button 
+          <button
             (click)="isDeleteDialogOpen.set(false)"
             class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
           >
             Cancelar
           </button>
-          <button 
+          <button
             (click)="confirmDelete()"
             class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm transition-colors cursor-pointer"
           >
@@ -74,7 +83,7 @@ export interface ExtraAction {
   `,
 })
 export class DataTableActionsComponent {
-  @ViewChild('dropdownTemplate') dropdownTemplate!: TemplateRef<any>;
+  @ViewChild('dropdownTemplate') dropdownTemplate!: TemplateRef<unknown>;
   private menuService = inject(ActionMenuService);
 
   isDeleteDialogOpen = signal(false);
@@ -86,12 +95,12 @@ export class DataTableActionsComponent {
 
   get actions() {
     const list = [];
-    
+
     if (this.showEdit) {
       list.push({
         label: 'Editar',
         icon: Edit2,
-        onClick: () => this.onEdit.emit(this.id)
+        onClick: () => this.edit.emit(this.id),
       });
     }
 
@@ -100,16 +109,16 @@ export class DataTableActionsComponent {
         label: 'Excluir',
         icon: Trash2,
         className: 'text-red-600 hover:bg-red-50',
-        onClick: () => this.isDeleteDialogOpen.set(true)
+        onClick: () => this.isDeleteDialogOpen.set(true),
       });
     }
 
-    this.extraActions.forEach(action => {
+    this.extraActions.forEach((action) => {
       list.push({
         label: action.label,
         icon: action.icon,
         className: action.className,
-        onClick: () => action.onClick(this.id)
+        onClick: () => action.onClick(this.id),
       });
     });
 
@@ -122,12 +131,12 @@ export class DataTableActionsComponent {
   @Input() deleteMessage = 'Tem certeza que deseja excluir este registro?';
   @Input() extraActions: ExtraAction[] = [];
 
-  @Output() onEdit = new EventEmitter<string>();
-  @Output() onDelete = new EventEmitter<string>();
+  @Output() edit = new EventEmitter<string>();
+  @Output() delete = new EventEmitter<string>();
 
-  toggleDropdown(event: MouseEvent, template: TemplateRef<any>) {
+  toggleDropdown(event: MouseEvent, template: TemplateRef<unknown>) {
     event.stopPropagation();
-    
+
     if (this.isMenuOpen()) {
       this.menuService.close();
     } else {
@@ -135,13 +144,13 @@ export class DataTableActionsComponent {
     }
   }
 
-  handleAction(action: any) {
+  handleAction(action: { onClick: () => void }) {
     action.onClick();
     this.menuService.close();
   }
 
   confirmDelete() {
-    this.onDelete.emit(this.id);
+    this.delete.emit(this.id);
     this.isDeleteDialogOpen.set(false);
   }
 }

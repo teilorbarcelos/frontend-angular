@@ -35,23 +35,25 @@ export class UserService {
     all?: boolean;
   }): Observable<UserResponse> {
     const { page = 0, size = 25, searchWord, searchFields, filters = {}, sort, all } = options;
-    
-    const params: any = {
+
+    const params: Record<string, string | number | boolean> = {
       page,
       size,
-      ...filters,
+      ...(filters as Record<string, string | number | boolean>),
     };
 
     if (searchWord) {
-      params.searchWord = searchWord;
+      params['searchWord'] = searchWord;
       if (searchFields) {
-        params.searchFields = searchFields.join(',');
+        params['searchFields'] = searchFields.join(',');
       }
     }
 
     if (sort?.orderBy) {
-      params.orderBy = sort.orderBy;
-      params.orderDirection = sort.orderDirection;
+      params['orderBy'] = sort.orderBy;
+      if (sort.orderDirection) {
+        params['orderDirection'] = sort.orderDirection;
+      }
     }
 
     const url = all ? `${this.baseUrl}/all` : this.baseUrl;
@@ -62,19 +64,19 @@ export class UserService {
     return this.http.get<User>(`${this.baseUrl}/${id}`);
   }
 
-  createUser(data: Omit<User, 'id' | 'active'> & { password?: string }): Observable<any> {
-    return this.http.post(this.baseUrl, data);
+  createUser(data: Omit<User, 'id' | 'active'> & { password?: string }): Observable<User> {
+    return this.http.post<User>(this.baseUrl, data);
   }
 
-  updateUser(id: string, data: Partial<User> & { password?: string }): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${id}`, data);
+  updateUser(id: string, data: Partial<User> & { password?: string }): Observable<User> {
+    return this.http.put<User>(`${this.baseUrl}/${id}`, data);
   }
 
-  deleteUser(id: string): Observable<any> {
+  deleteUser(id: string): Observable<unknown> {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
 
-  toggleStatus(id: string, active: boolean): Observable<any> {
+  toggleStatus(id: string, active: boolean): Observable<unknown> {
     return this.http.patch(`${this.baseUrl}/${id}/status`, { active });
   }
 }

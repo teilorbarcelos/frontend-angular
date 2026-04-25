@@ -46,23 +46,25 @@ export class RoleService {
     all?: boolean;
   }): Observable<RoleResponse> {
     const { page = 0, size = 25, searchWord, searchFields, filters = {}, sort, all } = options;
-    
-    const params: any = {
+
+    const params: Record<string, string | number | boolean> = {
       page,
       size,
-      ...filters,
+      ...(filters as Record<string, string | number | boolean>),
     };
 
     if (searchWord) {
-      params.searchWord = searchWord;
+      params['searchWord'] = searchWord;
       if (searchFields) {
-        params.searchFields = searchFields.join(',');
+        params['searchFields'] = searchFields.join(',');
       }
     }
 
     if (sort?.orderBy) {
-      params.orderBy = sort.orderBy;
-      params.orderDirection = sort.orderDirection;
+      params['orderBy'] = sort.orderBy;
+      if (sort.orderDirection) {
+        params['orderDirection'] = sort.orderDirection;
+      }
     }
 
     const url = all ? `${this.baseUrl}/all` : this.baseUrl;
@@ -77,42 +79,51 @@ export class RoleService {
     return this.http.get<Feature[]>(`${this.baseUrl}/features`);
   }
 
-  createRole(data: { name: string; description: string; permissions: RoleFeature[] }): Observable<any> {
-    return this.http.post(this.baseUrl, data);
+  createRole(data: {
+    name: string;
+    description: string;
+    permissions: RoleFeature[];
+  }): Observable<Role> {
+    return this.http.post<Role>(this.baseUrl, data);
   }
 
-  updateRole(id: string, data: { name: string; description: string; permissions: RoleFeature[] }): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${id}`, data);
+  updateRole(
+    id: string,
+    data: { name: string; description: string; permissions: RoleFeature[] },
+  ): Observable<Role> {
+    return this.http.put<Role>(`${this.baseUrl}/${id}`, data);
   }
 
-  deleteRole(id: string): Observable<any> {
+  deleteRole(id: string): Observable<unknown> {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
 
-  toggleStatus(id: string, active: boolean): Observable<any> {
+  toggleStatus(id: string, active: boolean): Observable<unknown> {
     return this.http.patch(`${this.baseUrl}/${id}/status`, { active });
   }
 
   // DynamicSelect Helpers
   mageSelect = async (page: number, query: string, options: { searchFields?: string[] }) => {
     const size = 10;
-    const res = await firstValueFrom(this.getRoles({
-      page,
-      size,
-      searchWord: query,
-      searchFields: options.searchFields
-    }));
-    
+    const res = await firstValueFrom(
+      this.getRoles({
+        page,
+        size,
+        searchWord: query,
+        searchFields: options.searchFields,
+      }),
+    );
+
     return {
       items: res.items as Role[],
-      hasMore: (page + 1) * size < res.total
+      hasMore: (page + 1) * size < res.total,
     };
   };
 
   mageHydrate = async (ids: string[]): Promise<Role[]> => {
     if (!ids.length) return [];
     const roles = await Promise.all(
-      ids.map(id => firstValueFrom(this.getRole(id)).catch(() => null))
+      ids.map((id) => firstValueFrom(this.getRole(id)).catch(() => null)),
     );
     return roles.filter(Boolean) as Role[];
   };

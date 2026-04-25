@@ -1,17 +1,23 @@
-import { 
-  Component, 
-  Input, 
-  forwardRef, 
-  signal, 
-  viewChild, 
-  ElementRef, 
+import {
+  Component,
+  Input,
+  forwardRef,
+  signal,
+  viewChild,
+  ElementRef,
   OnDestroy,
+  OnInit,
   effect,
   inject,
-  HostListener
+  HostListener,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule, FormControl } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  FormControl,
+} from '@angular/forms';
 import { MageSelectEngine, MageSelectEngineState } from 'mage-select-data-engine';
 import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angular';
 
@@ -20,7 +26,7 @@ import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angul
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
   host: {
-    class: 'block'
+    class: 'block',
   },
   providers: [
     {
@@ -33,7 +39,7 @@ import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angul
   template: `
     <div class="space-y-2 relative">
       @if (label) {
-        <label class="text-sm font-medium text-gray-700">
+        <label [for]="labelId" class="text-sm font-medium text-gray-700">
           {{ label }}
         </label>
       }
@@ -41,7 +47,9 @@ import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angul
       <div class="relative">
         <button
           type="button"
+          [id]="labelId"
           (click)="toggleOpen()"
+          (keydown.enter)="toggleOpen()"
           [disabled]="isDisabled()"
           [class.border-red-500]="error"
           [class.opacity-50]="isDisabled()"
@@ -55,7 +63,7 @@ import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angul
         </button>
 
         @if (isOpen()) {
-          <div 
+          <div
             class="absolute z-50 mt-1 w-full bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden flex flex-col max-h-[300px]"
           >
             <div class="flex items-center border-b px-3 bg-white">
@@ -71,13 +79,17 @@ import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angul
 
             <div class="overflow-y-auto flex-1 py-1" #scrollContainer>
               @if (state().items.length === 0 && !state().isLoading) {
-                <div class="py-6 text-center text-sm text-gray-500">Nenhum resultado encontrado.</div>
+                <div class="py-6 text-center text-sm text-gray-500">
+                  Nenhum resultado encontrado.
+                </div>
               }
 
               @for (item of state().items; track getOptionValue(item)) {
                 @let isSelected = isItemSelected(item);
                 <div
+                  tabindex="0"
                   (click)="handleSelect(item)"
+                  (keydown.enter)="handleSelect(item)"
                   class="relative flex w-full cursor-pointer select-none items-center py-2 px-3 text-sm outline-none transition-colors"
                   [class.bg-indigo-50]="isSelected"
                   [class.text-indigo-900]="isSelected"
@@ -88,18 +100,23 @@ import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angul
                     {{ getOptionLabel(item) }}
                   </div>
                   @if (isSelected) {
-                    <lucide-angular [img]="CheckIcon" class="h-4 w-4 text-indigo-600 ml-2"></lucide-angular>
+                    <lucide-angular
+                      [img]="CheckIcon"
+                      class="h-4 w-4 text-indigo-600 ml-2"
+                    ></lucide-angular>
                   }
                 </div>
               }
 
               @if (state().isLoading) {
                 <div class="py-3 text-center flex items-center justify-center gap-2">
-                  <div class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-indigo-600 border-r-transparent"></div>
+                  <div
+                    class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-indigo-600 border-r-transparent"
+                  ></div>
                   <span class="text-sm text-gray-500">Carregando...</span>
                 </div>
               }
-              
+
               <div #observerTarget class="h-1 w-full"></div>
             </div>
           </div>
@@ -109,7 +126,9 @@ import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angul
       @if (multiple && state().selectedItems.length > 0) {
         <div class="flex flex-wrap gap-2 mt-2">
           @for (item of state().selectedItems; track getOptionValue(item)) {
-            <div class="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-medium rounded-md border border-indigo-100">
+            <div
+              class="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-medium rounded-md border border-indigo-100"
+            >
               {{ getOptionLabel(item) }}
               <button
                 type="button"
@@ -129,18 +148,26 @@ import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angul
     </div>
   `,
 })
-export class DynamicSelectComponent<T extends { id: string | number }> implements ControlValueAccessor, OnDestroy {
+export class DynamicSelectComponent<T extends { id: string | number }>
+  implements ControlValueAccessor, OnInit, OnDestroy
+{
   @Input() label?: string;
-  @Input() placeholder = "Selecione...";
+  @Input() placeholder = 'Selecione...';
   @Input() multiple = false;
   @Input() searchFields?: string[];
   @Input() startPage = 0;
   @Input() error?: string | null;
 
-  @Input({ required: true }) fetchPage!: (page: number, search: string, options: { searchFields?: string[]; signal?: AbortSignal }) => Promise<{ items: T[]; hasMore: boolean }>;
+  @Input({ required: true }) fetchPage!: (
+    page: number,
+    search: string,
+    options: { searchFields?: string[]; signal?: AbortSignal },
+  ) => Promise<{ items: T[]; hasMore: boolean }>;
   @Input({ required: true }) fetchByIds!: (ids: string[]) => Promise<T[]>;
   @Input({ required: true }) getOptionLabel!: (item: T) => string;
   @Input({ required: true }) getOptionValue!: (item: T) => string;
+
+  labelId = `dynamic-select-${Math.random().toString(36).slice(2, 9)}`;
 
   isOpen = signal(false);
   state = signal<MageSelectEngineState<T>>({
@@ -186,7 +213,7 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
       }
     });
 
-    this.searchControl.valueChanges.subscribe(val => {
+    this.searchControl.valueChanges.subscribe((val) => {
       this.engine.setSearch(val || '');
     });
   }
@@ -200,7 +227,7 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
       searchFields: this.searchFields,
     });
 
-    this.engine.subscribe((newState: any) => {
+    this.engine.subscribe((newState: MageSelectEngineState<T>) => {
       this.state.set(newState);
     });
   }
@@ -212,11 +239,14 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
   /* v8 ignore next 10: O IntersectionObserver não é disparado automaticamente em ambiente JSDOM/Vitest, sendo necessário mocks complexos que podem instabilizar os testes */
   private setupObserver(element: HTMLElement) {
     this.cleanupObserver();
-    this.observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && this.state().hasMore && !this.state().isLoading) {
-        this.engine.loadMore();
-      }
-    }, { threshold: 0.1 });
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && this.state().hasMore && !this.state().isLoading) {
+          this.engine.loadMore();
+        }
+      },
+      { threshold: 0.1 },
+    );
     this.observer.observe(element);
   }
 
@@ -229,7 +259,7 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
 
   toggleOpen() {
     if (this.isDisabled()) return;
-    this.isOpen.update(v => {
+    this.isOpen.update((v) => {
       const next = !v;
       if (!next) this.onTouched();
       return next;
@@ -240,14 +270,16 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
     const isInside = this.elRef.nativeElement.contains(target);
-    
+
     if (!isInside && this.isOpen()) {
       this.isOpen.set(false);
     }
   }
 
   isItemSelected(item: T): boolean {
-    return this.state().selectedItems.some((s: T) => this.getOptionValue(s) === this.getOptionValue(item));
+    return this.state().selectedItems.some(
+      (s: T) => this.getOptionValue(s) === this.getOptionValue(item),
+    );
   }
 
   handleSelect(item: T) {
@@ -282,21 +314,26 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
   isDisabled = signal(false);
 
   // ControlValueAccessor implementation
-  onChange: any = () => {};
-  onTouched: any = () => {};
+  // ControlValueAccessor methods
+  onChange: (value: unknown) => void = () => {
+    // ControlValueAccessor method
+  };
+  onTouched: () => void = () => {
+    // ControlValueAccessor method
+  };
 
-  writeValue(value: any): void {
+  writeValue(value: unknown): void {
     if (this.engine) {
-      const ids = Array.isArray(value) ? value : value ? [value] : [];
+      const ids = Array.isArray(value) ? value : value ? [String(value)] : [];
       this.engine.setValue(ids);
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: unknown) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

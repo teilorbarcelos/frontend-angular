@@ -34,8 +34,8 @@ describe('{{capitalize nameLower}}FiltersComponent', () => {
   });
 
   it('should handle clear', () => {
-    const filterSpy = vi.spyOn(component.onFilter, 'emit');
-    const closeSpy = vi.spyOn(component.onClose, 'emit');
+    const filterSpy = vi.spyOn(component.filtered, 'emit');
+    const closeSpy = vi.spyOn(component.closed, 'emit');
     
     component.handleClear();
     
@@ -45,8 +45,8 @@ describe('{{capitalize nameLower}}FiltersComponent', () => {
   });
 
   it('should handle apply', () => {
-    const filterSpy = vi.spyOn(component.onFilter, 'emit');
-    const closeSpy = vi.spyOn(component.onClose, 'emit');
+    const filterSpy = vi.spyOn(component.filtered, 'emit');
+    const closeSpy = vi.spyOn(component.closed, 'emit');
     
     component.filterForm.patchValue({
       active: 'true',
@@ -78,7 +78,7 @@ describe('{{capitalize nameLower}}FiltersComponent', () => {
   });
 
   it('should handle apply with empty values', () => {
-    const filterSpy = vi.spyOn(component.onFilter, 'emit');
+    const filterSpy = vi.spyOn(component.filtered, 'emit');
     component.filterForm.patchValue({
       active: '',
       createdAt: { start: '', end: '' }
@@ -104,21 +104,21 @@ describe('{{capitalize nameLower}}FiltersComponent', () => {
   it('should trigger handleClear from template', () => {
     const spy = vi.spyOn(component, 'handleClear');
     const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
-    drawer.onClear.emit();
+    drawer.cleared.emit();
     expect(spy).toHaveBeenCalled();
   });
 
   it('should trigger handleApply from template', () => {
     const spy = vi.spyOn(component, 'handleApply');
     const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
-    drawer.onApply.emit();
+    drawer.applied.emit();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should trigger onClose from template', () => {
-    const spy = vi.spyOn(component.onClose, 'emit');
+  it('should trigger closed from template', () => {
+    const spy = vi.spyOn(component.closed, 'emit');
     const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
-    drawer.onClose.emit();
+    drawer.closed.emit();
     expect(spy).toHaveBeenCalled();
   });
 });

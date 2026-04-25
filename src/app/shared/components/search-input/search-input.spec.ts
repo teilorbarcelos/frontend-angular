@@ -1,4 +1,4 @@
-import { TestBed, ComponentFixture, fakeAsync, tick, flush, discardPeriodicTasks } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { SearchInputComponent } from './search-input.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { vi } from 'vitest';
@@ -25,11 +25,11 @@ describe('SearchInputComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit onSearch after debounceTime', () => {
+  it('should emit searched after debounceTime', () => {
     vi.useFakeTimers();
-    const spy = vi.spyOn(component.onSearch, 'emit');
+    const spy = vi.spyOn(component.searched, 'emit');
     component.searchControl.setValue('test');
-    
+
     vi.advanceTimersByTime(300);
     expect(spy).toHaveBeenCalledWith('test');
     vi.useRealTimers();
@@ -37,11 +37,11 @@ describe('SearchInputComponent', () => {
 
   it('should not emit if value is same', () => {
     vi.useFakeTimers();
-    const spy = vi.spyOn(component.onSearch, 'emit');
+    const spy = vi.spyOn(component.searched, 'emit');
     component.searchControl.setValue('test');
     vi.advanceTimersByTime(300);
     expect(spy).toHaveBeenCalledTimes(1);
-    
+
     component.searchControl.setValue('test');
     vi.advanceTimersByTime(300);
     expect(spy).toHaveBeenCalledTimes(1);
@@ -50,10 +50,10 @@ describe('SearchInputComponent', () => {
 
   it('should emit empty string when cleared', () => {
     vi.useFakeTimers();
-    const spy = vi.spyOn(component.onSearch, 'emit');
+    const spy = vi.spyOn(component.searched, 'emit');
     component.searchControl.setValue('test');
     vi.advanceTimersByTime(300);
-    
+
     component.searchControl.setValue(null);
     vi.advanceTimersByTime(300);
     expect(spy).toHaveBeenCalledWith('');

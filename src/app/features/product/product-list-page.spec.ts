@@ -4,10 +4,9 @@ import { ProductListPageComponent } from './product-list-page.component';
 import { ProductService } from './product.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
-import { provideRouter, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
-import { signal } from '@angular/core';
 
 describe('ProductListPageComponent', () => {
   let component: ProductListPageComponent;
@@ -61,7 +60,7 @@ describe('ProductListPageComponent', () => {
   it('should create and load products', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
-    
+
     expect(component.products()).toEqual(mockProducts);
     expect(mockProductService.getProducts).toHaveBeenCalled();
   });
@@ -91,12 +90,14 @@ describe('ProductListPageComponent', () => {
     const header = fixture.nativeElement.querySelector('app-list-page-header');
     const buttons = header.querySelectorAll('button');
     // The filter button is the one with "Filtros" text
-    const filterBtn = Array.from(buttons).find((b: any) => b.textContent.includes('Filtros')) as HTMLButtonElement;
+    const filterBtn = Array.from(buttons).find((b: any) =>
+      b.textContent.includes('Filtros'),
+    ) as HTMLButtonElement;
     filterBtn.click();
     fixture.detectChanges();
     await fixture.whenStable();
     expect(component.isFilterOpen()).toBe(true);
-    
+
     filterBtn.click();
     fixture.detectChanges();
     await fixture.whenStable();
@@ -113,9 +114,9 @@ describe('ProductListPageComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    
+
     const actions = fixture.debugElement.query(By.css('app-data-table-actions')).componentInstance;
-    actions.onEdit.emit('1');
+    actions.edit.emit('1');
     expect(router.navigate).toHaveBeenCalledWith(['/products/update', '1']);
   });
 
@@ -123,17 +124,17 @@ describe('ProductListPageComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    
+
     const spy = vi.spyOn(component, 'deleteProduct');
     const actions = fixture.debugElement.query(By.css('app-data-table-actions')).componentInstance;
-    actions.onDelete.emit('1');
+    actions.delete.emit('1');
     expect(spy).toHaveBeenCalledWith('1');
   });
 
   it('should handle search from header', () => {
     fixture.detectChanges();
     const header = fixture.debugElement.query(By.css('app-list-page-header')).componentInstance;
-    header.onSearch.emit('test');
+    header.searched.emit('test');
     expect(component.searchWord()).toBe('test');
   });
 
@@ -190,13 +191,13 @@ describe('ProductListPageComponent', () => {
     fixture.detectChanges(); // Trigger effect to load products
     await fixture.whenStable();
     fixture.detectChanges(); // Render data in table
-    
+
     const compiled = fixture.nativeElement;
-    
+
     // Check if status badge is present (for 'active' column)
     const statusBadge = compiled.querySelector('app-status-badge');
     expect(statusBadge).toBeTruthy();
-    
+
     // Check if data table actions are present (for 'id' column)
     const actions = compiled.querySelector('app-data-table-actions');
     expect(actions).toBeTruthy();
@@ -213,14 +214,14 @@ describe('ProductListPageComponent', () => {
 
   it('should render 0.00 for null price', async () => {
     const productsWithNullPrice = [
-      { id: '2', name: 'P2', sku: 'S2', category: 'C2', price: null, stock: 10, active: true }
+      { id: '2', name: 'P2', sku: 'S2', category: 'C2', price: null, stock: 10, active: true },
     ];
     mockProductService.getProducts.mockReturnValue(of({ items: productsWithNullPrice, total: 1 }));
-    
+
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    
+
     const cells = fixture.nativeElement.querySelectorAll('td');
     const hasNullPrice = Array.from(cells).some((cell: any) => cell.textContent.includes('$ 0.00'));
     expect(hasNullPrice).toBe(true);
@@ -236,28 +237,20 @@ describe('ProductListPageComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should trigger handlePageSizeChange from template', () => {
-    fixture.detectChanges();
-    const table = fixture.debugElement.query(By.css('app-data-table'));
-    table.triggerEventHandler('onPageSizeChange', 50);
-    fixture.detectChanges();
-    expect(component.size()).toBe(50);
-  });
-
   it('should trigger toggleStatus from template', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    
+
     const statusBadge = fixture.debugElement.query(By.css('app-status-badge')).componentInstance;
-    statusBadge.onClick.emit();
+    statusBadge.btnClick.emit();
     expect(mockProductService.toggleStatus).toHaveBeenCalled();
   });
 
   it('should trigger toggleFilter from template', () => {
     fixture.detectChanges();
     const header = fixture.debugElement.query(By.css('app-list-page-header'));
-    header.triggerEventHandler('onFilterClick', null);
+    header.triggerEventHandler('filterClick', null);
     fixture.detectChanges();
     expect(component.isFilterOpen()).toBe(true);
   });
@@ -265,7 +258,7 @@ describe('ProductListPageComponent', () => {
   it('should trigger handleSearch from template', () => {
     fixture.detectChanges();
     const header = fixture.debugElement.query(By.css('app-list-page-header'));
-    header.triggerEventHandler('onSearch', 'new search');
+    header.triggerEventHandler('searched', 'new search');
     fixture.detectChanges();
     expect(component.searchWord()).toBe('new search');
   });
@@ -273,7 +266,7 @@ describe('ProductListPageComponent', () => {
   it('should trigger handlePageChange from template', () => {
     fixture.detectChanges();
     const table = fixture.debugElement.query(By.css('app-data-table'));
-    table.triggerEventHandler('onPageChange', 2);
+    table.triggerEventHandler('pageChange', 2);
     fixture.detectChanges();
     expect(component.page()).toBe(2);
   });
@@ -281,7 +274,7 @@ describe('ProductListPageComponent', () => {
   it('should trigger handlePageSizeChange from template', () => {
     fixture.detectChanges();
     const table = fixture.debugElement.query(By.css('app-data-table'));
-    table.triggerEventHandler('onPageSizeChange', 50);
+    table.triggerEventHandler('pageSizeChange', 50);
     fixture.detectChanges();
     expect(component.size()).toBe(50);
   });
@@ -290,7 +283,7 @@ describe('ProductListPageComponent', () => {
     fixture.detectChanges();
     const table = fixture.debugElement.query(By.css('app-data-table'));
     const newSort = { orderBy: 'price', orderDirection: 'desc' as const };
-    table.triggerEventHandler('onSortChange', newSort);
+    table.triggerEventHandler('sortChange', newSort);
     fixture.detectChanges();
     expect(component.sort()).toEqual(newSort);
   });
@@ -304,7 +297,7 @@ describe('ProductListPageComponent', () => {
     const filters = fixture.nativeElement.querySelector('app-product-filters');
     const closeBtn = filters.querySelector('button'); // The first button in FilterDrawer is usually close
     closeBtn?.click();
-    
+
     fixture.detectChanges();
     await fixture.whenStable();
     expect(component.isFilterOpen()).toBe(false);
@@ -317,14 +310,14 @@ describe('ProductListPageComponent', () => {
       if (action === 'delete') return true;
       return false;
     });
-    
+
     expect(component.permissions()).toEqual({ canCreate: true, canUpdate: true, canDelete: true });
   });
 
   it('should trigger onFilterClick from header component instance', () => {
     fixture.detectChanges();
     const header = fixture.debugElement.query(By.css('app-list-page-header')).componentInstance;
-    header.onFilterClick.emit();
+    header.filterClick.emit();
     fixture.detectChanges();
     expect(component.isFilterOpen()).toBe(true);
   });

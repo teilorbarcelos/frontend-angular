@@ -23,42 +23,46 @@ describe('ProductFiltersComponent', () => {
   });
 
   it('should initialize with initialValues', () => {
-    component.initialValues = { active: 'true', createdAt_start: '2023-01-01', createdAt_end: '2023-01-02' };
+    component.initialValues = {
+      active: 'true',
+      createdAt_start: '2023-01-01',
+      createdAt_end: '2023-01-02',
+    };
     (component as any).updateFormValues();
-    
+
     expect(component.filterForm.value.active).toBe('true');
     expect(component.filterForm.value.createdAt).toEqual({
       start: '2023-01-01',
-      end: '2023-01-02'
+      end: '2023-01-02',
     });
   });
 
   it('should handle clear', () => {
-    const filterSpy = vi.spyOn(component.onFilter, 'emit');
-    const closeSpy = vi.spyOn(component.onClose, 'emit');
-    
+    const filterSpy = vi.spyOn(component.filtered, 'emit');
+    const closeSpy = vi.spyOn(component.closed, 'emit');
+
     component.handleClear();
-    
+
     expect(component.filterForm.value.active).toBe('');
     expect(filterSpy).toHaveBeenCalledWith({});
     expect(closeSpy).toHaveBeenCalled();
   });
 
   it('should handle apply', () => {
-    const filterSpy = vi.spyOn(component.onFilter, 'emit');
-    const closeSpy = vi.spyOn(component.onClose, 'emit');
-    
+    const filterSpy = vi.spyOn(component.filtered, 'emit');
+    const closeSpy = vi.spyOn(component.closed, 'emit');
+
     component.filterForm.patchValue({
       active: 'true',
-      createdAt: { start: '2023-01-01', end: '2023-01-02' }
+      createdAt: { start: '2023-01-01', end: '2023-01-02' },
     });
-    
+
     component.handleApply();
-    
+
     expect(filterSpy).toHaveBeenCalledWith({
       active: 'true',
       createdAt_start: '2023-01-01',
-      createdAt_end: '2023-01-02'
+      createdAt_end: '2023-01-02',
     });
     expect(closeSpy).toHaveBeenCalled();
   });
@@ -71,17 +75,17 @@ describe('ProductFiltersComponent', () => {
         currentValue: { active: 'true' },
         previousValue: {},
         firstChange: false,
-        isFirstChange: () => false
-      }
+        isFirstChange: () => false,
+      },
     });
     expect(spy).toHaveBeenCalled();
   });
 
   it('should handle apply with empty values', () => {
-    const filterSpy = vi.spyOn(component.onFilter, 'emit');
+    const filterSpy = vi.spyOn(component.filtered, 'emit');
     component.filterForm.patchValue({
       active: '',
-      createdAt: { start: '', end: '' }
+      createdAt: { start: '', end: '' },
     });
     component.handleApply();
     expect(filterSpy).toHaveBeenCalledWith({});
@@ -95,8 +99,8 @@ describe('ProductFiltersComponent', () => {
         currentValue: null,
         previousValue: {},
         firstChange: false,
-        isFirstChange: () => false
-      }
+        isFirstChange: () => false,
+      },
     });
     expect(spy).not.toHaveBeenCalled();
   });
@@ -104,21 +108,21 @@ describe('ProductFiltersComponent', () => {
   it('should trigger handleClear from template', () => {
     const spy = vi.spyOn(component, 'handleClear');
     const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
-    drawer.onClear.emit();
+    drawer.cleared.emit();
     expect(spy).toHaveBeenCalled();
   });
 
   it('should trigger handleApply from template', () => {
     const spy = vi.spyOn(component, 'handleApply');
     const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
-    drawer.onApply.emit();
+    drawer.applied.emit();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should trigger onClose from template', () => {
-    const spy = vi.spyOn(component.onClose, 'emit');
+  it('should trigger closed from template', () => {
+    const spy = vi.spyOn(component.closed, 'emit');
     const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
-    drawer.onClose.emit();
+    drawer.closed.emit();
     expect(spy).toHaveBeenCalled();
   });
 });

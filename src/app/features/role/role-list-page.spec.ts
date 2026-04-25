@@ -57,7 +57,7 @@ describe('RoleListPageComponent', () => {
   it('should create and load roles', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
-    
+
     expect(component.roles()).toEqual(mockRoles);
     expect(mockRoleService.getRoles).toHaveBeenCalled();
   });
@@ -160,7 +160,7 @@ describe('RoleListPageComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    
+
     const compiled = fixture.nativeElement;
     expect(compiled.querySelector('app-status-badge')).toBeTruthy();
     expect(compiled.querySelector('app-data-table-actions')).toBeTruthy();
@@ -172,14 +172,14 @@ describe('RoleListPageComponent', () => {
     fixture.detectChanges();
 
     const statusBadge = fixture.debugElement.query(By.css('app-status-badge')).componentInstance;
-    statusBadge.onClick.emit();
+    statusBadge.btnClick.emit();
     expect(mockRoleService.toggleStatus).toHaveBeenCalled();
 
     const actions = fixture.debugElement.query(By.css('app-data-table-actions')).componentInstance;
-    actions.onEdit.emit('1');
+    actions.edit.emit('1');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/roles/update', '1']);
 
-    actions.onDelete.emit('1');
+    actions.delete.emit('1');
     expect(mockRoleService.deleteRole).toHaveBeenCalled();
   });
 
@@ -188,7 +188,7 @@ describe('RoleListPageComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    
+
     const actions = fixture.debugElement.query(By.css('app-data-table-actions'));
     if (actions) {
       expect(actions.componentInstance.showDelete).toBe(false);

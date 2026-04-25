@@ -1,12 +1,7 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { 
-  FormBuilder, 
-  FormGroup, 
-  ReactiveFormsModule, 
-  Validators 
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService, User } from './user.service';
 import { RoleService, Role } from '../role/role.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
@@ -20,24 +15,24 @@ import { createFormPageController } from '../../core/utils/form-page.utils';
   selector: 'app-user-form-page',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterModule, 
-    ReactiveFormsModule, 
-    ButtonComponent, 
-    InputComponent, 
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    ButtonComponent,
+    InputComponent,
     PasswordInputComponent,
-    DynamicSelectComponent
+    DynamicSelectComponent,
   ],
   template: `
     <div class="overflow-y-auto flex-1 pb-8">
-      <div class="max-w-2xl mx-auto space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div
+        class="max-w-2xl mx-auto space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200"
+      >
         <div class="flex items-center justify-between border-b border-gray-200 pb-4">
           <h1 class="text-xl font-bold text-gray-900">
             {{ isEditing() ? 'Editar Usuário' : 'Novo Usuário' }}
           </h1>
-          <app-button variant="ghost" (onClick)="cancel()">
-            Cancelar
-          </app-button>
+          <app-button variant="ghost" (btnClick)="cancel()"> Cancelar </app-button>
         </div>
 
         @if (isEditing() && isLoadingUser()) {
@@ -64,7 +59,9 @@ import { createFormPageController } from '../../core/utils/form-page.utils';
               label="Senha"
               formControlName="password"
               autocomplete="new-password"
-              [placeholder]="isEditing() ? 'Deixe em branco para manter a atual' : 'Senha de acesso'"
+              [placeholder]="
+                isEditing() ? 'Deixe em branco para manter a atual' : 'Senha de acesso'
+              "
               [error]="getError('password')"
             ></app-password-input>
 
@@ -97,11 +94,13 @@ import { createFormPageController } from '../../core/utils/form-page.utils';
             </div>
 
             <div class="pt-4 flex justify-end space-x-3">
-              <app-button type="button" variant="secondary" (onClick)="cancel()">
+              <app-button type="button" variant="secondary" (btnClick)="cancel()">
                 Cancelar
               </app-button>
               <app-button type="submit" [disabled]="isPending()">
-                {{ isPending() ? 'Salvando...' : (isEditing() ? 'Atualizar Usuário' : 'Salvar Usuário') }}
+                {{
+                  isPending() ? 'Salvando...' : isEditing() ? 'Atualizar Usuário' : 'Salvar Usuário'
+                }}
               </app-button>
             </div>
           </form>
@@ -125,7 +124,10 @@ export class UserFormPageComponent implements OnInit, OnDestroy {
     document: [''],
   });
 
-  private formCtrl = createFormPageController<User>({
+  private formCtrl = createFormPageController<
+    User,
+    Omit<User, 'id' | 'active'> & { password?: string }
+  >({
     feature: 'usuário',
     baseRoute: '/users',
     form: this.userForm,
@@ -143,14 +145,18 @@ export class UserFormPageComponent implements OnInit, OnDestroy {
       });
     },
     onBeforeSave: (data) => {
-      if (!this.isEditing() && !data.password) {
-        this.toastService.error('Senha é obrigatória para novos usuários');
+      const typedData = data as Omit<User, 'id' | 'active'> & { password?: string };
+
+      if (!this.isEditing() && !typedData.password) {
+        this.toastService.error('A senha é obrigatória para novos usuários.');
         return null;
       }
-      const finalData = { ...data };
-      if (!finalData.password) delete finalData.password;
+      const finalData = { ...typedData };
+      if (this.isEditing() && !finalData.password) {
+        delete finalData.password;
+      }
       return finalData;
-    }
+    },
   });
 
   id = this.formCtrl.id;

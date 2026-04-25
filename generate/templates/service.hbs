@@ -26,24 +26,30 @@ export class {{capitalize nameLower}}Service {
     size?: number;
     searchWord?: string;
     searchFields?: string[];
-    filters?: Record<string, any>;
+    filters?: Record<string, unknown>;
     sort?: { orderBy?: string; orderDirection?: string };
     all?: boolean;
   }): Observable<{{capitalize nameLower}}Response> {
     const { page = 0, size = 25, searchWord, searchFields, filters = {}, sort, all } = options;
     
-    let params: any = { page, size, ...filters };
+    const params: Record<string, string | number | boolean> = { 
+      page: page.toString(), 
+      size: size.toString(), 
+      ...filters as Record<string, string | number | boolean> 
+    };
 
     if (searchWord) {
-      params.searchWord = searchWord;
+      params['searchWord'] = searchWord;
       if (searchFields) {
-        params.searchFields = searchFields.join(',');
+        params['searchFields'] = searchFields.join(',');
       }
     }
 
     if (sort?.orderBy) {
-      params.orderBy = sort.orderBy;
-      params.orderDirection = sort.orderDirection;
+      params['orderBy'] = sort.orderBy;
+      if (sort.orderDirection) {
+        params['orderDirection'] = sort.orderDirection;
+      }
     }
 
     const url = all ? `${this.baseUrl}/all` : this.baseUrl;
@@ -62,11 +68,11 @@ export class {{capitalize nameLower}}Service {
     return this.http.put<{{capitalize nameLower}}>(`${this.baseUrl}/${id}`, data);
   }
 
-  delete{{capitalize nameLower}}(id: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`);
+  delete{{capitalize nameLower}}(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  toggleStatus(id: string, active: boolean): Observable<any> {
-    return this.http.patch(`${this.baseUrl}/${id}/status`, { active });
+  toggleStatus(id: string, active: boolean): Observable<void> {
+    return this.http.patch<void>(`${this.baseUrl}/${id}/status`, { active });
   }
 }

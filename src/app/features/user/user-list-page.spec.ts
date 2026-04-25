@@ -1,5 +1,4 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { UserListPageComponent } from './user-list-page.component';
 import { UserService } from './user.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -57,7 +56,7 @@ describe('UserListPageComponent', () => {
   it('should create and load users', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
-    
+
     expect(component.users()).toEqual(mockUsers);
     expect(mockUserService.getUsers).toHaveBeenCalled();
   });
@@ -160,11 +159,11 @@ describe('UserListPageComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    
+
     const compiled = fixture.nativeElement;
     expect(compiled.querySelector('app-status-badge')).toBeTruthy();
     expect(compiled.querySelector('app-data-table-actions')).toBeTruthy();
-    
+
     // Check for generic column (name)
     const cells = compiled.querySelectorAll('td');
     const hasName = Array.from(cells).some((cell: any) => cell.textContent.includes('John Doe'));

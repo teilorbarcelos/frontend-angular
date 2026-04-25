@@ -22,13 +22,15 @@ describe('UserFormPageComponent', () => {
     routeParams = new BehaviorSubject<any>({ id: 'new' });
 
     mockUserService = {
-      getUser: vi.fn().mockReturnValue(of({
-        id: '1',
-        name: 'John',
-        email: 'john@example.com',
-        id_role: 'r1',
-        active: true
-      })),
+      getUser: vi.fn().mockReturnValue(
+        of({
+          id: '1',
+          name: 'John',
+          email: 'john@example.com',
+          id_role: 'r1',
+          active: true,
+        }),
+      ),
       createUser: vi.fn().mockReturnValue(of({})),
       updateUser: vi.fn().mockReturnValue(of({})),
     };
@@ -56,8 +58,8 @@ describe('UserFormPageComponent', () => {
         { provide: Router, useValue: mockRouter },
         {
           provide: ActivatedRoute,
-          useValue: { params: routeParams.asObservable() }
-        }
+          useValue: { params: routeParams.asObservable() },
+        },
       ],
     }).compileComponents();
 
@@ -93,7 +95,7 @@ describe('UserFormPageComponent', () => {
     component.onSubmit();
     expect(component.userForm.invalid).toBe(true);
     expect(component.getError('name')).toBe('Este campo é obrigatório');
-    
+
     component.userForm.patchValue({ email: 'invalid' });
     expect(component.getError('email')).toBe('Email inválido');
   });
@@ -102,7 +104,9 @@ describe('UserFormPageComponent', () => {
     fixture.detectChanges();
     component.userForm.patchValue({ name: 'N', email: 'n@e.com', id_role: 'r1' });
     await component.onSubmit();
-    expect(mockToastService.error).toHaveBeenCalledWith('Senha é obrigatória para novos usuários');
+    expect(mockToastService.error).toHaveBeenCalledWith(
+      'A senha é obrigatória para novos usuários.',
+    );
   });
 
   it('should create user successfully', async () => {
@@ -164,10 +168,10 @@ describe('UserFormPageComponent', () => {
   it('should call cancel when clicking cancel buttons', () => {
     fixture.detectChanges();
     const spy = vi.spyOn(component, 'cancel');
-    const cancelButtons = fixture.debugElement.queryAll(By.css('app-button')).filter(b => 
-      b.nativeElement.textContent.includes('Cancelar')
-    );
-    cancelButtons.forEach(btn => btn.triggerEventHandler('onClick', null));
+    const cancelButtons = fixture.debugElement
+      .queryAll(By.css('app-button'))
+      .filter((b) => b.nativeElement.textContent.includes('Cancelar'));
+    cancelButtons.forEach((btn) => btn.triggerEventHandler('btnClick', null));
     expect(spy).toHaveBeenCalledTimes(cancelButtons.length);
   });
 

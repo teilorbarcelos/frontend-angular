@@ -1,0 +1,119 @@
+(node:61775) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/teilor/MyProjects/frontend-angular/eslint.config.js?mtime=1777146877621 is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/teilor/MyProjects/frontend-angular/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+/home/teilor/MyProjects/frontend-angular/coverage/frontend-angular/block-navigation.js
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+/home/teilor/MyProjects/frontend-angular/coverage/frontend-angular/prettify.js
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+/home/teilor/MyProjects/frontend-angular/coverage/frontend-angular/sorter.js
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+/home/teilor/MyProjects/frontend-angular/src/app/app.spec.ts
+  18:71  error  Unexpected empty async arrow function  @typescript-eslint/no-empty-function
+
+/home/teilor/MyProjects/frontend-angular/src/app/core/guards/auth.guard.ts
+  5:49  error  'state' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/teilor/MyProjects/frontend-angular/src/app/core/services/auth.service.spec.ts
+  97:11  error  'newService' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/home/teilor/MyProjects/frontend-angular/src/app/features/book/book-list-page.component.ts
+  114:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/teilor/MyProjects/frontend-angular/src/app/features/book/book.service.ts
+  29:30  error  Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+  35:9   error  'params' is never reassigned. Use 'const' instead  prefer-const
+  35:17  error  Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+  65:38  error  Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+  69:57  error  Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+
+/home/teilor/MyProjects/frontend-angular/src/app/features/book/components/book-filters.component.ts
+  47:13  error  Output bindings, including aliases, should not be named as standard DOM events  @angular-eslint/no-output-native
+
+/home/teilor/MyProjects/frontend-angular/src/app/features/product/components/product-filters.component.ts
+  47:13  error  Output bindings, including aliases, should not be named as standard DOM events  @angular-eslint/no-output-native
+
+/home/teilor/MyProjects/frontend-angular/src/app/features/product/product-list-page.spec.ts
+   7:10  error  'provideRouter' is defined but never used  @typescript-eslint/no-unused-vars
+  10:10  error  'signal' is defined but never used         @typescript-eslint/no-unused-vars
+
+/home/teilor/MyProjects/frontend-angular/src/app/features/role/components/role-filters.component.ts
+  49:13  error  Output bindings, including aliases, should not be named as standard DOM events  @angular-eslint/no-output-native
+
+/home/teilor/MyProjects/frontend-angular/src/app/features/role/role.service.spec.ts
+  4:23  error  'Role' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/teilor/MyProjects/frontend-angular/src/app/features/user/components/user-filters.component.ts
+  47:13  error  Output bindings, including aliases, should not be named as standard DOM events  @angular-eslint/no-output-native
+
+/home/teilor/MyProjects/frontend-angular/src/app/features/user/user-list-page.spec.ts
+  2:10  error  'By' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/action-menu-portal/action-menu-portal.component.ts
+  25:7  error  click must be accompanied by either keyup, keydown or keypress event for accessibility  @angular-eslint/template/click-events-have-key-events
+  25:7  error  Elements with interaction handlers must be focusable                                    @angular-eslint/template/interactive-supports-focus
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/breadcrumb/breadcrumb.spec.ts
+  3:33  error  'NavigationEnd' is defined but never used  @typescript-eslint/no-unused-vars
+  4:10  error  'Subject' is defined but never used        @typescript-eslint/no-unused-vars
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/data-table-actions/data-table-actions.spec.ts
+  210:39  error  'e' is defined but never used  @typescript-eslint/no-unused-vars
+  210:42  error  Empty block statement          no-empty
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/date-range-picker/date-range-picker.component.ts
+   1:74  error  'AfterViewInit' is defined but never used  @typescript-eslint/no-unused-vars
+  85:46  error  Unexpected empty method 'onChange'         @typescript-eslint/no-empty-function
+  86:33  error  Unexpected empty method 'onTouched'        @typescript-eslint/no-empty-function
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/dynamic-select/dynamic-select.component.ts
+  200:3   warning  Lifecycle interface 'OnInit' should be implemented for method 'ngOnInit'. (https://angular.dev/style-guide#use-lifecycle-hook-interfaces)  @angular-eslint/use-lifecycle-interface
+  292:46  error    Unexpected empty method 'onChange'                                                                                                         @typescript-eslint/no-empty-function
+  293:33  error    Unexpected empty method 'onTouched'                                                                                                        @typescript-eslint/no-empty-function
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/filter-drawer/filter-drawer.component.ts
+  62:13  error  Output bindings, including aliases, should not be named as standard DOM events          @angular-eslint/no-output-native
+  12:7   error  click must be accompanied by either keyup, keydown or keypress event for accessibility  @angular-eslint/template/click-events-have-key-events
+  12:7   error  Elements with interaction handlers must be focusable                                    @angular-eslint/template/interactive-supports-focus
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/input/input.component.ts
+  62:33  error  Unexpected empty method 'onTouched'  @typescript-eslint/no-empty-function
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/input/input.spec.ts
+  3:31  error  'FormControl' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/list-page-header/list-page-header.component.ts
+  50:13  error  Output bindings, including aliases, should not be named as standard DOM events  @angular-eslint/no-output-native
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/modal/modal.component.ts
+  49:13  error  Output bindings, including aliases, should not be named as standard DOM events          @angular-eslint/no-output-native
+  13:9   error  click must be accompanied by either keyup, keydown or keypress event for accessibility  @angular-eslint/template/click-events-have-key-events
+  13:9   error  Elements with interaction handlers must be focusable                                    @angular-eslint/template/interactive-supports-focus
+  19:9   error  click must be accompanied by either keyup, keydown or keypress event for accessibility  @angular-eslint/template/click-events-have-key-events
+  19:9   error  Elements with interaction handlers must be focusable                                    @angular-eslint/template/interactive-supports-focus
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/password-input/password-input.component.ts
+  76:33  error  Unexpected empty method 'onTouched'  @typescript-eslint/no-empty-function
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/search-input/search-input.component.ts
+  34:13  error  Output bindings, including aliases, should not be named as standard DOM events  @angular-eslint/no-output-native
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/search-input/search-input.spec.ts
+  1:37  error  'fakeAsync' is defined but never used             @typescript-eslint/no-unused-vars
+  1:48  error  'tick' is defined but never used                  @typescript-eslint/no-unused-vars
+  1:54  error  'flush' is defined but never used                 @typescript-eslint/no-unused-vars
+  1:61  error  'discardPeriodicTasks' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/components/select/select.component.ts
+  66:33  error  Unexpected empty method 'onTouched'  @typescript-eslint/no-empty-function
+
+/home/teilor/MyProjects/frontend-angular/src/app/shared/layouts/admin-layout/admin-layout.component.ts
+  20:10  error  'cn' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 51 problems (47 errors, 4 warnings)
+  1 error and 4 warnings potentially fixable with the `--fix` option.
+

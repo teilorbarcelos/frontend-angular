@@ -4,7 +4,11 @@ import { RouterModule } from '@angular/router';
 import { ProductService, Product } from './product.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ListPageHeaderComponent } from '../../shared/components/list-page-header/list-page-header.component';
-import { DataTableComponent, HeaderMapItem } from '../../shared/components/data-table/data-table.component';
+import {
+  DataTableComponent,
+  HeaderMapItem,
+  TableSort,
+} from '../../shared/components/data-table/data-table.component';
 import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
 import { DataTableActionsComponent } from '../../shared/components/data-table-actions/data-table-actions.component';
 import { PRODUCT_SEARCHABLE_FIELDS } from './constants/product.constants';
@@ -16,34 +20,34 @@ import { ProductFiltersComponent } from './components/product-filters.component'
   selector: 'app-product-list-page',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterModule, 
-    ListPageHeaderComponent, 
-    DataTableComponent, 
-    StatusBadgeComponent, 
+    CommonModule,
+    RouterModule,
+    ListPageHeaderComponent,
+    DataTableComponent,
+    StatusBadgeComponent,
     DataTableActionsComponent,
-    ProductFiltersComponent
+    ProductFiltersComponent,
   ],
   host: {
-    class: 'flex-1 flex flex-col min-h-0'
+    class: 'flex-1 flex flex-col min-h-0',
   },
   template: `
     <app-list-page-header
       title="Produtos"
       [showCreate]="permissions().canCreate"
       createLabel="Novo Produto"
-      (onSearch)="handleSearch($event)"
-      (onFilterClick)="toggleFilter()"
+      (searched)="handleSearch($event)"
+      (filterClick)="toggleFilter()"
       [filterCount]="filterCount()"
-      (onCreateClick)="navigateToCreate()"
+      (createClick)="navigateToCreate()"
       class="shrink-0"
     ></app-list-page-header>
 
     <app-product-filters
       [isOpen]="isFilterOpen()"
       [initialValues]="filters()"
-      (onClose)="toggleFilter()"
-      (onFilter)="handleFilter($event)"
+      (closed)="toggleFilter()"
+      (filtered)="handleFilter($event)"
     ></app-product-filters>
 
     <app-data-table
@@ -54,32 +58,32 @@ import { ProductFiltersComponent } from './components/product-filters.component'
       [currentPage]="page()"
       [pageSize]="size()"
       [sorting]="sort()"
-      (onPageChange)="handlePageChange($event)"
-      (onPageSizeChange)="handlePageSizeChange($event)"
-      (onSortChange)="handleSortChange($event)"
+      (pageChange)="handlePageChange($event)"
+      (pageSizeChange)="handlePageSizeChange($event)"
+      (sortChange)="handleSortChange($event)"
     >
       <ng-template #cellTemplate let-item let-column="column" let-value="value">
         @if (column.keyItem === 'active') {
-          <app-status-badge 
-            [active]="!!value" 
-            feature="product" 
-            (onClick)="toggleStatus(item.id, !item.active)"
+          <app-status-badge
+            [active]="!!value"
+            feature="product"
+            (btnClick)="toggleStatus(item.id, !item.active)"
           ></app-status-badge>
         } @else if (column.keyItem === 'id') {
-          <app-data-table-actions 
-            [id]="item.id" 
+          <app-data-table-actions
+            [id]="item.id"
             [showEdit]="permissions().canUpdate"
             [showDelete]="permissions().canDelete"
-            (onEdit)="navigateToEdit($event)" 
-            (onDelete)="deleteProduct($event)"
+            (edit)="navigateToEdit($event)"
+            (delete)="deleteProduct($event)"
             deleteMessage="Tem certeza que deseja excluir este produto?"
           ></app-data-table-actions>
         } @else if (column.keyItem === 'price') {
-          $ {{ value != null ? value.toFixed(2) : '0.00' }}
+          $ {{ value !== null ? value.toFixed(2) : '0.00' }}
         } @else {
-           <div [class.truncate]="column.truncate" [class.max-w-xs]="column.truncate">
-             {{ value }}
-           </div>
+          <div [class.truncate]="column.truncate" [class.max-w-xs]="column.truncate">
+            {{ value }}
+          </div>
         }
       </ng-template>
     </app-data-table>
@@ -109,17 +113,39 @@ export class ProductListPageComponent {
   sort = this.list.sort;
   filterCount = this.list.filterCount;
 
-  handleSearch(value: string) { this.list.handleSearch(value); }
-  handleFilter(filters: any) { this.list.handleFilter(filters); }
-  handlePageChange(page: number) { this.list.handlePageChange(page); }
-  handlePageSizeChange(size: number) { this.list.handlePageSizeChange(size); }
-  handleSortChange(sort: any) { this.list.handleSortChange(sort); }
-  toggleFilter() { this.list.toggleFilter(); }
-  navigateToCreate() { this.list.navigateToCreate(); }
-  navigateToEdit(id: string) { this.list.navigateToEdit(id); }
-  toggleStatus(id: string, active: boolean) { this.list.toggleStatus(id, active); }
-  deleteProduct(id: string) { this.list.deleteItem(id); }
-  loadProducts() { this.list.loadItems(); }
+  handleSearch(value: string) {
+    this.list.handleSearch(value);
+  }
+  handleFilter(filters: Record<string, unknown>) {
+    this.list.handleFilter(filters);
+  }
+  handlePageChange(page: number) {
+    this.list.handlePageChange(page);
+  }
+  handlePageSizeChange(size: number) {
+    this.list.handlePageSizeChange(size);
+  }
+  handleSortChange(sort: TableSort) {
+    this.list.handleSortChange(sort);
+  }
+  toggleFilter() {
+    this.list.toggleFilter();
+  }
+  navigateToCreate() {
+    this.list.navigateToCreate();
+  }
+  navigateToEdit(id: string) {
+    this.list.navigateToEdit(id);
+  }
+  toggleStatus(id: string, active: boolean) {
+    this.list.toggleStatus(id, active);
+  }
+  deleteProduct(id: string) {
+    this.list.deleteItem(id);
+  }
+  loadProducts() {
+    this.list.loadItems();
+  }
 
   permissions = computed(() => ({
     canCreate: this.authService.hasPermission('product', 'create'),

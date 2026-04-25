@@ -1,30 +1,30 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { 
-  LucideAngularModule, 
-  LogOut, 
-  User as UserIcon, 
-  LayoutDashboard, 
-  Users, 
-  Shield, 
-  Package 
+import {
+  LucideAngularModule,
+  LogOut,
+  User as UserIcon,
+  LayoutDashboard,
+  Users,
+  Shield,
+  Package,
 } from 'lucide-angular';
 import { AuthService } from '../../../core/services/auth.service';
 import { BreadcrumbComponent } from '../../components/breadcrumb/breadcrumb.component';
 import { ToastContainerComponent } from '../../components/toast-container/toast-container.component';
 import { ActionMenuPortalComponent } from '../../components/action-menu-portal/action-menu-portal.component';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, LucideAngularModule, BreadcrumbComponent, ToastContainerComponent, ActionMenuPortalComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    LucideAngularModule,
+    BreadcrumbComponent,
+    ToastContainerComponent,
+    ActionMenuPortalComponent,
+  ],
   template: `
     <app-toast-container></app-toast-container>
     <app-action-menu-portal></app-action-menu-portal>
@@ -51,7 +51,9 @@ function cn(...inputs: ClassValue[]) {
         </nav>
       </aside>
       <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-end px-6 space-x-4">
+        <header
+          class="h-16 bg-white border-b border-gray-200 flex items-center justify-end px-6 space-x-4"
+        >
           <div class="flex items-center space-x-2 text-gray-600">
             <lucide-angular [img]="UserIcon" class="w-5 h-5"></lucide-angular>
             <span class="text-sm font-medium">{{ authService.user()?.name || 'User' }}</span>
@@ -81,12 +83,13 @@ export class AdminLayoutComponent {
   readonly LogOutIcon = LogOut;
   readonly UserIcon = UserIcon;
 
-  navItems = () => [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, feature: 'dashboard' },
-    { name: 'Perfis', path: '/roles', icon: Shield, feature: 'role' },
-    { name: 'Usuários', path: '/users', icon: Users, feature: 'user' },
-    { name: 'Produtos', path: '/products', icon: Package, feature: 'product' },
-  ].filter(item => !item.feature || this.authService.hasPermission(item.feature, 'view'));
+  navItems = () =>
+    [
+      { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, feature: 'dashboard' },
+      { name: 'Perfis', path: '/roles', icon: Shield, feature: 'role' },
+      { name: 'Usuários', path: '/users', icon: Users, feature: 'user' },
+      { name: 'Produtos', path: '/products', icon: Package, feature: 'product' },
+    ].filter((item) => !item.feature || this.authService.hasPermission(item.feature, 'view'));
 
   isActive(path: string) {
     return this.router.url.startsWith(path);

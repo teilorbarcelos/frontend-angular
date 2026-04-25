@@ -31,7 +31,7 @@ function cn(...inputs: ClassValue[]) {
 export class SearchInputComponent implements OnInit, OnDestroy {
   @Input() placeholder = 'Search...';
   @Input() className = '';
-  @Output() onSearch = new EventEmitter<string>();
+  @Output() searched = new EventEmitter<string>();
 
   readonly SearchIcon = Search;
   searchControl = new FormControl('');
@@ -42,13 +42,11 @@ export class SearchInputComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(value => {
-      this.onSearch.emit(value || '');
-    });
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.searched.emit(value || '');
+      });
   }
 
   ngOnDestroy() {

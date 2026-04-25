@@ -28,8 +28,8 @@ describe('ListPageHeaderComponent', () => {
     expect(h1.textContent).toBe('Test Title');
   });
 
-  it('should emit onFilterClick', () => {
-    const spy = vi.spyOn(component.onFilterClick, 'emit');
+  it('should emit filterClick', () => {
+    const spy = vi.spyOn(component.filterClick, 'emit');
     const filterBtn = fixture.nativeElement.querySelector('app-button button');
     filterBtn.click();
     expect(spy).toHaveBeenCalled();
@@ -51,19 +51,19 @@ describe('ListPageHeaderComponent', () => {
     expect(buttons[1].textContent).toContain('Add New');
   });
 
-  it('should emit onCreateClick', () => {
+  it('should emit createClick', () => {
     fixture.componentRef.setInput('showCreate', true);
     fixture.detectChanges();
-    const spy = vi.spyOn(component.onCreateClick, 'emit');
+    const spy = vi.spyOn(component.createClick, 'emit');
     const createBtn = fixture.nativeElement.querySelectorAll('app-button button')[1];
     createBtn.click();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should emit onSearch from app-search-input', () => {
-    const spy = vi.spyOn(component.onSearch, 'emit');
+  it('should emit searched from app-search-input', () => {
+    const spy = vi.spyOn(component.searched, 'emit');
     const debugElement = fixture.debugElement.query(By.css('app-search-input'));
-    debugElement.triggerEventHandler('onSearch', 'test query');
+    debugElement.triggerEventHandler('searched', 'test query');
     expect(spy).toHaveBeenCalledWith('test query');
   });
 });

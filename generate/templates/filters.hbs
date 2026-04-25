@@ -13,9 +13,9 @@ import { SelectComponent } from '../../../shared/components/select/select.compon
     <app-filter-drawer
       [isOpen]="isOpen"
       title="Filtros de {{capitalize nameLower}}s"
-      (onClose)="onClose.emit()"
-      (onClear)="handleClear()"
-      (onApply)="handleApply()"
+      (closed)="closed.emit()"
+      (cleared)="handleClear()"
+      (applied)="handleApply()"
     >
       <form [formGroup]="filterForm" class="space-y-6">
         <app-select
@@ -42,10 +42,10 @@ export class {{capitalize nameLower}}FiltersComponent implements OnInit, OnChang
   private fb = inject(FormBuilder);
 
   @Input() isOpen = false;
-  @Input() initialValues: Record<string, any> = {};
+  @Input() initialValues: Record<string, unknown> = {};
 
-  @Output() onClose = new EventEmitter<void>();
-  @Output() onFilter = new EventEmitter<Record<string, any>>();
+  @Output() closed = new EventEmitter<void>();
+  @Output() filtered = new EventEmitter<Record<string, unknown>>();
 
   filterForm: FormGroup = this.fb.group({
     active: [''],
@@ -64,10 +64,10 @@ export class {{capitalize nameLower}}FiltersComponent implements OnInit, OnChang
 
   private updateFormValues() {
     const values = {
-      active: this.initialValues['active'] || '',
+      active: (this.initialValues['active'] as string) || '',
       createdAt: {
-        start: this.initialValues['createdAt_start'] || '',
-        end: this.initialValues['createdAt_end'] || ''
+        start: (this.initialValues['createdAt_start'] as string) || '',
+        end: (this.initialValues['createdAt_end'] as string) || ''
       }
     };
     this.filterForm.patchValue(values, { emitEvent: false });
@@ -78,19 +78,19 @@ export class {{capitalize nameLower}}FiltersComponent implements OnInit, OnChang
       active: '',
       createdAt: { start: '', end: '' }
     });
-    this.onFilter.emit({});
-    this.onClose.emit();
+    this.filtered.emit({});
+    this.closed.emit();
   }
 
   handleApply() {
     const val = this.filterForm.value;
-    const cleanValues: any = {};
+    const cleanValues: Record<string, unknown> = {};
 
-    if (val.active !== '') cleanValues.active = val.active;
-    if (val.createdAt?.start) cleanValues.createdAt_start = val.createdAt.start;
-    if (val.createdAt?.end) cleanValues.createdAt_end = val.createdAt.end;
+    if (val.active !== '') cleanValues['active'] = val.active;
+    if (val.createdAt?.start) cleanValues['createdAt_start'] = val.createdAt.start;
+    if (val.createdAt?.end) cleanValues['createdAt_end'] = val.createdAt.end;
 
-    this.onFilter.emit(cleanValues);
-    this.onClose.emit();
+    this.filtered.emit(cleanValues);
+    this.closed.emit();
   }
 }

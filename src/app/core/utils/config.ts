@@ -1,6 +1,12 @@
+interface WindowWithEnv extends Window {
+  env?: {
+    API_URL?: string;
+  };
+}
+
 export const getApiUrl = (): string => {
-  const env = (window as any).env;
-  
+  const env = (window as WindowWithEnv).env;
+
   if (env && env.API_URL) {
     return env.API_URL;
   }

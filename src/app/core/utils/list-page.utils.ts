@@ -14,7 +14,7 @@ export interface FetchParams {
   size: number;
   searchWord: string;
   searchFields: string[];
-  filters: Record<string, any>;
+  filters: Record<string, unknown>;
   sort: TableSort;
   all?: boolean;
 }
@@ -25,8 +25,8 @@ export interface ListPageConfig<T> {
   defaultSort?: TableSort;
   baseRoute: string;
   fetch: (params: FetchParams) => Observable<ListResponse<T>>;
-  toggleStatus?: (id: string, active: boolean) => Observable<any>;
-  delete?: (id: string) => Observable<any>;
+  toggleStatus?: (id: string, active: boolean) => Observable<unknown>;
+  delete?: (id: string) => Observable<unknown>;
   messages?: {
     toggleSuccess?: (active: boolean) => string;
     toggleError?: string;
@@ -48,7 +48,7 @@ export function createListPageController<T>(config: ListPageConfig<T>) {
   const page = signal(0);
   const size = signal(25);
   const searchWord = signal('');
-  const filters = signal<Record<string, any>>({});
+  const filters = signal<Record<string, unknown>>({});
   const sort = signal<TableSort>(config.defaultSort || { orderBy: 'name', orderDirection: 'asc' });
 
   const filterCount = computed(() => Object.keys(filters()).length);
@@ -64,14 +64,16 @@ export function createListPageController<T>(config: ListPageConfig<T>) {
           searchFields: config.searchFields,
           filters: filters(),
           sort: sort(),
-          all: true
-        })
+          all: true,
+        }),
       );
       items.set(res.items);
       totalItems.set(res.total);
     } catch (error) {
       console.error(`Error loading ${config.feature}s`, error);
-      toastService.error(config.messages?.loadError || `Erro ao carregar a listagem de ${config.feature}s.`);
+      toastService.error(
+        config.messages?.loadError || `Erro ao carregar a listagem de ${config.feature}s.`,
+      );
     } finally {
       isLoading.set(false);
     }
@@ -87,7 +89,7 @@ export function createListPageController<T>(config: ListPageConfig<T>) {
     page.set(0);
   }
 
-  function handleFilter(f: Record<string, any>) {
+  function handleFilter(f: Record<string, unknown>) {
     filters.set(f);
     page.set(0);
   }
@@ -106,7 +108,7 @@ export function createListPageController<T>(config: ListPageConfig<T>) {
   }
 
   function toggleFilter() {
-    isFilterOpen.update(v => !v);
+    isFilterOpen.update((v) => !v);
   }
 
   function navigateToCreate() {
@@ -122,13 +124,15 @@ export function createListPageController<T>(config: ListPageConfig<T>) {
     try {
       await firstValueFrom(config.toggleStatus(id, active));
       toastService.success(
-        config.messages?.toggleSuccess?.(active) || 
-        `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} ${active ? 'ativado' : 'desativado'} com sucesso!`
+        config.messages?.toggleSuccess?.(active) ||
+          `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} ${active ? 'ativado' : 'desativado'} com sucesso!`,
       );
       loadItems();
     } catch (error) {
       console.error(`Error toggling status for ${config.feature}`, error);
-      toastService.error(config.messages?.toggleError || `Erro ao alterar o status do ${config.feature}.`);
+      toastService.error(
+        config.messages?.toggleError || `Erro ao alterar o status do ${config.feature}.`,
+      );
     }
   }
 
@@ -136,7 +140,10 @@ export function createListPageController<T>(config: ListPageConfig<T>) {
     if (!config.delete) return;
     try {
       await firstValueFrom(config.delete(id));
-      toastService.success(config.messages?.deleteSuccess || `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} excluído com sucesso!`);
+      toastService.success(
+        config.messages?.deleteSuccess ||
+          `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} excluído com sucesso!`,
+      );
       loadItems();
     } catch (error) {
       console.error(`Error deleting ${config.feature}`, error);
@@ -165,6 +172,6 @@ export function createListPageController<T>(config: ListPageConfig<T>) {
     navigateToEdit,
     toggleStatus,
     deleteItem,
-    loadItems
+    loadItems,
   };
 }

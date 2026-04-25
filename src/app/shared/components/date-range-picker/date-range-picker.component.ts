@@ -1,9 +1,10 @@
-import { Component, ElementRef, Input, OnDestroy, ViewChild, forwardRef, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, ViewChild, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { LucideAngularModule, Calendar } from 'lucide-angular';
 import * as flatpickr from 'flatpickr';
 import { Portuguese } from 'flatpickr/dist/l10n/pt';
+import { Instance } from 'flatpickr/dist/types/instance';
 
 @Component({
   selector: 'app-date-range-picker',
@@ -14,37 +15,45 @@ import { Portuguese } from 'flatpickr/dist/l10n/pt';
       provide: NG_VALUE_ACCESSOR,
       /* v8 ignore next 2: Boilerplate do Angular para forwardRef em providers standalone que não é capturado corretamente pelo coverage v8 em ambiente JSDOM */
       useExisting: forwardRef(() => DateRangePickerComponent),
-      multi: true
-    }
+      multi: true,
+    },
   ],
-  styles: [`
-    :host ::ng-deep .flatpickr-calendar {
-      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-      border: 1px solid #e5e7eb;
-      border-radius: 0.75rem;
-      z-index: 99999 !important;
-    }
-    :host ::ng-deep .flatpickr-day.selected {
-      background: #4f46e5 !important;
-      border-color: #4f46e5 !important;
-    }
-    :host ::ng-deep .flatpickr-day.inRange {
-      background: #eef2ff !important;
-      border-color: #eef2ff !important;
-      box-shadow: -5px 0 0 #eef2ff, 5px 0 0 #eef2ff !important;
-    }
-  `],
+  styles: [
+    `
+      :host ::ng-deep .flatpickr-calendar {
+        box-shadow:
+          0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        z-index: 99999 !important;
+      }
+      :host ::ng-deep .flatpickr-day.selected {
+        background: #4f46e5 !important;
+        border-color: #4f46e5 !important;
+      }
+      :host ::ng-deep .flatpickr-day.inRange {
+        background: #eef2ff !important;
+        border-color: #eef2ff !important;
+        box-shadow:
+          -5px 0 0 #eef2ff,
+          5px 0 0 #eef2ff !important;
+      }
+    `,
+  ],
   template: `
-    <div 
+    <div
       class="flex items-center w-full h-10 bg-white border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all"
       [ngClass]="containerClasses"
       [style.opacity]="isDisabled ? 0.5 : 1"
+      tabindex="0"
       (click)="!isDisabled && openPicker($event)"
+      (keydown.enter)="!isDisabled && openPicker($event)"
     >
       <div class="pl-3 pr-2 text-gray-400">
         <lucide-angular [img]="CalendarIcon" class="w-4 h-4"></lucide-angular>
       </div>
-      
+
       <input
         #pickerInput
         type="text"
@@ -58,7 +67,7 @@ import { Portuguese } from 'flatpickr/dist/l10n/pt';
     </div>
   `,
 })
-export class DateRangePickerComponent implements ControlValueAccessor, AfterViewInit, OnDestroy {
+export class DateRangePickerComponent implements ControlValueAccessor, OnDestroy {
   @ViewChild('pickerInput') set pickerInput(content: ElementRef) {
     if (content) {
       this.initFlatpickr(content.nativeElement);
@@ -66,28 +75,30 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
   }
 
   @Input() placeholder = 'Selecione o intervalo';
-  
+
   isDisabled = false;
-  private fpInstance: any;
+  private fpInstance?: Instance;
   readonly CalendarIcon = Calendar;
-  
+
   get containerClasses() {
     return {
       'cursor-not-allowed': this.isDisabled,
-      'cursor-pointer': !this.isDisabled
+      'cursor-pointer': !this.isDisabled,
     };
   }
 
-  onChange: any = () => {};
-  onTouched: any = () => {};
-
-  ngAfterViewInit() {}
+  // ControlValueAccessor methods
+  onChange: (value: unknown) => void = () => {
+    // ControlValueAccessor method
+  };
+  onTouched: () => void = () => {
+    // ControlValueAccessor method
+  };
 
   private initFlatpickr(element: HTMLElement) {
     if (this.fpInstance) return;
 
-    const fp = (flatpickr.default || flatpickr) as any;
-    this.fpInstance = fp(element, {
+    this.fpInstance = flatpickr.default(element, {
       mode: 'range',
       dateFormat: 'Y-m-d',
       altInput: true,
@@ -102,14 +113,14 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
           this.onChange(null);
           return;
         }
-        
+
         if (selectedDates.length === 2) {
           this.onChange({
             start: selectedDates[0].toISOString().split('T')[0],
-            end: selectedDates[1].toISOString().split('T')[0]
+            end: selectedDates[1].toISOString().split('T')[0],
           });
         }
-      }
+      },
     });
   }
 
@@ -126,21 +137,22 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
     }
   }
 
-  writeValue(value: any): void {
+  writeValue(value: unknown): void {
     if (this.fpInstance) {
-      if (value && value.start && value.end) {
-        this.fpInstance.setDate([value.start, value.end]);
+      const val = value as { start?: string; end?: string } | null;
+      if (val && val.start && val.end) {
+        this.fpInstance.setDate([val.start, val.end]);
       } else {
         this.fpInstance.clear();
       }
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: unknown) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

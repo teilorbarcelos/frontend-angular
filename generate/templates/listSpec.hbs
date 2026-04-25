@@ -125,13 +125,13 @@ describe('{{capitalize nameLower}}ListPageComponent', () => {
     fixture.detectChanges();
     const header = fixture.debugElement.query(By.css('app-list-page-header'));
     
-    header.triggerEventHandler('onSearch', 'search');
+    header.triggerEventHandler('searched', 'search');
     expect(component.searchWord()).toBe('search');
 
-    header.triggerEventHandler('onFilterClick', null);
+    header.triggerEventHandler('filterClick', null);
     expect(component.isFilterOpen()).toBe(true);
 
-    header.triggerEventHandler('onCreateClick', null);
+    header.triggerEventHandler('createClick', null);
     expect(mockRouter.navigate).toHaveBeenCalled();
   });
 
@@ -153,14 +153,14 @@ describe('{{capitalize nameLower}}ListPageComponent', () => {
 
     const actions = fixture.debugElement.query(By.css('app-data-table-actions')).componentInstance;
     
-    actions.onEdit.emit('1');
+    actions.edit.emit('1');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/{{nameLower}}s/update', '1']);
 
-    actions.onDelete.emit('1');
+    actions.delete.emit('1');
     expect(mockService.delete{{capitalize nameLower}}).toHaveBeenCalledWith('1');
 
     const badge = fixture.debugElement.query(By.css('app-status-badge')).componentInstance;
-    badge.onClick.emit();
+    badge.btnClick.emit();
     expect(mockService.toggleStatus).toHaveBeenCalled();
   });
 
@@ -168,14 +168,14 @@ describe('{{capitalize nameLower}}ListPageComponent', () => {
     fixture.detectChanges();
     const table = fixture.debugElement.query(By.css('app-data-table'));
     
-    table.triggerEventHandler('onPageChange', 1);
+    table.triggerEventHandler('pageChange', 1);
     expect(component.page()).toBe(1);
 
-    table.triggerEventHandler('onPageSizeChange', 50);
+    table.triggerEventHandler('pageSizeChange', 50);
     expect(component.size()).toBe(50);
 
     const sort = { orderBy: 'name', orderDirection: 'desc' };
-    table.triggerEventHandler('onSortChange', sort);
+    table.triggerEventHandler('sortChange', sort);
     expect(component.sort()).toEqual(sort);
   });
 

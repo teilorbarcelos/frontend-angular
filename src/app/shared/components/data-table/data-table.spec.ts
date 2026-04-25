@@ -55,7 +55,7 @@ describe('DataTableComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    
+
     const spinner = fixture.nativeElement.querySelector('.animate-spin');
     expect(spinner).toBeTruthy();
   });
@@ -66,10 +66,10 @@ describe('DataTableComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Nenhum registro encontrado');
   });
 
-  it('should emit onSortChange when clicking sortable header', () => {
-    const spy = vi.spyOn(component.onSortChange, 'emit');
+  it('should emit sortChange when clicking sortable header', () => {
+    const spy = vi.spyOn(component.sortChange, 'emit');
     const nameHeader = fixture.nativeElement.querySelectorAll('th')[0];
-    
+
     // First click: asc
     nameHeader.click();
     expect(spy).toHaveBeenCalledWith({ orderBy: 'name', orderDirection: 'asc' });
@@ -85,15 +85,15 @@ describe('DataTableComponent', () => {
     expect(spy).toHaveBeenCalledWith({ orderBy: undefined, orderDirection: undefined });
   });
 
-  it('should not emit onSortChange when clicking non-sortable header', () => {
-    const spy = vi.spyOn(component.onSortChange, 'emit');
+  it('should not emit sortChange when clicking non-sortable header', () => {
+    const spy = vi.spyOn(component.sortChange, 'emit');
     const ageHeader = fixture.nativeElement.querySelectorAll('th')[1];
     ageHeader.click();
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should emit onPageChange when clicking pagination buttons', () => {
-    const spy = vi.spyOn(component.onPageChange, 'emit');
+  it('should emit pageChange when clicking pagination buttons', () => {
+    const spy = vi.spyOn(component.pageChange, 'emit');
     fixture.componentRef.setInput('totalItems', 100);
     fixture.componentRef.setInput('pageSize', 10);
     fixture.componentRef.setInput('currentPage', 1);
@@ -107,7 +107,9 @@ describe('DataTableComponent', () => {
     prevBtn.click();
     expect(spy).toHaveBeenCalledWith(0);
 
-    const pageButtons = fixture.nativeElement.querySelectorAll('.flex.items-center.space-x-1.px-2 button');
+    const pageButtons = fixture.nativeElement.querySelectorAll(
+      '.flex.items-center.space-x-1.px-2 button',
+    );
     pageButtons[1].click(); // Click page 2 (index 1)
     expect(spy).toHaveBeenCalledWith(1);
 
@@ -124,7 +126,7 @@ describe('DataTableComponent', () => {
     fixture.componentRef.setInput('totalItems', 100);
     fixture.componentRef.setInput('pageSize', 10);
     fixture.componentRef.setInput('currentPage', 5);
-    
+
     const pages = component.pageNumbers;
     expect(pages).toContain(0);
     expect(pages).toContain(9);
@@ -132,8 +134,8 @@ describe('DataTableComponent', () => {
     expect(pages).toContain('...');
   });
 
-  it('should emit onPageSizeChange when select changes', () => {
-    const spy = vi.spyOn(component.onPageSizeChange, 'emit');
+  it('should emit pageSizeChange when select changes', () => {
+    const spy = vi.spyOn(component.pageSizeChange, 'emit');
     const select = fixture.nativeElement.querySelector('select');
     select.value = '50';
     select.dispatchEvent(new Event('change'));
@@ -142,11 +144,11 @@ describe('DataTableComponent', () => {
 
   it('should render parsed item when parseItem is provided', async () => {
     const customHeader: HeaderMapItem<any>[] = [
-      { 
-        title: 'Status', 
-        keyItem: 'active', 
-        parseItem: (val) => val ? '<span class="active">Yes</span>' : 'No' 
-      }
+      {
+        title: 'Status',
+        keyItem: 'active',
+        parseItem: (val) => (val ? '<span class="active">Yes</span>' : 'No'),
+      },
     ];
     fixture.componentRef.setInput('headerMap', customHeader);
     fixture.detectChanges();
@@ -160,41 +162,41 @@ describe('DataTableComponent', () => {
   it('should return correct sort icons', () => {
     component.sorting = { orderBy: 'name', orderDirection: 'asc' };
     expect(component.getSortIcon('name')).toBeTruthy();
-    
+
     component.sorting = { orderBy: 'name', orderDirection: 'desc' };
     expect(component.getSortIcon('name')).toBeTruthy();
-    
+
     expect(component.getSortIcon('other')).toBeTruthy();
   });
 
   it('should handle sorting asc -> desc', async () => {
-    const spy = vi.spyOn(component.onSortChange, 'emit');
+    const spy = vi.spyOn(component.sortChange, 'emit');
     const nameHeader = fixture.nativeElement.querySelectorAll('th')[0];
-    
+
     fixture.componentRef.setInput('sorting', { orderBy: 'name', orderDirection: 'asc' });
     fixture.detectChanges();
     await fixture.whenStable();
-    
+
     nameHeader.click();
     expect(spy).toHaveBeenCalledWith({ orderBy: 'name', orderDirection: 'desc' });
   });
 
   it('should handle sorting desc -> undefined', async () => {
-    const spy = vi.spyOn(component.onSortChange, 'emit');
+    const spy = vi.spyOn(component.sortChange, 'emit');
     const nameHeader = fixture.nativeElement.querySelectorAll('th')[0];
-    
+
     fixture.componentRef.setInput('sorting', { orderBy: 'name', orderDirection: 'desc' });
     fixture.detectChanges();
     await fixture.whenStable();
-    
+
     nameHeader.click();
     expect(spy).toHaveBeenCalledWith({ orderBy: undefined, orderDirection: undefined });
   });
 
   it('should handle full sorting cycle: none -> asc -> desc -> none', async () => {
-    const spy = vi.spyOn(component.onSortChange, 'emit');
+    const spy = vi.spyOn(component.sortChange, 'emit');
     const nameHeader = fixture.nativeElement.querySelectorAll('th')[0];
-    
+
     // 1. None -> Asc
     fixture.componentRef.setInput('sorting', { orderBy: undefined, orderDirection: undefined });
     fixture.detectChanges();
@@ -212,7 +214,7 @@ describe('DataTableComponent', () => {
     fixture.detectChanges();
     nameHeader.click();
     expect(spy).toHaveBeenLastCalledWith({ orderBy: undefined, orderDirection: undefined });
-    
+
     // 4. Click different column (None -> Asc)
     const ageHeader = fixture.nativeElement.querySelectorAll('th')[1];
     // Age is not sortable, so it shouldn't emit
@@ -221,13 +223,13 @@ describe('DataTableComponent', () => {
   });
 
   it('should go to asc when clicking a column that has undefined direction but is already the orderBy', async () => {
-    const spy = vi.spyOn(component.onSortChange, 'emit');
+    const spy = vi.spyOn(component.sortChange, 'emit');
     const nameHeader = fixture.nativeElement.querySelectorAll('th')[0];
-    
+
     fixture.componentRef.setInput('sorting', { orderBy: 'name', orderDirection: undefined });
     fixture.detectChanges();
     await fixture.whenStable();
-    
+
     nameHeader.click();
     expect(spy).toHaveBeenCalledWith({ orderBy: 'name', orderDirection: 'asc' });
   });

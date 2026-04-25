@@ -1,7 +1,6 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { BreadcrumbComponent } from './breadcrumb.component';
-import { provideRouter, Router, NavigationEnd } from '@angular/router';
-import { Subject } from 'rxjs';
+import { provideRouter, Router } from '@angular/router';
 
 describe('BreadcrumbComponent', () => {
   let component: BreadcrumbComponent;
