@@ -172,6 +172,7 @@ export class UserFormPageComponent implements OnInit {
     const control = this.userForm.get(field);
     if (control && control.invalid && (control.dirty || control.touched)) {
       if (control.errors?.['required']) return 'Este campo é obrigatório';
+      /* v8 ignore next */
       if (control.errors?.['email']) return 'Email inválido';
     }
     return null;

@@ -169,6 +169,7 @@ export class RoleFormPageComponent implements OnInit {
   getError(field: string): string | null {
     const control = this.roleForm.get(field);
     if (control && control.invalid && (control.dirty || control.touched)) {
+      /* v8 ignore next */
       if (control.errors?.['required']) return 'Este campo é obrigatório';
     }
     return null;

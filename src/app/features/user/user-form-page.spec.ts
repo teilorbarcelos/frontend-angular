@@ -1,4 +1,5 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { UserFormPageComponent } from './user-form-page.component';
 import { UserService } from './user.service';
 import { RoleService } from '../role/role.service';
@@ -137,9 +138,35 @@ describe('UserFormPageComponent', () => {
     expect(component.getError('name')).toBeNull();
   });
 
+  it('should show pending state in submit button', () => {
+    component.isPending.set(true);
+    fixture.detectChanges();
+    const submitBtn = fixture.debugElement.query(By.css('app-button[type="submit"]'));
+    expect(submitBtn.nativeElement.textContent).toContain('Salvando...');
+    expect(component.isPending()).toBe(true);
+  });
+
   it('should cancel and navigate back', () => {
     component.cancel();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/users']);
+  });
+
+  it('should call cancel when clicking cancel buttons', () => {
+    fixture.detectChanges();
+    const spy = vi.spyOn(component, 'cancel');
+    const cancelButtons = fixture.debugElement.queryAll(By.css('app-button')).filter(b => 
+      b.nativeElement.textContent.includes('Cancelar')
+    );
+    cancelButtons.forEach(btn => btn.triggerEventHandler('onClick', null));
+    expect(spy).toHaveBeenCalledTimes(cancelButtons.length);
+  });
+
+  it('should handle missing id in route', async () => {
+    routeParams.next({});
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(component.isEditing()).toBe(false);
+    expect(component.id()).toBeNull();
   });
 
   it('should get role label and value', () => {

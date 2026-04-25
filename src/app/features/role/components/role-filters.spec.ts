@@ -37,6 +37,26 @@ describe('RoleFiltersComponent', () => {
     expect(component.filterForm.value.createdAt.start).toBe('2023-01-01');
   });
 
+  it('should not update if initialValues not in changes', () => {
+    const spy = vi.spyOn(component.filterForm, 'patchValue');
+    component.ngOnChanges({
+      isOpen: {
+        currentValue: true,
+        previousValue: false,
+        firstChange: false,
+        isFirstChange: () => false
+      }
+    });
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('should handle empty initialValues', () => {
+    component.initialValues = {};
+    (component as any).updateFormValues();
+    expect(component.filterForm.value.active).toBe('');
+    expect(component.filterForm.value.createdAt.start).toBe('');
+  });
+
   it('should emit filter values on apply', () => {
     const spy = vi.spyOn(component.onFilter, 'emit');
     fixture.detectChanges();

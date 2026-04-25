@@ -1,6 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Filter as FilterIcon, X } from 'lucide-angular';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Funnel, LucideAngularModule, X } from 'lucide-angular';
 
 @Component({
   selector: 'app-filter-drawer',
@@ -63,6 +63,6 @@ export class FilterDrawerComponent {
   @Output() onApply = new EventEmitter<void>();
   @Output() onClear = new EventEmitter<void>();
 
-  readonly FilterIcon = FilterIcon;
+  readonly FilterIcon = Funnel;
   readonly CloseIcon = X;
 }

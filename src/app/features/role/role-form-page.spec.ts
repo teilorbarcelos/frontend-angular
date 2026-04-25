@@ -144,4 +144,19 @@ describe('RoleFormPageComponent', () => {
     component.cancel();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/roles']);
   });
+
+  it('should initialize permissions correctly when some are missing', () => {
+    const mockFeats = [
+      { id: 'f1', name: 'F1', description: 'D1' },
+      { id: 'f2', name: 'F2', description: 'D2' }
+    ];
+    component.features.set(mockFeats);
+    const existing = [
+      { id_feature: 'f1', view: true, create: false, delete: false, activate: false }
+    ];
+    component.initializePermissions(existing as any);
+    expect(component.permissionsFormArray.length).toBe(2);
+    expect(component.permissionsFormArray.at(0).value.view).toBe(true);
+    expect(component.permissionsFormArray.at(1).value.view).toBe(false);
+  });
 });

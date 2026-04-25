@@ -100,11 +100,18 @@ describe('RoleListPageComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/roles/update', '1']);
   });
 
-  it('should toggle status successfully', async () => {
+  it('should toggle status successfully (deactivate)', async () => {
     fixture.detectChanges();
     await component.toggleStatus('1', false);
     expect(mockRoleService.toggleStatus).toHaveBeenCalledWith('1', false);
-    expect(mockToastService.success).toHaveBeenCalled();
+    expect(mockToastService.success).toHaveBeenCalledWith('Perfil desativado com sucesso!');
+  });
+
+  it('should toggle status successfully (activate)', async () => {
+    fixture.detectChanges();
+    await component.toggleStatus('1', true);
+    expect(mockRoleService.toggleStatus).toHaveBeenCalledWith('1', true);
+    expect(mockToastService.success).toHaveBeenCalledWith('Perfil ativado com sucesso!');
   });
 
   it('should handle toggle status error', async () => {
