@@ -1,15 +1,14 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { UserService, User, UserResponse } from './user.service';
+import { RouterModule } from '@angular/router';
+import { UserService, User } from './user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ListPageHeaderComponent } from '../../shared/components/list-page-header/list-page-header.component';
-import { DataTableComponent, HeaderMapItem, TableSort } from '../../shared/components/data-table/data-table.component';
+import { DataTableComponent, HeaderMapItem } from '../../shared/components/data-table/data-table.component';
 import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
 import { DataTableActionsComponent } from '../../shared/components/data-table-actions/data-table-actions.component';
-import { ToastService } from '../../core/services/toast.service';
 import { USER_SEARCHABLE_FIELDS } from './constants/user.constants';
-import { firstValueFrom } from 'rxjs';
+import { createListPageController } from '../../core/utils/list-page.utils';
 import { UserFiltersComponent } from './components/user-filters.component';
 
 @Component({
@@ -86,24 +85,41 @@ import { UserFiltersComponent } from './components/user-filters.component';
   /* v8 ignore stop */
 })
 export class UserListPageComponent {
-  private userService: UserService = inject(UserService);
-  private authService: AuthService = inject(AuthService);
-  private router: Router = inject(Router);
-  private toastService: ToastService = inject(ToastService);
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
 
-  users = signal<User[]>([]);
-  totalItems = signal(0);
-  isLoading = signal(false);
-  isFilterOpen = signal(false);
+  private list = createListPageController<User>({
+    feature: 'usuário',
+    baseRoute: '/users',
+    searchFields: USER_SEARCHABLE_FIELDS,
+    fetch: (params) => this.userService.getUsers(params),
+    toggleStatus: (id, active) => this.userService.toggleStatus(id, active),
+    delete: (id) => this.userService.deleteUser(id),
+  });
 
-  page = signal(0);
-  size = signal(25);
-  searchWord = signal('');
-  filters = signal<Record<string, any>>({});
-  sort = signal<TableSort>({ orderBy: 'name', orderDirection: 'asc' });
+  users = this.list.items;
+  totalItems = this.list.totalItems;
+  isLoading = this.list.isLoading;
+  isFilterOpen = this.list.isFilterOpen;
+  page = this.list.page;
+  size = this.list.size;
+  searchWord = this.list.searchWord;
+  filters = this.list.filters;
+  sort = this.list.sort;
+  filterCount = this.list.filterCount;
 
-  filterCount = computed(() => Object.keys(this.filters()).length);
-  
+  handleSearch = this.list.handleSearch;
+  handleFilter = this.list.handleFilter;
+  handlePageChange = this.list.handlePageChange;
+  handlePageSizeChange = this.list.handlePageSizeChange;
+  handleSortChange = this.list.handleSortChange;
+  toggleFilter = this.list.toggleFilter;
+  navigateToCreate = this.list.navigateToCreate;
+  navigateToEdit = this.list.navigateToEdit;
+  toggleStatus = this.list.toggleStatus;
+  deleteUser = this.list.deleteItem;
+  loadUsers = this.list.loadItems;
+
   permissions = computed(() => ({
     canCreate: this.authService.hasPermission('user', 'create'),
     canUpdate: this.authService.hasPermission('user', 'create'),
@@ -116,91 +132,4 @@ export class UserListPageComponent {
     { title: 'Status', keyItem: 'active', sortable: true },
     { title: '', keyItem: 'id' },
   ];
-
-  constructor() {
-    effect(() => {
-      this.loadUsers();
-    });
-  }
-
-  async loadUsers() {
-    this.isLoading.set(true);
-    try {
-      const res: UserResponse = await firstValueFrom(
-        this.userService.getUsers({
-          page: this.page(),
-          size: this.size(),
-          searchWord: this.searchWord(),
-          searchFields: USER_SEARCHABLE_FIELDS,
-          filters: this.filters(),
-          sort: this.sort(),
-          all: true
-        })
-      );
-      this.users.set(res.items);
-      this.totalItems.set(res.total);
-    } catch (error) {
-      console.error('Error loading users', error);
-      this.toastService.error('Erro ao carregar a listagem de usuários.');
-    } finally {
-      this.isLoading.set(false);
-    }
-  }
-
-  handleSearch(word: string) {
-    this.searchWord.set(word);
-    this.page.set(0);
-  }
-
-  handleFilter(f: Record<string, any>) {
-    this.filters.set(f);
-    this.page.set(0);
-  }
-
-  handlePageChange(p: number) {
-    this.page.set(p);
-  }
-
-  handlePageSizeChange(s: number) {
-    this.size.set(s);
-    this.page.set(0);
-  }
-
-  handleSortChange(s: TableSort) {
-    this.sort.set(s);
-  }
-
-  toggleFilter() {
-    this.isFilterOpen.update(v => !v);
-  }
-
-  navigateToCreate() {
-    this.router.navigate(['/users/new']);
-  }
-
-  navigateToEdit(id: string) {
-    this.router.navigate(['/users/update', id]);
-  }
-
-  async toggleStatus(id: string, active: boolean) {
-    try {
-      await firstValueFrom(this.userService.toggleStatus(id, active));
-      this.toastService.success(`Usuário ${active ? 'ativado' : 'desativado'} com sucesso!`);
-      this.loadUsers();
-    } catch (error) {
-      console.error('Error toggling status', error);
-      this.toastService.error('Erro ao alterar o status do usuário.');
-    }
-  }
-
-  async deleteUser(id: string) {
-    try {
-      await firstValueFrom(this.userService.deleteUser(id));
-      this.toastService.success('Usuário excluído com sucesso!');
-      this.loadUsers();
-    } catch (error) {
-      console.error('Error deleting user', error);
-      this.toastService.error('Erro ao excluir o usuário.');
-    }
-  }
 }
