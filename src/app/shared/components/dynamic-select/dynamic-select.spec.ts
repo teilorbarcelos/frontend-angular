@@ -39,6 +39,10 @@ describe('DynamicSelectComponent', () => {
     component.getOptionLabel = getOptionLabel;
     component.getOptionValue = getOptionValue;
 
+    // Clear mocks
+    fetchPageMock.mockClear();
+    fetchByIdsMock.mockClear();
+
     fixture.detectChanges();
   });
 
@@ -117,9 +121,14 @@ describe('DynamicSelectComponent', () => {
     expect(options.length).toBeGreaterThan(0);
     options[0].nativeElement.click();
     options[1].nativeElement.click();
+    fixture.detectChanges();
     
     expect(component.state().selectedItems.length).toBe(2);
     expect(component.isOpen()).toBe(true);
+
+    // Verify multiple selection tags are rendered (Lines 110-123)
+    const tags = fixture.nativeElement.querySelectorAll('.bg-indigo-50.text-indigo-700');
+    expect(tags.length).toBe(2);
   });
 
   it('should close on outside click', () => {
@@ -142,9 +151,35 @@ describe('DynamicSelectComponent', () => {
     expect(component.isOpen()).toBe(false);
   });
 
-  it('should handle writeValue', async () => {
+  it('should handle search with null value', async () => {
+    const button = fixture.nativeElement.querySelector('button');
+    button.click();
+    fixture.detectChanges();
+    
+    component.searchControl.setValue(null);
+    expect(component.isOpen()).toBe(true);
+  });
+
+  it('should handle writeValue with single value', async () => {
     component.writeValue('1');
     expect(fetchByIdsMock).toHaveBeenCalledWith(['1']);
+  });
+
+  it('should handle writeValue with array', async () => {
+    component.writeValue(['1', '2']);
+    expect(fetchByIdsMock).toHaveBeenCalledWith(['1', '2']);
+  });
+
+  it('should handle writeValue with null', async () => {
+    component.writeValue(null);
+    expect(fetchByIdsMock).not.toHaveBeenCalled();
+  });
+
+  it('should handle writeValue when engine is not defined', () => {
+    const originalEngine = (component as any).engine;
+    (component as any).engine = undefined;
+    expect(() => component.writeValue('1')).not.toThrow();
+    (component as any).engine = originalEngine;
   });
 
   it('should handle registerOnChange', () => {
@@ -199,23 +234,42 @@ describe('DynamicSelectComponent', () => {
   });
 
   it('should render check icon when item is selected', async () => {
-    component.state.set({
-      ...component.state(),
-      selectedItems: [mockItems[0]]
-    });
-    component.isOpen.set(true);
+    // 1. Open dropdown and wait for load
+    const button = fixture.nativeElement.querySelector('button');
+    button.click();
     fixture.detectChanges();
     await fixture.whenStable();
+    await new Promise(r => setTimeout(r, 0));
+    fixture.detectChanges();
+
+    // 2. Select first item
+    const option = fixture.debugElement.query(By.css('.cursor-pointer'));
+    option.nativeElement.click();
+    fixture.detectChanges();
     
-    // Check if the check icon is present in the dropdown
-    const checkIcons = fixture.debugElement.queryAll(By.css('lucide-angular'));
-    expect(checkIcons.length).toBeGreaterThan(0);
+    // 3. Re-open to check icon
+    button.click();
+    fixture.detectChanges();
+    
+    // Check if the check icon is present in the dropdown for the selected item
+    const selectedItem = fixture.nativeElement.querySelector('.bg-indigo-50');
+    expect(selectedItem).toBeTruthy();
+    const checkIcon = selectedItem.querySelector('lucide-angular');
+    expect(checkIcon).toBeTruthy();
   });
 
   it('should handle handleRemove in multiple mode', () => {
     const spy = vi.spyOn(component, 'onChange');
     component.multiple = true;
-    component.handleRemove(mockItems[0]);
+    component.state.set({
+      ...component.state(),
+      selectedItems: [mockItems[0]]
+    });
+    fixture.detectChanges();
+
+    const removeBtn = fixture.nativeElement.querySelector('button.rounded-full');
+    removeBtn.click();
+    
     expect(spy).toHaveBeenCalled();
   });
 
