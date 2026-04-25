@@ -1,0 +1,89 @@
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { 
+  FormBuilder, 
+  FormGroup, 
+  ReactiveFormsModule, 
+  Validators 
+} from '@angular/forms';
+import { {{capitalize nameLower}}Service, {{capitalize nameLower}} } from './{{nameLower}}.service';
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import { InputComponent } from '../../shared/components/input/input.component';
+import { createFormPageController } from '../../core/utils/form-page.utils';
+
+@Component({
+  selector: 'app-{{nameLower}}-form-page',
+  standalone: true,
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, ButtonComponent, InputComponent],
+  template: `
+    <div class="overflow-y-auto flex-1 pb-8">
+      <div class="max-w-2xl mx-auto space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+          <h1 class="text-xl font-bold text-gray-900">
+            \{{ isEditing() ? 'Editar {{capitalize nameLower}}' : 'Novo {{capitalize nameLower}}' }}
+          </h1>
+          <app-button variant="ghost" (onClick)="cancel()">
+            Cancelar
+          </app-button>
+        </div>
+
+        @if (isEditing() && isLoading{{capitalize nameLower}}()) {
+          <div class="p-8 text-center text-gray-500 text-sm italic">Carregando dados...</div>
+        } @else {
+          <form [formGroup]="{{nameLower}}Form" (ngSubmit)="onSubmit()" class="space-y-8">
+            <app-input
+              label="Nome"
+              formControlName="name"
+              placeholder="Ex: Nome do {{nameLower}}"
+              [error]="getError('name')"
+            ></app-input>
+
+            <div class="pt-4 flex justify-end space-x-3">
+              <app-button type="button" variant="secondary" (onClick)="cancel()">
+                Cancelar
+              </app-button>
+              <app-button type="submit" [disabled]="isPending()">
+                \{{ isPending() ? 'Salvando...' : (isEditing() ? 'Atualizar {{capitalize nameLower}}' : 'Salvar {{capitalize nameLower}}') }}
+              </app-button>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  `,
+})
+export class {{capitalize nameLower}}FormPageComponent implements OnInit, OnDestroy {
+  private fb = inject(FormBuilder);
+  private service = inject({{capitalize nameLower}}Service);
+
+  {{nameLower}}Form: FormGroup = this.fb.group({
+    name: ['', [Validators.required]],
+  });
+
+  private formCtrl = createFormPageController<{{capitalize nameLower}}>({
+    feature: '{{nameLower}}',
+    baseRoute: '/{{nameLower}}s',
+    form: this.{{nameLower}}Form,
+    fetch: (id) => this.service.get{{capitalize nameLower}}(id),
+    create: (data) => this.service.create{{capitalize nameLower}}(data),
+    update: (id, data) => this.service.update{{capitalize nameLower}}(id, data),
+  });
+
+  id = this.formCtrl.id;
+  isEditing = this.formCtrl.isEditing;
+  isLoading{{capitalize nameLower}} = this.formCtrl.isLoading;
+  isPending = this.formCtrl.isPending;
+
+  getError = this.formCtrl.getError;
+  onSubmit = this.formCtrl.onSubmit;
+  cancel = this.formCtrl.cancel;
+
+  ngOnInit() {
+    this.formCtrl.init();
+  }
+
+  ngOnDestroy() {
+    this.formCtrl.destroy();
+  }
+}

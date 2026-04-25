@@ -1,0 +1,137 @@
+import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { {{capitalize nameLower}}Service } from './{{nameLower}}.service';
+import { firstValueFrom } from 'rxjs';
+
+describe('{{capitalize nameLower}}Service', () => {
+  let service: {{capitalize nameLower}}Service;
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        {{capitalize nameLower}}Service,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
+    });
+    service = TestBed.inject({{capitalize nameLower}}Service);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  it('get{{capitalize nameLower}}s calls correct endpoint with all options', async () => {
+    const promise = firstValueFrom(service.get{{capitalize nameLower}}s({
+      all: true,
+      searchWord: 'test',
+      searchFields: ['name'],
+      sort: { orderBy: 'name', orderDirection: 'desc' },
+      filters: { some: 'filter' }
+    }));
+
+    const req = httpMock.expectOne(request => 
+      request.url === '/v1/{{nameLower}}/all' && 
+      request.params.get('searchWord') === 'test' &&
+      request.params.get('searchFields') === 'name' &&
+      request.params.get('orderBy') === 'name' &&
+      request.params.get('orderDirection') === 'desc' &&
+      request.params.get('some') === 'filter'
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
+
+    const data = await promise;
+    expect(data).toEqual([]);
+  });
+
+  it('get{{capitalize nameLower}}s calls correct endpoint with minimal options', async () => {
+    const promise = firstValueFrom(service.get{{capitalize nameLower}}s({}));
+
+    const req = httpMock.expectOne(request => 
+      request.url === '/v1/{{nameLower}}' && 
+      request.params.get('page') === '0' &&
+      request.params.get('size') === '25'
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
+
+    const data = await promise;
+    expect(data).toEqual([]);
+  });
+
+  it('get{{capitalize nameLower}}s handles searchWord without searchFields', async () => {
+    const promise = firstValueFrom(service.get{{capitalize nameLower}}s({ searchWord: 'test' }));
+
+    const req = httpMock.expectOne(request => 
+      request.url === '/v1/{{nameLower}}' && 
+      request.params.get('searchWord') === 'test' &&
+      !request.params.has('searchFields')
+    );
+    req.flush([]);
+    await promise;
+  });
+
+  it('get{{capitalize nameLower}} calls correct endpoint', async () => {
+    const promise = firstValueFrom(service.get{{capitalize nameLower}}('1'));
+
+    const req = httpMock.expectOne('/v1/{{nameLower}}/1');
+    expect(req.request.method).toBe('GET');
+    req.flush({ id: '1' });
+
+    const data = await promise;
+    expect(data).toEqual({ id: '1' } as any);
+  });
+
+  it('create{{capitalize nameLower}} calls correct endpoint', async () => {
+    const data = { name: 'Test' };
+    const promise = firstValueFrom(service.create{{capitalize nameLower}}(data as any));
+
+    const req = httpMock.expectOne('/v1/{{nameLower}}');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(data);
+    req.flush({ id: '1', ...data });
+
+    const result = await promise;
+    expect(result).toEqual({ id: '1', ...data } as any);
+  });
+
+  it('update{{capitalize nameLower}} calls correct endpoint', async () => {
+    const partial = { name: 'Updated' };
+    const promise = firstValueFrom(service.update{{capitalize nameLower}}('1', partial));
+
+    const req = httpMock.expectOne('/v1/{{nameLower}}/1');
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(partial);
+    req.flush({ id: '1', name: 'Updated' });
+
+    const result = await promise;
+    expect(result).toEqual({ id: '1', name: 'Updated' } as any);
+  });
+
+  it('delete{{capitalize nameLower}} calls correct endpoint', async () => {
+    const promise = firstValueFrom(service.delete{{capitalize nameLower}}('1'));
+
+    const req = httpMock.expectOne('/v1/{{nameLower}}/1');
+    expect(req.request.method).toBe('DELETE');
+    req.flush({});
+
+    const result = await promise;
+    expect(result).toEqual({});
+  });
+
+  it('toggleStatus calls correct endpoint', async () => {
+    const promise = firstValueFrom(service.toggleStatus('1', true));
+
+    const req = httpMock.expectOne('/v1/{{nameLower}}/1/status');
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ active: true });
+    req.flush({});
+
+    const result = await promise;
+    expect(result).toEqual({});
+  });
+});
