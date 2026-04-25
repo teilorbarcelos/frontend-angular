@@ -1,6 +1,6 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { 
   FormBuilder, 
   FormGroup, 
@@ -12,6 +12,7 @@ import { RoleService, Role, Feature, RoleFeature } from './role.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { ToastService } from '../../core/services/toast.service';
+import { createFormPageController } from '../../core/utils/form-page.utils';
 import { firstValueFrom } from 'rxjs';
 import { RolePermissionsMatrixComponent } from './components/role-permissions-matrix.component';
 
@@ -79,12 +80,10 @@ import { RolePermissionsMatrixComponent } from './components/role-permissions-ma
   `,
   /* v8 ignore stop */
 })
-export class RoleFormPageComponent implements OnInit {
-  private fb: FormBuilder = inject(FormBuilder);
-  private roleService: RoleService = inject(RoleService);
-  private router: Router = inject(Router);
-  private route: ActivatedRoute = inject(ActivatedRoute);
-  private toastService: ToastService = inject(ToastService);
+export class RoleFormPageComponent implements OnInit, OnDestroy {
+  private fb = inject(FormBuilder);
+  private roleService = inject(RoleService);
+  private toastService = inject(ToastService);
 
   roleForm: FormGroup = this.fb.group({
     name: ['', [Validators.required]],
@@ -93,11 +92,32 @@ export class RoleFormPageComponent implements OnInit {
   });
 
   features = signal<Feature[]>([]);
-  id = signal<string | null>(null);
-  isEditing = signal(false);
-  isLoadingRole = signal(false);
   isLoadingFeatures = signal(false);
-  isPending = signal(false);
+
+  private formCtrl = createFormPageController<Role>({
+    feature: 'perfil',
+    baseRoute: '/roles',
+    form: this.roleForm,
+    fetch: (id) => this.roleService.getRole(id),
+    create: (data) => this.roleService.createRole(data),
+    update: (id, data) => this.roleService.updateRole(id, data),
+    onLoadSuccess: (role) => {
+      this.roleForm.patchValue({
+        name: role.name,
+        description: role.description,
+      });
+      this.initializePermissions(role.RoleFeature);
+    }
+  });
+
+  id = this.formCtrl.id;
+  isEditing = this.formCtrl.isEditing;
+  isLoadingRole = this.formCtrl.isLoading;
+  isPending = this.formCtrl.isPending;
+
+  getError = this.formCtrl.getError;
+  onSubmit = this.formCtrl.onSubmit;
+  cancel = this.formCtrl.cancel;
 
   get permissionsFormArray() {
     return this.roleForm.get('permissions') as FormArray;
@@ -105,17 +125,15 @@ export class RoleFormPageComponent implements OnInit {
 
   async ngOnInit() {
     await this.loadFeatures();
+    this.formCtrl.init();
     
-    this.route.params.subscribe(params => {
-      const id = params['id'];
-      if (id && id !== 'new') {
-        this.id.set(id);
-        this.isEditing.set(true);
-        this.loadRole(id);
-      } else {
-        this.initializePermissions();
-      }
-    });
+    if (!this.isEditing()) {
+      this.initializePermissions();
+    }
+  }
+
+  ngOnDestroy() {
+    this.formCtrl.destroy();
   }
 
   async loadFeatures() {
@@ -128,25 +146,6 @@ export class RoleFormPageComponent implements OnInit {
       this.toastService.error('Erro ao carregar features.');
     } finally {
       this.isLoadingFeatures.set(false);
-    }
-  }
-
-  async loadRole(id: string) {
-    this.isLoadingRole.set(true);
-    try {
-      const role: Role = await firstValueFrom(this.roleService.getRole(id));
-      this.roleForm.patchValue({
-        name: role.name,
-        description: role.description,
-      });
-
-      this.initializePermissions(role.RoleFeature);
-    } catch (error) {
-      console.error('Error loading role', error);
-      this.toastService.error('Erro ao carregar os dados do perfil.');
-      this.router.navigate(['/roles']);
-    } finally {
-      this.isLoadingRole.set(false);
     }
   }
 
@@ -164,44 +163,5 @@ export class RoleFormPageComponent implements OnInit {
         activate: [existing?.activate ?? false],
       }));
     });
-  }
-
-  getError(field: string): string | null {
-    const control = this.roleForm.get(field);
-    if (control && control.invalid && (control.dirty || control.touched)) {
-      /* v8 ignore next */
-      if (control.errors?.['required']) return 'Este campo é obrigatório';
-    }
-    return null;
-  }
-
-  async onSubmit() {
-    if (this.roleForm.invalid) {
-      this.roleForm.markAllAsTouched();
-      return;
-    }
-
-    this.isPending.set(true);
-    const data = this.roleForm.value;
-
-    try {
-      if (this.isEditing()) {
-        await firstValueFrom(this.roleService.updateRole(this.id()!, data));
-        this.toastService.success('Perfil atualizado com sucesso!');
-      } else {
-        await firstValueFrom(this.roleService.createRole(data));
-        this.toastService.success('Perfil cadastrado com sucesso!');
-      }
-      this.router.navigate(['/roles']);
-    } catch (error) {
-      console.error('Error saving role', error);
-      this.toastService.error('Ocorreu um erro ao salvar o perfil.');
-    } finally {
-      this.isPending.set(false);
-    }
-  }
-
-  cancel() {
-    this.router.navigate(['/roles']);
   }
 }

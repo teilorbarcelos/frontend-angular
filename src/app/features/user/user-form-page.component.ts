@@ -1,6 +1,6 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { 
   FormBuilder, 
   FormGroup, 
@@ -14,7 +14,7 @@ import { InputComponent } from '../../shared/components/input/input.component';
 import { PasswordInputComponent } from '../../shared/components/password-input/password-input.component';
 import { DynamicSelectComponent } from '../../shared/components/dynamic-select/dynamic-select.component';
 import { ToastService } from '../../core/services/toast.service';
-import { firstValueFrom } from 'rxjs';
+import { createFormPageController } from '../../core/utils/form-page.utils';
 
 @Component({
   selector: 'app-user-form-page',
@@ -111,13 +111,11 @@ import { firstValueFrom } from 'rxjs';
   `,
   /* v8 ignore stop */
 })
-export class UserFormPageComponent implements OnInit {
-  private fb: FormBuilder = inject(FormBuilder);
-  private userService: UserService = inject(UserService);
-  public roleService: RoleService = inject(RoleService);
-  private router: Router = inject(Router);
-  private route: ActivatedRoute = inject(ActivatedRoute);
-  private toastService: ToastService = inject(ToastService);
+export class UserFormPageComponent implements OnInit, OnDestroy {
+  private fb = inject(FormBuilder);
+  private userService = inject(UserService);
+  public roleService = inject(RoleService);
+  private toastService = inject(ToastService);
 
   userForm: FormGroup = this.fb.group({
     name: ['', [Validators.required]],
@@ -128,26 +126,14 @@ export class UserFormPageComponent implements OnInit {
     document: [''],
   });
 
-  id = signal<string | null>(null);
-  isEditing = signal(false);
-  isLoadingUser = signal(false);
-  isPending = signal(false);
-
-  ngOnInit() {
-    this.route.params.subscribe(params => {
-      const id = params['id'];
-      if (id && id !== 'new') {
-        this.id.set(id);
-        this.isEditing.set(true);
-        this.loadUser(id);
-      }
-    });
-  }
-
-  async loadUser(id: string) {
-    this.isLoadingUser.set(true);
-    try {
-      const user: User = await firstValueFrom(this.userService.getUser(id));
+  private formCtrl = createFormPageController<User>({
+    feature: 'usuário',
+    baseRoute: '/users',
+    form: this.userForm,
+    fetch: (id) => this.userService.getUser(id),
+    create: (data) => this.userService.createUser(data),
+    update: (id, data) => this.userService.updateUser(id, data),
+    onLoadSuccess: (user) => {
       this.userForm.patchValue({
         name: user.name,
         email: user.email,
@@ -156,61 +142,35 @@ export class UserFormPageComponent implements OnInit {
         document: user.document || '',
         password: '',
       });
-    } catch (error) {
-      console.error('Error loading user', error);
-      this.toastService.error('Erro ao carregar os dados do usuário.');
-      this.router.navigate(['/users']);
-    } finally {
-      this.isLoadingUser.set(false);
+    },
+    onBeforeSave: (data) => {
+      if (!this.isEditing() && !data.password) {
+        this.toastService.error('Senha é obrigatória para novos usuários');
+        return null;
+      }
+      const finalData = { ...data };
+      if (!finalData.password) delete finalData.password;
+      return finalData;
     }
+  });
+
+  id = this.formCtrl.id;
+  isEditing = this.formCtrl.isEditing;
+  isLoadingUser = this.formCtrl.isLoading;
+  isPending = this.formCtrl.isPending;
+
+  getError = this.formCtrl.getError;
+  onSubmit = this.formCtrl.onSubmit;
+  cancel = this.formCtrl.cancel;
+
+  ngOnInit() {
+    this.formCtrl.init();
+  }
+
+  ngOnDestroy() {
+    this.formCtrl.destroy();
   }
 
   getRoleLabel = (role: Role) => role.name;
   getRoleValue = (role: Role) => role.id;
-
-  getError(field: string): string | null {
-    const control = this.userForm.get(field);
-    if (control && control.invalid && (control.dirty || control.touched)) {
-      if (control.errors?.['required']) return 'Este campo é obrigatório';
-      /* v8 ignore next */
-      if (control.errors?.['email']) return 'Email inválido';
-    }
-    return null;
-  }
-
-  async onSubmit() {
-    if (this.userForm.invalid) {
-      this.userForm.markAllAsTouched();
-      return;
-    }
-
-    if (!this.isEditing() && !this.userForm.value.password) {
-      this.toastService.error('Senha é obrigatória para novos usuários');
-      return;
-    }
-
-    this.isPending.set(true);
-    const data = { ...this.userForm.value };
-    if (!data.password) delete data.password;
-
-    try {
-      if (this.isEditing()) {
-        await firstValueFrom(this.userService.updateUser(this.id()!, data));
-        this.toastService.success('Usuário atualizado com sucesso!');
-      } else {
-        await firstValueFrom(this.userService.createUser(data));
-        this.toastService.success('Usuário cadastrado com sucesso!');
-      }
-      this.router.navigate(['/users']);
-    } catch (error) {
-      console.error('Error saving user', error);
-      this.toastService.error('Ocorreu um erro ao salvar o usuário.');
-    } finally {
-      this.isPending.set(false);
-    }
-  }
-
-  cancel() {
-    this.router.navigate(['/users']);
-  }
 }

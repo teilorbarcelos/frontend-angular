@@ -1,6 +1,6 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { 
   FormBuilder, 
   FormGroup, 
@@ -10,8 +10,7 @@ import {
 import { ProductService, Product } from './product.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
-import { ToastService } from '../../core/services/toast.service';
-import { firstValueFrom } from 'rxjs';
+import { createFormPageController } from '../../core/utils/form-page.utils';
 
 @Component({
   selector: 'app-product-form-page',
@@ -96,12 +95,9 @@ import { firstValueFrom } from 'rxjs';
     </div>
   `,
 })
-export class ProductFormPageComponent implements OnInit {
-  private fb: FormBuilder = inject(FormBuilder);
-  private productService: ProductService = inject(ProductService);
-  private router: Router = inject(Router);
-  private route: ActivatedRoute = inject(ActivatedRoute);
-  private toastService: ToastService = inject(ToastService);
+export class ProductFormPageComponent implements OnInit, OnDestroy {
+  private fb = inject(FormBuilder);
+  private productService = inject(ProductService);
 
   productForm: FormGroup = this.fb.group({
     name: ['', [Validators.required]],
@@ -112,81 +108,29 @@ export class ProductFormPageComponent implements OnInit {
     description: ['', [Validators.required]],
   });
 
-  id = signal<string | null>(null);
-  isEditing = signal(false);
-  isLoadingProduct = signal(false);
-  isPending = signal(false);
+  private formCtrl = createFormPageController<Product>({
+    feature: 'produto',
+    baseRoute: '/products',
+    form: this.productForm,
+    fetch: (id) => this.productService.getProduct(id),
+    create: (data) => this.productService.createProduct(data),
+    update: (id, data) => this.productService.updateProduct(id, data),
+  });
+
+  id = this.formCtrl.id;
+  isEditing = this.formCtrl.isEditing;
+  isLoadingProduct = this.formCtrl.isLoading;
+  isPending = this.formCtrl.isPending;
+
+  getError = this.formCtrl.getError;
+  onSubmit = this.formCtrl.onSubmit;
+  cancel = this.formCtrl.cancel;
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      const id = params['id'];
-      if (id && id !== 'new') {
-        this.id.set(id);
-        this.isEditing.set(true);
-        this.loadProduct(id);
-      }
-    });
+    this.formCtrl.init();
   }
 
-  async loadProduct(id: string) {
-    this.isLoadingProduct.set(true);
-    try {
-      const product: Product = await firstValueFrom(this.productService.getProduct(id));
-      this.productForm.patchValue({
-        name: product.name,
-        sku: product.sku,
-        category: product.category,
-        price: product.price,
-        stock: product.stock,
-        description: product.description,
-      });
-    } catch (error) {
-      console.error('Error loading product', error);
-      this.toastService.error('Erro ao carregar os dados do produto.');
-      this.router.navigate(['/products']);
-    } finally {
-      this.isLoadingProduct.set(false);
-    }
-  }
-
-  getError(field: string): string | null {
-    const control = this.productForm.get(field);
-    if (control && control.invalid && (control.dirty || control.touched)) {
-      if (control.errors?.['required']) return 'Este campo é obrigatório';
-      /* v8 ignore start */
-      if (control.errors?.['min']) return 'Valor inválido';
-      /* v8 ignore stop */
-    }
-    return null;
-  }
-
-  async onSubmit() {
-    if (this.productForm.invalid) {
-      this.productForm.markAllAsTouched();
-      return;
-    }
-
-    this.isPending.set(true);
-    const data = this.productForm.value;
-
-    try {
-      if (this.isEditing()) {
-        await firstValueFrom(this.productService.updateProduct(this.id()!, data));
-        this.toastService.success('Produto atualizado com sucesso!');
-      } else {
-        await firstValueFrom(this.productService.createProduct(data));
-        this.toastService.success('Produto cadastrado com sucesso!');
-      }
-      this.router.navigate(['/products']);
-    } catch (error) {
-      console.error('Error saving product', error);
-      this.toastService.error('Ocorreu um erro ao salvar o produto.');
-    } finally {
-      this.isPending.set(false);
-    }
-  }
-
-  cancel() {
-    this.router.navigate(['/products']);
+  ngOnDestroy() {
+    this.formCtrl.destroy();
   }
 }
