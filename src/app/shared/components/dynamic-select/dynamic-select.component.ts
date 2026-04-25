@@ -41,8 +41,11 @@ import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angul
       <div class="relative">
         <button
           type="button"
-          (click)="toggleOpen()"
+          (click)="!isDisabled() && toggleOpen()"
+          [disabled]="isDisabled()"
           [class.border-red-500]="error"
+          [class.opacity-50]="isDisabled()"
+          [class.cursor-not-allowed]="isDisabled()"
           class="w-full flex items-center justify-between font-normal bg-white h-10 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
         >
           <span class="truncate" [class.text-gray-400]="!hasSelected()">
@@ -225,6 +228,7 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
   }
 
   toggleOpen() {
+    if (this.isDisabled()) return;
     this.isOpen.update(v => !v);
   }
 
@@ -268,12 +272,14 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
     return this.state().selectedItems.length > 0;
   }
 
+  isDisabled = signal(false);
+
   // ControlValueAccessor implementation
   onChange: any = () => {};
   onTouched: any = () => {};
 
-  /* v8 ignore next 5 */
   writeValue(value: any): void {
+    /* v8 ignore next 4 */
     if (this.engine) {
       const ids = Array.isArray(value) ? value : value ? [value] : [];
       this.engine.setValue(ids);
@@ -286,5 +292,9 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.isDisabled.set(isDisabled);
   }
 }

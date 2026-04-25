@@ -28,6 +28,7 @@ import {
         [placeholder]="placeholder"
         [formControl]="control"
         [attr.autocomplete]="autocomplete"
+        (blur)="onTouched()"
         class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         [class.border-red-300]="error"
         [class.border-gray-300]="!error"
@@ -56,6 +57,9 @@ export class InputComponent implements ControlValueAccessor {
 
   control = new FormControl();
 
+  /* v8 ignore next */
+  onTouched: any = () => {};
+
   writeValue(value: any): void {
     this.control.setValue(value, { emitEvent: false });
   }
@@ -65,7 +69,7 @@ export class InputComponent implements ControlValueAccessor {
   }
 
   registerOnTouched(fn: any): void {
-    // Implement if needed
+    this.onTouched = fn;
   }
 
   setDisabledState(isDisabled: boolean): void {

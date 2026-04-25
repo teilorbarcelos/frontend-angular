@@ -83,8 +83,6 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
   ngAfterViewInit() {}
 
   private initFlatpickr(element: HTMLElement) {
-    /* v8 ignore next */
-
     if (this.fpInstance) return;
 
     // @ts-ignore
@@ -100,6 +98,7 @@ export class DateRangePickerComponent implements ControlValueAccessor, AfterView
       clickOpens: false,
       allowInput: false,
       onClose: (selectedDates: Date[]) => {
+        if (!selectedDates) return;
         if (selectedDates.length === 2) {
           this.onChange({
             start: selectedDates[0].toISOString().split('T')[0],

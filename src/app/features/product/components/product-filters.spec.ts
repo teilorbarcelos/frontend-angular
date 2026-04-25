@@ -77,6 +77,30 @@ describe('ProductFiltersComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  it('should handle apply with empty values', () => {
+    const filterSpy = vi.spyOn(component.onFilter, 'emit');
+    component.filterForm.patchValue({
+      active: '',
+      createdAt: { start: '', end: '' }
+    });
+    component.handleApply();
+    expect(filterSpy).toHaveBeenCalledWith({});
+  });
+
+  it('should not update values onChanges if initialValues is missing', () => {
+    const spy = vi.spyOn(component as any, 'updateFormValues');
+    component.initialValues = null as any;
+    component.ngOnChanges({
+      initialValues: {
+        currentValue: null,
+        previousValue: {},
+        firstChange: false,
+        isFirstChange: () => false
+      }
+    });
+    expect(spy).not.toHaveBeenCalled();
+  });
+
   it('should trigger handleClear from template', () => {
     const spy = vi.spyOn(component, 'handleClear');
     const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;

@@ -183,15 +183,26 @@ describe('DataTableComponent', () => {
     expect(spy).toHaveBeenCalledWith({ orderBy: undefined, orderDirection: undefined });
   });
 
-  it('should handle sorting undefined -> asc', async () => {
+  it('should handle full sorting cycle: none -> asc -> desc -> none', async () => {
     const spy = vi.spyOn(component.onSortChange, 'emit');
     const nameHeader = fixture.nativeElement.querySelectorAll('th')[0];
     
+    // Start from none
     fixture.componentRef.setInput('sorting', { orderBy: undefined, orderDirection: undefined });
     fixture.detectChanges();
-    await fixture.whenStable();
-    
     nameHeader.click();
-    expect(spy).toHaveBeenCalledWith({ orderBy: 'name', orderDirection: 'asc' });
+    expect(spy).toHaveBeenLastCalledWith({ orderBy: 'name', orderDirection: 'asc' });
+
+    // From asc to desc
+    fixture.componentRef.setInput('sorting', { orderBy: 'name', orderDirection: 'asc' });
+    fixture.detectChanges();
+    nameHeader.click();
+    expect(spy).toHaveBeenLastCalledWith({ orderBy: 'name', orderDirection: 'desc' });
+
+    // From desc to none
+    fixture.componentRef.setInput('sorting', { orderBy: 'name', orderDirection: 'desc' });
+    fixture.detectChanges();
+    nameHeader.click();
+    expect(spy).toHaveBeenLastCalledWith({ orderBy: undefined, orderDirection: undefined });
   });
 });

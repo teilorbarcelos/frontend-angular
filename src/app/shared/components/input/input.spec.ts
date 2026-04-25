@@ -64,6 +64,8 @@ describe('InputComponent', () => {
   it('should handle registerOnTouched', () => {
     const fn = vi.fn();
     component.registerOnTouched(fn);
-    expect(true).toBe(true);
+    const input = fixture.nativeElement.querySelector('input');
+    input.dispatchEvent(new Event('blur'));
+    expect(fn).toHaveBeenCalled();
   });
 });

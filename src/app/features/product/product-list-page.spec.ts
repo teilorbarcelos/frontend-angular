@@ -211,6 +211,30 @@ describe('ProductListPageComponent', () => {
     expect(component.sort()).toEqual(newSort);
   });
 
+  it('should trigger handlePageChange from template', () => {
+    fixture.detectChanges();
+    const table = fixture.debugElement.query(By.css('app-data-table'));
+    table.triggerEventHandler('onPageChange', 2);
+    fixture.detectChanges();
+    expect(component.page()).toBe(2);
+  });
+
+  it('should trigger toggleFilter from template', () => {
+    fixture.detectChanges();
+    const header = fixture.debugElement.query(By.css('app-list-page-header'));
+    header.triggerEventHandler('onFilterClick', null);
+    fixture.detectChanges();
+    expect(component.isFilterOpen()).toBe(true);
+  });
+
+  it('should trigger handlePageSizeChange from template', () => {
+    fixture.detectChanges();
+    const table = fixture.debugElement.query(By.css('app-data-table'));
+    table.triggerEventHandler('onPageSizeChange', 50);
+    fixture.detectChanges();
+    expect(component.size()).toBe(50);
+  });
+
   it('should call all methods for funcs coverage', () => {
     component.toggleFilter();
     component.handlePageChange(2);

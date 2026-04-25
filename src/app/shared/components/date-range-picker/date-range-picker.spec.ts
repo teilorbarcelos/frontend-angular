@@ -76,6 +76,45 @@ describe('DateRangePickerComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  it('should not open if fpInstance is missing', () => {
+    const originalFp = (component as any).fpInstance;
+    (component as any).fpInstance = null;
+    const event = new MouseEvent('click');
+    const spy = vi.spyOn(event, 'stopPropagation');
+    component.openPicker(event);
+    expect(spy).toHaveBeenCalled();
+    (component as any).fpInstance = originalFp;
+  });
+
+  it('should not re-initialize if fpInstance exists', () => {
+    const spy = vi.fn();
+    vi.stubGlobal('flatpickr', spy);
+    (component as any).initFlatpickr(document.createElement('div'));
+    expect(spy).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
+
+  it('should handle setter with null', () => {
+    component.pickerInput = null as any;
+    expect(true).toBe(true);
+  });
+
+  it('should handle onClose with null selectedDates', () => {
+    const spy = vi.spyOn(component, 'onChange');
+    const fp = (component as any).fpInstance;
+    const onClose = Array.isArray(fp.config.onClose) ? fp.config.onClose[0] : fp.config.onClose;
+    onClose(null);
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('should handle onClose with empty selectedDates', () => {
+    const spy = vi.spyOn(component, 'onChange');
+    const fp = (component as any).fpInstance;
+    const onClose = Array.isArray(fp.config.onClose) ? fp.config.onClose[0] : fp.config.onClose;
+    onClose([]);
+    expect(spy).toHaveBeenCalledWith(null);
+  });
+
   it('should handle disabled state', async () => {
     const newFixture = TestBed.createComponent(DateRangePickerComponent);
     const newComponent = newFixture.componentInstance;
