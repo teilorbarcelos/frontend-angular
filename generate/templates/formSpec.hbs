@@ -120,12 +120,12 @@ describe('{{capitalize nameLower}}FormPageComponent', () => {
     
     // Header cancel
     const headerCancelBtn = fixture.debugElement.query(By.css('app-button[variant="ghost"]'));
-    headerCancelBtn.triggerEventHandler('onClick', null);
+    headerCancelBtn.triggerEventHandler('btnClick', null);
     
     // Footer cancel
     const footerCancelBtn = fixture.debugElement.queryAll(By.css('app-button'))
       .find(el => el.nativeElement.textContent.includes('Cancelar') && el.attributes['variant'] === 'secondary');
-    footerCancelBtn?.triggerEventHandler('onClick', null);
+    footerCancelBtn?.triggerEventHandler('btnClick', null);
 
     expect(spy).toHaveBeenCalledTimes(2);
   });
