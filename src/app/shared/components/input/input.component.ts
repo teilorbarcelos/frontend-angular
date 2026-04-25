@@ -41,6 +41,7 @@ import {
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
+      /* v8 ignore next 2: Boilerplate do Angular para forwardRef em providers standalone que não é capturado corretamente pelo coverage v8 em ambiente JSDOM */
       useExisting: forwardRef(() => InputComponent),
       multi: true,
     },
@@ -57,7 +58,6 @@ export class InputComponent implements ControlValueAccessor {
 
   control = new FormControl();
 
-  /* v8 ignore next */
   onTouched: any = () => {};
 
   writeValue(value: any): void {

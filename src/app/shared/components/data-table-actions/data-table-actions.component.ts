@@ -91,7 +91,6 @@ export class DataTableActionsComponent {
       list.push({
         label: 'Editar',
         icon: Edit2,
-        /* v8 ignore next */
         onClick: () => this.onEdit.emit(this.id)
       });
     }
@@ -101,7 +100,6 @@ export class DataTableActionsComponent {
         label: 'Excluir',
         icon: Trash2,
         className: 'text-red-600 hover:bg-red-50',
-        /* v8 ignore next */
         onClick: () => this.isDeleteDialogOpen.set(true)
       });
     }
@@ -111,7 +109,6 @@ export class DataTableActionsComponent {
         label: action.label,
         icon: action.icon,
         className: action.className,
-        /* v8 ignore next */
         onClick: () => action.onClick(this.id)
       });
     });

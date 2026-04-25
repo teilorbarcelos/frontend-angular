@@ -12,6 +12,7 @@ import { Portuguese } from 'flatpickr/dist/l10n/pt';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
+      /* v8 ignore next 2: Boilerplate do Angular para forwardRef em providers standalone que não é capturado corretamente pelo coverage v8 em ambiente JSDOM */
       useExisting: forwardRef(() => DateRangePickerComponent),
       multi: true
     }

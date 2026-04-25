@@ -240,7 +240,6 @@ export class DataTableComponent<T extends { id?: string }> {
     if (this.sorting?.orderBy === col.keyItem) {
       if (this.sorting.orderDirection === 'asc') {
         direction = 'desc';
-      /* v8 ignore next 4 */
       } else if (this.sorting.orderDirection === 'desc') {
         direction = undefined;
         orderBy = undefined;

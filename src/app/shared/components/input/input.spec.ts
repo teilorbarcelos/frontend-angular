@@ -1,6 +1,6 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { InputComponent } from './input.component';
-import { ReactiveFormsModule, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 describe('InputComponent', () => {
   let component: InputComponent;
@@ -67,5 +67,14 @@ describe('InputComponent', () => {
     const input = fixture.nativeElement.querySelector('input');
     input.dispatchEvent(new Event('blur'));
     expect(fn).toHaveBeenCalled();
+  });
+
+  it('should have a default onTouched function', () => {
+    expect(() => component.onTouched()).not.toThrow();
+  });
+
+  it('should provide NG_VALUE_ACCESSOR', () => {
+    const accessor = fixture.debugElement.injector.get(NG_VALUE_ACCESSOR);
+    expect(accessor).toBeTruthy();
   });
 });

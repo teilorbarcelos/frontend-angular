@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { DateRangePickerComponent } from './date-range-picker.component';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 describe('DateRangePickerComponent', () => {
   let component: DateRangePickerComponent;
@@ -137,5 +138,10 @@ describe('DateRangePickerComponent', () => {
     component.onChange();
     component.onTouched();
     expect(true).toBe(true);
+  });
+
+  it('should provide NG_VALUE_ACCESSOR', () => {
+    const accessor = fixture.debugElement.injector.get(NG_VALUE_ACCESSOR);
+    expect(accessor).toBeTruthy();
   });
 });

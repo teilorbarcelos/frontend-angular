@@ -15,6 +15,7 @@ describe('ProductListPageComponent', () => {
   let mockProductService: any;
   let mockAuthService: any;
   let mockToastService: any;
+  let mockRouter: any;
   let router: Router;
 
   const mockProducts = [
@@ -37,13 +38,17 @@ describe('ProductListPageComponent', () => {
       error: vi.fn(),
     };
 
+    mockRouter = {
+      navigate: vi.fn().mockResolvedValue(true),
+    };
+
     await TestBed.configureTestingModule({
       imports: [ProductListPageComponent],
       providers: [
         { provide: ProductService, useValue: mockProductService },
         { provide: AuthService, useValue: mockAuthService },
         { provide: ToastService, useValue: mockToastService },
-        provideRouter([]),
+        { provide: Router, useValue: mockRouter },
       ],
     }).compileComponents();
 
@@ -81,11 +86,20 @@ describe('ProductListPageComponent', () => {
     expect(component.page()).toBe(2);
   });
 
-  it('should toggle filter drawer', () => {
+  it('should toggle filter drawer when clicking filter button', async () => {
     fixture.detectChanges();
-    component.toggleFilter();
+    const header = fixture.nativeElement.querySelector('app-list-page-header');
+    const buttons = header.querySelectorAll('button');
+    // The filter button is the one with "Filtros" text
+    const filterBtn = Array.from(buttons).find((b: any) => b.textContent.includes('Filtros')) as HTMLButtonElement;
+    filterBtn.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
     expect(component.isFilterOpen()).toBe(true);
-    component.toggleFilter();
+    
+    filterBtn.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
     expect(component.isFilterOpen()).toBe(false);
   });
 
@@ -95,10 +109,32 @@ describe('ProductListPageComponent', () => {
     expect(spy).toHaveBeenCalledWith(['/products/new']);
   });
 
-  it('should navigate to edit', () => {
-    const spy = vi.spyOn(router, 'navigate');
-    component.navigateToEdit('1');
-    expect(spy).toHaveBeenCalledWith(['/products/update', '1']);
+  it('should navigate to edit when triggered from table actions', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    
+    const actions = fixture.debugElement.query(By.css('app-data-table-actions')).componentInstance;
+    actions.onEdit.emit('1');
+    expect(router.navigate).toHaveBeenCalledWith(['/products/update', '1']);
+  });
+
+  it('should delete product when triggered from table actions', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    
+    const spy = vi.spyOn(component, 'deleteProduct');
+    const actions = fixture.debugElement.query(By.css('app-data-table-actions')).componentInstance;
+    actions.onDelete.emit('1');
+    expect(spy).toHaveBeenCalledWith('1');
+  });
+
+  it('should handle search from header', () => {
+    fixture.detectChanges();
+    const header = fixture.debugElement.query(By.css('app-list-page-header')).componentInstance;
+    header.onSearch.emit('test');
+    expect(component.searchWord()).toBe('test');
   });
 
   it('should toggle status successfully', async () => {
@@ -233,6 +269,21 @@ describe('ProductListPageComponent', () => {
     table.triggerEventHandler('onPageSizeChange', 50);
     fixture.detectChanges();
     expect(component.size()).toBe(50);
+  });
+
+  it('should toggle filter drawer when onClose triggered from filters component', async () => {
+    component.isFilterOpen.set(true);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const filters = fixture.nativeElement.querySelector('app-product-filters');
+    const closeBtn = filters.querySelector('button'); // The first button in FilterDrawer is usually close
+    closeBtn?.click();
+    
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(component.isFilterOpen()).toBe(false);
   });
 
   it('should call all methods for funcs coverage', () => {

@@ -114,4 +114,11 @@ describe('ProductFiltersComponent', () => {
     drawer.onApply.emit();
     expect(spy).toHaveBeenCalled();
   });
+
+  it('should trigger onClose from template', () => {
+    const spy = vi.spyOn(component.onClose, 'emit');
+    const drawer = fixture.debugElement.query(By.css('app-filter-drawer')).componentInstance;
+    drawer.onClose.emit();
+    expect(spy).toHaveBeenCalled();
+  });
 });

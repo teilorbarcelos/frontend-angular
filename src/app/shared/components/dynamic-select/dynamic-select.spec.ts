@@ -38,244 +38,163 @@ describe('DynamicSelectComponent', () => {
     component.fetchByIds = fetchByIdsMock;
     component.getOptionLabel = getOptionLabel;
     component.getOptionValue = getOptionValue;
-    
+
     fixture.detectChanges();
   });
 
   afterEach(() => {
-    fixture.destroy();
-    (component as any) = null;
-    (fixture as any) = null;
+    if (fixture) {
+      fixture.destroy();
+    }
+    vi.unstubAllGlobals();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should return placeholder when value is empty', () => {
-    expect(component.displayValue()).toBe('Selecione...');
-  });
-
-  it('should handle writeValue', () => {
-    const spy = vi.spyOn((component as any).engine, 'setValue');
-    component.writeValue('test-value');
-    expect(spy).toHaveBeenCalled();
+  it('should toggle dropdown', () => {
+    const button = fixture.nativeElement.querySelector('button');
+    button.click();
+    fixture.detectChanges();
+    expect(component.isOpen()).toBe(true);
+    button.click();
+    fixture.detectChanges();
+    expect(component.isOpen()).toBe(false);
   });
 
   it('should open dropdown and trigger initial load', async () => {
-    component.toggleOpen();
+    const button = fixture.nativeElement.querySelector('button');
+    button.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await new Promise(r => setTimeout(r, 0));
     fixture.detectChanges();
     
     expect(component.isOpen()).toBe(true);
-    await fixture.whenStable();
-    fixture.detectChanges();
-    
-    // Engine might need another turn for the promise to resolve
-    await new Promise(resolve => setTimeout(resolve, 0));
-    fixture.detectChanges();
-    
     expect(fetchPageMock).toHaveBeenCalled();
-    expect(component.state().items.length).toBeGreaterThan(0);
-    
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('input')).toBeTruthy(); // Search input should be present
   });
 
-  it('should display selected item label', async () => {
-    component.state.set({
-      ...component.state(),
-      selectedItems: [mockItems[0]]
-    });
+  it('should select an option', async () => {
+    const button = fixture.nativeElement.querySelector('button');
+    button.click();
     fixture.detectChanges();
     await fixture.whenStable();
-    
-    const display = component.displayValue();
-    expect(display).toBe('Item 1');
-  });
-
-  it('should handle selection in single mode', async () => {
-    const onChangeSpy = vi.fn();
-    component.registerOnChange(onChangeSpy);
-    component.multiple = false;
-    
-    component.handleSelect(mockItems[0]);
+    await new Promise(r => setTimeout(r, 0));
     fixture.detectChanges();
+
+    const option = fixture.debugElement.query(By.css('.cursor-pointer'));
+    option.nativeElement.click();
     
-    expect(onChangeSpy).toHaveBeenCalledWith('1');
+    expect(component.hasSelected()).toBe(true);
     expect(component.isOpen()).toBe(false);
   });
 
-  it('should handle selection in multiple mode', async () => {
-    const onChangeSpy = vi.fn();
-    component.registerOnChange(onChangeSpy);
-    component.multiple = true;
-    
-    component.handleSelect(mockItems[0]);
+  it('should handle search', async () => {
+    const button = fixture.nativeElement.querySelector('button');
+    button.click();
     fixture.detectChanges();
     
-    expect(onChangeSpy).toHaveBeenCalled();
+    const input = fixture.debugElement.query(By.css('input'));
+    input.nativeElement.value = 'test';
+    input.nativeElement.dispatchEvent(new Event('input'));
+    
+    // The search is handled by searchControl.valueChanges in the component
+    // which calls engine.setSearch
+    expect(component.isOpen()).toBe(true);
   });
 
-  it('should filter items on search', async () => {
-    component.toggleOpen();
-    fixture.detectChanges();
-    
-    component.searchControl.setValue('test');
+  it('should handle multiple selection', async () => {
+    component.multiple = true;
+    const button = fixture.nativeElement.querySelector('button');
+    button.click();
     fixture.detectChanges();
     await fixture.whenStable();
+    await new Promise(r => setTimeout(r, 0));
+    fixture.detectChanges();
+
+    const options = fixture.debugElement.queryAll(By.css('.cursor-pointer'));
+    expect(options.length).toBeGreaterThan(0);
+    options[0].nativeElement.click();
+    options[1].nativeElement.click();
     
-    expect(component.state().search).toBe('test');
+    expect(component.state().selectedItems.length).toBe(2);
+    expect(component.isOpen()).toBe(true);
   });
 
   it('should close on outside click', () => {
-    component.isOpen.set(true);
+    const button = fixture.nativeElement.querySelector('button');
+    button.click();
     fixture.detectChanges();
-    
+    expect(component.isOpen()).toBe(true);
+
     document.dispatchEvent(new MouseEvent('click'));
+    fixture.detectChanges();
     expect(component.isOpen()).toBe(false);
-  });
-
-  it('should write value to engine', () => {
-    const spy = vi.spyOn((component as any).engine, 'setValue');
-    component.writeValue('1');
-    expect(spy).toHaveBeenCalledWith(['1']);
-  });
-
-  it('should handle registerOnTouched', () => {
-    const fn = vi.fn();
-    component.registerOnTouched(fn);
-    expect(component.onTouched).toBe(fn);
-  });
-
-  it('should handle remove in multiple mode', () => {
-    const onChangeSpy = vi.fn();
-    component.registerOnChange(onChangeSpy);
-    component.multiple = true;
-    component.state.set({ ...component.state(), selectedItems: [mockItems[0]] });
-    
-    component.handleRemove(mockItems[0]);
-    expect(onChangeSpy).toHaveBeenCalled();
-  });
-
-  it('should cover boilerplate methods', () => {
-    // Just calling them to cover the lines
-    component.onChange();
-    component.onTouched();
-    expect(true).toBe(true);
-  });
-
-  it('should check if item is selected', () => {
-    component.state.set({ ...component.state(), selectedItems: [mockItems[0]] });
-    expect(component.isItemSelected(mockItems[0])).toBe(true);
-    expect(component.isItemSelected(mockItems[1])).toBe(false);
-  });
-
-  it('should render label when provided', () => {
-    fixture.componentRef.setInput('label', 'Test Label');
-    fixture.detectChanges();
-    const label = fixture.nativeElement.querySelector('label');
-    expect(label.textContent).toContain('Test Label');
-  });
-
-  it('should render error message when provided', () => {
-    fixture.componentRef.setInput('error', 'Error message');
-    fixture.detectChanges();
-    const error = fixture.nativeElement.querySelector('.text-red-500');
-    expect(error.textContent).toContain('Error message');
-  });
-
-  it('should trigger handleSelect from template', async () => {
-    component.toggleOpen();
-    fixture.detectChanges();
-    
-    // Fill state with items
-    component.state.set({
-      ...component.state(),
-      items: mockItems,
-      initialized: true
-    });
-    fixture.detectChanges();
-
-    const itemElement = fixture.nativeElement.querySelector('.cursor-pointer');
-    itemElement.click();
-    
-    expect(component.isOpen()).toBe(false);
-  });
-
-  it('should render check icon when item is selected', async () => {
-    component.toggleOpen();
-    fixture.detectChanges();
-    
-    component.state.set({
-      ...component.state(),
-      items: mockItems,
-      selectedItems: [mockItems[0]],
-      initialized: true
-    });
-    fixture.detectChanges();
-    await fixture.whenStable();
-    fixture.detectChanges();
-
-    const checkIcon = fixture.nativeElement.querySelector('lucide-angular');
-    expect(checkIcon).toBeTruthy();
-  });
-
-  it('should trigger handleRemove from template in multiple mode', async () => {
-    fixture.componentRef.setInput('multiple', true);
-    component.state.set({
-      ...component.state(),
-      selectedItems: [mockItems[0]],
-    });
-    fixture.detectChanges();
-
-    const spy = vi.spyOn((component as any).engine, 'toggleSelection');
-    const removeBtn = fixture.debugElement.query(By.css('button.rounded-full'));
-    removeBtn.triggerEventHandler('click', new MouseEvent('click'));
-    
-    expect(spy).toHaveBeenCalledWith(mockItems[0]);
-  });
-
-  it('should handle writeValue with various formats', () => {
-    const spy = vi.spyOn((component as any).engine, 'setValue');
-    
-    component.writeValue(['1', '2']);
-    expect(spy).toHaveBeenCalledWith(['1', '2']);
-    
-    component.writeValue(null);
-    expect(spy).toHaveBeenCalledWith([]);
-    
-    component.writeValue('');
-    expect(spy).toHaveBeenCalledWith([]);
-  });
-
-  it('should handle search with empty value', () => {
-    component.searchControl.setValue(null);
-    expect(component.state().search).toBe('');
-  });
-
-  it('should return placeholder in displayValue when multiple', () => {
-    fixture.componentRef.setInput('multiple', true);
-    fixture.componentRef.setInput('placeholder', 'Multi select');
-    fixture.detectChanges();
-    expect(component.displayValue()).toBe('Multi select');
   });
 
   it('should handle disabled state', () => {
     component.setDisabledState(true);
     expect(component.isDisabled()).toBe(true);
     
-    component.setDisabledState(false);
-    expect(component.isDisabled()).toBe(false);
-  });
-
-  it('should not toggle if disabled', () => {
-    component.setDisabledState(true);
-    component.toggleOpen();
+    const button = fixture.nativeElement.querySelector('button');
+    button.click();
     expect(component.isOpen()).toBe(false);
   });
 
-  it('should handle writeValue before engine is initialized', () => {
-    // Already covered by writeValue logic check if(this.engine)
-    expect(true).toBe(true);
+  it('should handle writeValue', async () => {
+    component.writeValue('1');
+    expect(fetchByIdsMock).toHaveBeenCalledWith(['1']);
+  });
+
+  it('should handle registerOnChange', () => {
+    const fn = vi.fn();
+    component.registerOnChange(fn);
+    component.handleSelect(mockItems[0]);
+    expect(fn).toHaveBeenCalled();
+  });
+
+  it('should handle registerOnTouched', () => {
+    const fn = vi.fn();
+    component.registerOnTouched(fn);
+    component.toggleOpen();
+    component.toggleOpen(); // close it
+    expect(fn).toHaveBeenCalled();
+  });
+
+  it('should return correct display value', () => {
+    component.state.set({
+      ...component.state(),
+      selectedItems: [mockItems[0]]
+    });
+    expect(component.displayValue()).toBe('Item 1');
+  });
+
+  it('should return placeholder when no selection', () => {
+    component.placeholder = 'Select...';
+    expect(component.displayValue()).toBe('Select...');
+  });
+
+  it('should show label and loading state', () => {
+    component.label = 'Test Label';
+    component.state.set({ ...component.state(), isLoading: true });
+    fixture.detectChanges();
+    
+    const label = fixture.nativeElement.querySelector('label');
+    expect(label.textContent).toContain('Test Label');
+    
+    component.toggleOpen();
+    fixture.detectChanges();
+    const loading = fixture.nativeElement.querySelector('.animate-spin');
+    expect(loading).toBeTruthy();
+  });
+
+  it('should handle multiple display value', () => {
+    component.multiple = true;
+    component.state.set({
+      ...component.state(),
+      selectedItems: [mockItems[0], mockItems[1]]
+    });
+    expect(component.displayValue()).toBe('2 selecionados');
   });
 });

@@ -1,4 +1,5 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { DataTableActionsComponent } from './data-table-actions.component';
 import { ActionMenuService } from '../../../core/services/action-menu.service';
 import { signal } from '@angular/core';
@@ -159,6 +160,35 @@ describe('DataTableActionsComponent', () => {
     const spy = vi.spyOn(component, 'handleAction');
     buttons[0].click();
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('should close delete modal when onClose triggered from modal', () => {
+    component.isDeleteDialogOpen.set(true);
+    fixture.detectChanges();
+    const modal = fixture.debugElement.query(By.css('app-modal')).componentInstance;
+    modal.onClose.emit();
+    expect(component.isDeleteDialogOpen()).toBe(false);
+  });
+
+  it('should trigger confirmDelete from modal footer button', () => {
+    const spy = vi.spyOn(component, 'confirmDelete');
+    component.isDeleteDialogOpen.set(true);
+    fixture.detectChanges();
+    
+    const buttons = fixture.nativeElement.querySelectorAll('button');
+    const deleteBtn = Array.from(buttons).find((b: any) => b.textContent.includes('Excluir')) as HTMLButtonElement;
+    deleteBtn?.click();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should close delete modal when clicking cancel button', () => {
+    component.isDeleteDialogOpen.set(true);
+    fixture.detectChanges();
+    
+    const buttons = fixture.nativeElement.querySelectorAll('button');
+    const cancelBtn = Array.from(buttons).find((b: any) => b.textContent.includes('Cancelar')) as HTMLButtonElement;
+    cancelBtn?.click();
+    expect(component.isDeleteDialogOpen()).toBe(false);
   });
 
   it('should call all action onClick handlers', () => {

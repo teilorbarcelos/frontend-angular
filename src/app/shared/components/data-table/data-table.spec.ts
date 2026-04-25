@@ -110,6 +110,14 @@ describe('DataTableComponent', () => {
     const pageButtons = fixture.nativeElement.querySelectorAll('.flex.items-center.space-x-1.px-2 button');
     pageButtons[1].click(); // Click page 2 (index 1)
     expect(spy).toHaveBeenCalledWith(1);
+
+    const firstBtn = fixture.nativeElement.querySelector('button[title="Primeira página"]');
+    firstBtn.click();
+    expect(spy).toHaveBeenCalledWith(0);
+
+    const lastBtn = fixture.nativeElement.querySelector('button[title="Última página"]');
+    lastBtn.click();
+    expect(spy).toHaveBeenCalledWith(9);
   });
 
   it('should calculate page numbers correctly', () => {

@@ -91,7 +91,10 @@ describe('ProductFormPageComponent', () => {
       name: 'P1', sku: 'S1', category: 'C1', price: 10, stock: 100, description: 'D1'
     });
     
-    await component.onSubmit();
+    const form = fixture.debugElement.query(By.css('form'));
+    form.triggerEventHandler('ngSubmit', null);
+    await fixture.whenStable();
+    
     expect(mockProductService.createProduct).toHaveBeenCalled();
     expect(mockToastService.success).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/products']);
@@ -152,6 +155,17 @@ describe('ProductFormPageComponent', () => {
       .find(el => el.nativeElement.textContent.includes('Cancelar') && el.attributes['variant'] === 'secondary');
     
     footerCancelBtn?.triggerEventHandler('onClick', null);
+    fixture.detectChanges();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should trigger cancel from header button', () => {
+    fixture.detectChanges();
+    const spy = vi.spyOn(component, 'cancel');
+    const headerCancelBtn = fixture.debugElement.queryAll(By.css('app-button'))
+      .find(el => el.nativeElement.textContent.includes('Cancelar') && el.attributes['variant'] === 'ghost');
+    
+    headerCancelBtn?.triggerEventHandler('onClick', null);
     fixture.detectChanges();
     expect(spy).toHaveBeenCalled();
   });
