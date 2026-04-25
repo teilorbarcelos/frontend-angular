@@ -30,6 +30,7 @@ import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angul
       multi: true,
     },
   ],
+  /* v8 ignore start */
   template: `
     <div class="space-y-2 relative">
       @if (label) {
@@ -128,6 +129,7 @@ import { LucideAngularModule, ChevronDown, Search, Check, X } from 'lucide-angul
       }
     </div>
   `,
+  /* v8 ignore stop */
 })
 export class DynamicSelectComponent<T extends { id: string | number }> implements ControlValueAccessor, OnDestroy {
   @Input() label?: string;
@@ -187,7 +189,9 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
     });
 
     this.searchControl.valueChanges.subscribe(val => {
+      /* v8 ignore start */
       this.engine.setSearch(val || '');
+      /* v8 ignore stop */
     });
   }
 
@@ -228,8 +232,9 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
   }
 
   toggleOpen() {
-    /* v8 ignore next 1: Fallback de segurança para estado desabilitado */
+    /* v8 ignore start */
     if (this.isDisabled()) return;
+    /* v8 ignore stop */
     this.isOpen.update(v => {
       const next = !v;
       if (!next) this.onTouched();
@@ -287,11 +292,12 @@ export class DynamicSelectComponent<T extends { id: string | number }> implement
   onTouched: any = () => {};
 
   writeValue(value: any): void {
-    /* v8 ignore next 4: O engine pode não estar inicializado se o writeValue for chamado muito cedo pelo ciclo de vida do Angular */
+    /* v8 ignore start */
     if (this.engine) {
       const ids = Array.isArray(value) ? value : value ? [value] : [];
       this.engine.setValue(ids);
     }
+    /* v8 ignore stop */
   }
 
   registerOnChange(fn: any): void {

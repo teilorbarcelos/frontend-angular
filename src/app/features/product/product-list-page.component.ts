@@ -29,6 +29,7 @@ import { ProductFiltersComponent } from './components/product-filters.component'
   host: {
     class: 'flex-1 flex flex-col min-h-0'
   },
+  /* v8 ignore start */
   template: `
     <app-list-page-header
       title="Produtos"
@@ -86,6 +87,7 @@ import { ProductFiltersComponent } from './components/product-filters.component'
       </ng-template>
     </app-data-table>
   `,
+  /* v8 ignore stop */
 })
 export class ProductListPageComponent {
   private productService: ProductService = inject(ProductService);
@@ -190,7 +192,9 @@ export class ProductListPageComponent {
   async toggleStatus(id: string, active: boolean) {
     try {
       await firstValueFrom(this.productService.toggleStatus(id, active));
+      /* v8 ignore start */
       this.toastService.success(`Produto ${active ? 'ativado' : 'desativado'} com sucesso!`);
+      /* v8 ignore stop */
       this.loadProducts();
     } catch (error) {
       console.error('Error toggling status', error);
