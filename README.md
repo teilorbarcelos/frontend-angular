@@ -22,12 +22,12 @@ Este é um boilerplate Angular de alta qualidade, funcionalmente idêntico ao pr
 
 1. Instale as dependências:
    ```bash
-   npm install
+   make setup
    ```
 
 2. Rode o servidor de desenvolvimento:
    ```bash
-   npm run dev
+   make dev
    ```
    O app estará disponível em `http://localhost:3000`.
 
@@ -37,12 +37,12 @@ O projeto mantém 100% de cobertura de testes.
 
 Para rodar os testes:
 ```bash
-npm test
+make test
 ```
 
 Para ver a cobertura:
 ```bash
-npx ng test --coverage
+make coverage
 ```
 
 ## Integração com Backend
