@@ -1,0 +1,30 @@
+{
+  "scripts": [
+    {
+      "name": "Install Dependencies",
+      "command": "make setup"
+    },
+    {
+      "name": "Start Development Server",
+      "command": "make dev"
+    },
+    {
+      "name": "Run Tests",
+      "command": "make test"
+    },
+    {
+      "name": "Run Coverage",
+      "command": "make coverage"
+    },
+    {
+      "name": "Build for Production",
+      "command": "make build"
+    }
+  ],
+  "replacements": [
+    {
+      "path": "package.json",
+      "pattern": "frontend-angular"
+    }
+  ]
+}
