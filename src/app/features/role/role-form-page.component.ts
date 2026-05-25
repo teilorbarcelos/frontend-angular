@@ -30,7 +30,7 @@ import { RolePermissionsMatrixComponent } from './components/role-permissions-ma
           <h1 class="text-xl font-bold text-gray-900">
             {{ isEditing() ? 'Editar Perfil' : 'Novo Perfil' }}
           </h1>
-          <app-button variant="ghost" (onClick)="cancel()"> Cancelar </app-button>
+          <app-button variant="ghost" (btnClick)="cancel()"> Cancelar </app-button>
         </div>
 
         @if ((isEditing() && isLoadingRole()) || isLoadingFeatures()) {
@@ -59,7 +59,7 @@ import { RolePermissionsMatrixComponent } from './components/role-permissions-ma
             ></app-role-permissions-matrix>
 
             <div class="pt-4 flex justify-end space-x-3">
-              <app-button type="button" variant="secondary" (onClick)="cancel()">
+              <app-button type="button" variant="secondary" (btnClick)="cancel()">
                 Cancelar
               </app-button>
               <app-button type="submit" [disabled]="isPending()">

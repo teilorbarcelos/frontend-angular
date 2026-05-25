@@ -10,11 +10,7 @@ describe('ProductService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        ProductService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [ProductService, provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(ProductService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -25,21 +21,24 @@ describe('ProductService', () => {
   });
 
   it('getProducts calls correct endpoint with all options', async () => {
-    const promise = firstValueFrom(service.getProducts({
-      all: true,
-      searchWord: 'test',
-      searchFields: ['name'],
-      sort: { orderBy: 'price', orderDirection: 'desc' },
-      filters: { category: 'C1' }
-    }));
+    const promise = firstValueFrom(
+      service.getProducts({
+        all: true,
+        searchWord: 'test',
+        searchFields: ['name'],
+        sort: { orderBy: 'price', orderDirection: 'desc' },
+        filters: { category: 'C1' },
+      }),
+    );
 
-    const req = httpMock.expectOne(request => 
-      request.url === '/v1/product/all' && 
-      request.params.get('searchWord') === 'test' &&
-      request.params.get('searchFields') === 'name' &&
-      request.params.get('orderBy') === 'price' &&
-      request.params.get('orderDirection') === 'desc' &&
-      request.params.get('category') === 'C1'
+    const req = httpMock.expectOne(
+      (request) =>
+        request.url === '/v1/product/all' &&
+        request.params.get('searchWord') === 'test' &&
+        request.params.get('searchFields') === 'name' &&
+        request.params.get('orderBy') === 'price' &&
+        request.params.get('orderDirection') === 'desc' &&
+        request.params.get('category') === 'C1',
     );
     expect(req.request.method).toBe('GET');
     req.flush([]);
@@ -51,10 +50,11 @@ describe('ProductService', () => {
   it('getProducts calls correct endpoint with minimal options', async () => {
     const promise = firstValueFrom(service.getProducts({}));
 
-    const req = httpMock.expectOne(request => 
-      request.url === '/v1/product' && 
-      request.params.get('page') === '0' &&
-      request.params.get('size') === '25'
+    const req = httpMock.expectOne(
+      (request) =>
+        request.url === '/v1/product' &&
+        request.params.get('page') === '0' &&
+        request.params.get('size') === '25',
     );
     expect(req.request.method).toBe('GET');
     req.flush([]);
@@ -66,10 +66,11 @@ describe('ProductService', () => {
   it('getProducts handles searchWord without searchFields', async () => {
     const promise = firstValueFrom(service.getProducts({ searchWord: 'test' }));
 
-    const req = httpMock.expectOne(request => 
-      request.url === '/v1/product' && 
-      request.params.get('searchWord') === 'test' &&
-      !request.params.has('searchFields')
+    const req = httpMock.expectOne(
+      (request) =>
+        request.url === '/v1/product' &&
+        request.params.get('searchWord') === 'test' &&
+        !request.params.has('searchFields'),
     );
     req.flush([]);
     await promise;
@@ -87,7 +88,14 @@ describe('ProductService', () => {
   });
 
   it('createProduct calls correct endpoint', async () => {
-    const product = { name: 'P1', sku: 'S1', category: 'C1', price: 10, stock: 100, description: 'D1' };
+    const product = {
+      name: 'P1',
+      sku: 'S1',
+      category: 'C1',
+      price: 10,
+      stock: 100,
+      description: 'D1',
+    };
     const promise = firstValueFrom(service.createProduct(product));
 
     const req = httpMock.expectOne('/v1/product');
@@ -133,5 +141,18 @@ describe('ProductService', () => {
 
     const data = await promise;
     expect(data).toEqual({});
+  });
+
+  it('getProducts handles sorting with orderBy but without orderDirection', async () => {
+    const promise = firstValueFrom(service.getProducts({ sort: { orderBy: 'price' } }));
+
+    const req = httpMock.expectOne(
+      (request) =>
+        request.url === '/v1/product' &&
+        request.params.get('orderBy') === 'price' &&
+        !request.params.has('orderDirection'),
+    );
+    req.flush([]);
+    await promise;
   });
 });

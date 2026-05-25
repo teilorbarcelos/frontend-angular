@@ -334,4 +334,11 @@ describe('ProductListPageComponent', () => {
     component.loadProducts();
     expect(true).toBe(true);
   });
+
+  it('should trigger navigateToCreate from template header', () => {
+    fixture.detectChanges();
+    const header = fixture.debugElement.query(By.css('app-list-page-header'));
+    header.triggerEventHandler('createClick', null);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/products/new']);
+  });
 });

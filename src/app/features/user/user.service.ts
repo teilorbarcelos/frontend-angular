@@ -79,4 +79,35 @@ export class UserService {
   toggleStatus(id: string, active: boolean): Observable<unknown> {
     return this.http.patch(`${this.baseUrl}/${id}/status`, { active });
   }
+
+  exportUsersPdf(options: {
+    searchWord?: string;
+    searchFields?: string[];
+    filters?: Record<string, unknown>;
+    sort?: { orderBy?: string; orderDirection?: string };
+  }): Observable<Blob> {
+    const { searchWord, searchFields, filters = {}, sort } = options;
+    const params: Record<string, string | number | boolean> = {
+      ...(filters as Record<string, string | number | boolean>),
+    };
+
+    if (searchWord) {
+      params['searchWord'] = searchWord;
+      if (searchFields) {
+        params['searchFields'] = searchFields.join(',');
+      }
+    }
+
+    if (sort?.orderBy) {
+      params['orderBy'] = sort.orderBy;
+      if (sort.orderDirection) {
+        params['orderDirection'] = sort.orderDirection;
+      }
+    }
+
+    return this.http.get(`${this.baseUrl}/export/pdf`, {
+      params,
+      responseType: 'blob',
+    });
+  }
 }

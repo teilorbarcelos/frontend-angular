@@ -27,7 +27,7 @@ describe('SelectComponent', () => {
     ];
     fixture.componentRef.setInput('options', options);
     fixture.detectChanges();
-    
+
     const renderedOptions = fixture.nativeElement.querySelectorAll('option');
     // +1 if placeholder exists
     expect(renderedOptions.length).toBe(2);
@@ -37,7 +37,7 @@ describe('SelectComponent', () => {
   it('should render placeholder', () => {
     fixture.componentRef.setInput('placeholder', 'Select an option');
     fixture.detectChanges();
-    
+
     const placeholder = fixture.nativeElement.querySelector('option[value=""]');
     expect(placeholder.textContent).toBe('Select an option');
   });
@@ -45,7 +45,7 @@ describe('SelectComponent', () => {
   it('should show error message', () => {
     fixture.componentRef.setInput('error', 'Select is required');
     fixture.detectChanges();
-    
+
     const error = fixture.nativeElement.querySelector('p');
     expect(error.textContent).toContain('Select is required');
   });
@@ -65,7 +65,7 @@ describe('SelectComponent', () => {
   it('should handle disabled state', () => {
     component.setDisabledState(true);
     expect(component.control.disabled).toBe(true);
-    
+
     component.setDisabledState(false);
     expect(component.control.enabled).toBe(true);
   });
@@ -74,5 +74,17 @@ describe('SelectComponent', () => {
     const fn = vi.fn();
     component.registerOnTouched(fn);
     expect(true).toBe(true);
+  });
+
+  it('should call default onTouched without error', () => {
+    expect(() => component.onTouched()).not.toThrow();
+  });
+
+  it('should call onTouched when select is blurred', () => {
+    const fn = vi.fn();
+    component.registerOnTouched(fn);
+    const select = fixture.nativeElement.querySelector('select');
+    select.dispatchEvent(new Event('blur'));
+    expect(fn).toHaveBeenCalled();
   });
 });

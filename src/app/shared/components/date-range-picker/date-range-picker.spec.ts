@@ -152,4 +152,24 @@ describe('DateRangePickerComponent', () => {
     const accessor = fixture.debugElement.injector.get(NG_VALUE_ACCESSOR);
     expect(accessor).toBeTruthy();
   });
+
+  it('should open picker on keydown enter', () => {
+    const spy = vi.spyOn((component as any).fpInstance, 'open');
+    const container = fixture.nativeElement.querySelector('.flex');
+    const event = new KeyboardEvent('keydown', { key: 'Enter' });
+    container.dispatchEvent(event);
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should not open picker on click or keydown if disabled', () => {
+    component.setDisabledState(true);
+    const spy = vi.spyOn((component as any).fpInstance, 'open');
+    const container = fixture.nativeElement.querySelector('.flex');
+
+    container.click();
+    const event = new KeyboardEvent('keydown', { key: 'Enter' });
+    container.dispatchEvent(event);
+
+    expect(spy).not.toHaveBeenCalled();
+  });
 });

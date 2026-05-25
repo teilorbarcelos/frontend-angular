@@ -14,6 +14,7 @@ import { DataTableActionsComponent } from '../../shared/components/data-table-ac
 import { USER_SEARCHABLE_FIELDS } from './constants/user.constants';
 import { createListPageController } from '../../core/utils/list-page.utils';
 import { UserFiltersComponent } from './components/user-filters.component';
+import { ExportPdfButtonComponent } from '../../shared/components/export-pdf-button/export-pdf-button.component';
 
 @Component({
   selector: 'app-user-list-page',
@@ -26,6 +27,7 @@ import { UserFiltersComponent } from './components/user-filters.component';
     StatusBadgeComponent,
     DataTableActionsComponent,
     UserFiltersComponent,
+    ExportPdfButtonComponent,
   ],
   host: {
     class: 'flex-1 flex flex-col min-h-0',
@@ -40,7 +42,14 @@ import { UserFiltersComponent } from './components/user-filters.component';
       [filterCount]="filterCount()"
       (createClick)="navigateToCreate()"
       class="shrink-0"
-    ></app-list-page-header>
+    >
+      <app-export-pdf-button
+        extraActions
+        [onExport]="exportUsersPdf"
+        [queryParams]="exportParams()"
+        filename="usuarios.pdf"
+      ></app-export-pdf-button>
+    </app-list-page-header>
 
     <app-user-filters
       [isOpen]="isFilterOpen()"
@@ -89,6 +98,22 @@ import { UserFiltersComponent } from './components/user-filters.component';
 export class UserListPageComponent {
   private userService = inject(UserService);
   private authService = inject(AuthService);
+
+  exportParams = computed(() => ({
+    searchWord: this.searchWord(),
+    searchFields: USER_SEARCHABLE_FIELDS,
+    filters: this.filters(),
+    sort: this.sort(),
+  }));
+
+  exportUsersPdf = (params: {
+    searchWord?: string;
+    searchFields?: string[];
+    filters?: Record<string, unknown>;
+    sort?: { orderBy?: string; orderDirection?: string };
+  }) => {
+    return this.userService.exportUsersPdf(params);
+  };
 
   private list = createListPageController<User>({
     feature: 'usuário',
