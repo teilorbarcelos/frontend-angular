@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { of, throwError, BehaviorSubject } from 'rxjs';
 import { vi } from 'vitest';
+import { By } from '@angular/platform-browser';
 
 describe('RoleFormPageComponent', () => {
   let component: RoleFormPageComponent;
@@ -15,22 +16,24 @@ describe('RoleFormPageComponent', () => {
   let mockRouter: any;
   let routeParams: BehaviorSubject<any>;
 
-  const mockFeatures = [
-    { id: 'f1', name: 'Feature 1', description: 'Desc 1' }
-  ];
+  const mockFeatures = [{ id: 'f1', name: 'Feature 1', description: 'Desc 1' }];
 
   beforeEach(async () => {
     routeParams = new BehaviorSubject<any>({ id: 'new' });
 
     mockRoleService = {
       getFeatures: vi.fn().mockReturnValue(of(mockFeatures)),
-      getRole: vi.fn().mockReturnValue(of({
-        id: '1',
-        name: 'Admin',
-        description: 'Administrator',
-        active: true,
-        RoleFeature: [{ id_feature: 'f1', view: true, create: true, delete: false, activate: false }]
-      })),
+      getRole: vi.fn().mockReturnValue(
+        of({
+          id: '1',
+          name: 'Admin',
+          description: 'Administrator',
+          active: true,
+          RoleFeature: [
+            { id_feature: 'f1', view: true, create: true, delete: false, activate: false },
+          ],
+        }),
+      ),
       createRole: vi.fn().mockReturnValue(of({})),
       updateRole: vi.fn().mockReturnValue(of({})),
     };
@@ -52,8 +55,8 @@ describe('RoleFormPageComponent', () => {
         { provide: Router, useValue: mockRouter },
         {
           provide: ActivatedRoute,
-          useValue: { params: routeParams.asObservable() }
-        }
+          useValue: { params: routeParams.asObservable() },
+        },
       ],
     }).compileComponents();
 
@@ -70,7 +73,7 @@ describe('RoleFormPageComponent', () => {
     expect(component.isEditing()).toBe(false);
     expect(component.features()).toEqual(mockFeatures);
     expect(component.permissionsFormArray.length).toBe(1);
-    
+
     // Check if form is rendered
     const form = fixture.nativeElement.querySelector('form');
     expect(form).toBeTruthy();
@@ -86,7 +89,7 @@ describe('RoleFormPageComponent', () => {
     expect(component.isEditing()).toBe(true);
     expect(component.roleForm.value.name).toBe('Admin');
     expect(component.permissionsFormArray.at(0).value.view).toBe(true);
-    
+
     const h1 = fixture.nativeElement.querySelector('h1');
     expect(h1.textContent).toContain('Editar Perfil');
   });
@@ -159,11 +162,11 @@ describe('RoleFormPageComponent', () => {
   it('should initialize permissions correctly when some are missing', () => {
     const mockFeats = [
       { id: 'f1', name: 'F1', description: 'D1' },
-      { id: 'f2', name: 'F2', description: 'D2' }
+      { id: 'f2', name: 'F2', description: 'D2' },
     ];
     component.features.set(mockFeats);
     const existing = [
-      { id_feature: 'f1', view: true, create: false, delete: false, activate: false }
+      { id_feature: 'f1', view: true, create: false, delete: false, activate: false },
     ];
     component.initializePermissions(existing as any);
     expect(component.permissionsFormArray.length).toBe(2);
@@ -183,5 +186,18 @@ describe('RoleFormPageComponent', () => {
     expect(component.permissionsFormArray).toBeTruthy();
     expect(component.id()).toBeNull();
     expect(component.isLoadingRole()).toBe(false);
+  });
+
+  it('should call cancel when clicking cancel buttons', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const spy = vi.spyOn(component, 'cancel');
+    const cancelButtons = fixture.debugElement
+      .queryAll(By.css('app-button'))
+      .filter((b) => b.nativeElement.textContent.includes('Cancelar'));
+    cancelButtons.forEach((btn) => btn.triggerEventHandler('btnClick', null));
+    expect(spy).toHaveBeenCalledTimes(cancelButtons.length);
   });
 });

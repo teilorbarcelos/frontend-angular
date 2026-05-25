@@ -24,14 +24,14 @@ describe('PasswordInputComponent', () => {
   it('should toggle password visibility', () => {
     const input = fixture.nativeElement.querySelector('input');
     expect(input.type).toBe('password');
-    
+
     const button = fixture.nativeElement.querySelector('button');
     button.click();
     fixture.detectChanges();
-    
+
     expect(input.type).toBe('text');
     expect(component.showPassword()).toBe(true);
-    
+
     button.click();
     fixture.detectChanges();
     expect(input.type).toBe('password');
@@ -41,7 +41,7 @@ describe('PasswordInputComponent', () => {
     fixture.componentRef.setInput('label', 'Password');
     fixture.componentRef.setInput('error', 'Wrong password');
     fixture.detectChanges();
-    
+
     expect(fixture.nativeElement.textContent).toContain('Password');
     expect(fixture.nativeElement.textContent).toContain('Wrong password');
   });
@@ -59,7 +59,7 @@ describe('PasswordInputComponent', () => {
   it('should handle disabled state', () => {
     component.setDisabledState(true);
     expect(component.control.disabled).toBe(true);
-    
+
     component.setDisabledState(false);
     expect(component.control.enabled).toBe(true);
   });
@@ -68,5 +68,17 @@ describe('PasswordInputComponent', () => {
     const fn = vi.fn();
     component.registerOnTouched(fn);
     expect(true).toBe(true);
+  });
+
+  it('should call default onTouched without error', () => {
+    expect(() => component.onTouched()).not.toThrow();
+  });
+
+  it('should call onTouched when input is blurred', () => {
+    const fn = vi.fn();
+    component.registerOnTouched(fn);
+    const input = fixture.nativeElement.querySelector('input');
+    input.dispatchEvent(new Event('blur'));
+    expect(fn).toHaveBeenCalled();
   });
 });

@@ -30,6 +30,7 @@ import { SearchInputComponent } from '../search-input/search-input.component';
             </span>
           }
         </app-button>
+        <ng-content select="[extraActions]"></ng-content>
         @if (showCreate) {
           <app-button (btnClick)="createClick.emit()">
             <lucide-angular [img]="PlusIcon" class="w-4 h-4 mr-2"></lucide-angular>

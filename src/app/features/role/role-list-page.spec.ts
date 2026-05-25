@@ -207,4 +207,32 @@ describe('RoleListPageComponent', () => {
     component.loadRoles();
     expect(true).toBe(true);
   });
+
+  it('should trigger events from template components', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const listHeader = fixture.debugElement.query(By.css('app-list-page-header'));
+    listHeader.triggerEventHandler('filterClick', null);
+    listHeader.triggerEventHandler('searched', 'test query');
+    listHeader.triggerEventHandler('createClick', null);
+    expect(component.isFilterOpen()).toBe(true);
+    expect(component.searchWord()).toBe('test query');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/roles/new']);
+
+    const dataTable = fixture.debugElement.query(By.css('app-data-table'));
+    dataTable.triggerEventHandler('pageSizeChange', 50);
+    dataTable.triggerEventHandler('pageChange', 2);
+    dataTable.triggerEventHandler('sortChange', { orderBy: 'name', orderDirection: 'desc' });
+    expect(component.size()).toBe(50);
+    expect(component.page()).toBe(2);
+    expect(component.sort()).toEqual({ orderBy: 'name', orderDirection: 'desc' });
+
+    const tableActions = fixture.debugElement.query(By.css('app-data-table-actions'));
+    tableActions.triggerEventHandler('edit', '1');
+    tableActions.triggerEventHandler('delete', '1');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/roles/update', '1']);
+    expect(mockRoleService.deleteRole).toHaveBeenCalledWith('1');
+  });
 });

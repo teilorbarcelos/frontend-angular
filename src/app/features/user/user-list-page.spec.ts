@@ -6,6 +6,7 @@ import { ToastService } from '../../core/services/toast.service';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
+import { By } from '@angular/platform-browser';
 
 describe('UserListPageComponent', () => {
   let component: UserListPageComponent;
@@ -24,6 +25,7 @@ describe('UserListPageComponent', () => {
       getUsers: vi.fn().mockReturnValue(of({ items: mockUsers, total: 1 })),
       toggleStatus: vi.fn().mockReturnValue(of({})),
       deleteUser: vi.fn().mockReturnValue(of({})),
+      exportUsersPdf: vi.fn().mockReturnValue(of(new Blob())),
     };
 
     mockAuthService = {
@@ -180,6 +182,39 @@ describe('UserListPageComponent', () => {
     component.navigateToEdit('1');
     component.deleteUser('1');
     component.loadUsers();
+    component.exportUsersPdf({ searchWord: 'test' });
     expect(true).toBe(true);
+  });
+
+  it('should trigger events from template components', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const listHeader = fixture.debugElement.query(By.css('app-list-page-header'));
+    listHeader.triggerEventHandler('filterClick', null);
+    listHeader.triggerEventHandler('searched', 'test query');
+    listHeader.triggerEventHandler('createClick', null);
+    expect(component.isFilterOpen()).toBe(true);
+    expect(component.searchWord()).toBe('test query');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/users/new']);
+
+    const dataTable = fixture.debugElement.query(By.css('app-data-table'));
+    dataTable.triggerEventHandler('pageSizeChange', 50);
+    dataTable.triggerEventHandler('pageChange', 2);
+    dataTable.triggerEventHandler('sortChange', { orderBy: 'name', orderDirection: 'desc' });
+    expect(component.size()).toBe(50);
+    expect(component.page()).toBe(2);
+    expect(component.sort()).toEqual({ orderBy: 'name', orderDirection: 'desc' });
+
+    const statusBadge = fixture.debugElement.query(By.css('app-status-badge'));
+    statusBadge.triggerEventHandler('btnClick', null);
+    expect(mockUserService.toggleStatus).toHaveBeenCalledWith('1', false);
+
+    const tableActions = fixture.debugElement.query(By.css('app-data-table-actions'));
+    tableActions.triggerEventHandler('edit', '1');
+    tableActions.triggerEventHandler('delete', '1');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/users/update', '1']);
+    expect(mockUserService.deleteUser).toHaveBeenCalledWith('1');
   });
 });

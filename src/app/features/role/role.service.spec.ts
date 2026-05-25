@@ -186,4 +186,17 @@ describe('RoleService', () => {
     const data = await promise;
     expect(data).toEqual([]);
   });
+
+  it('getRoles handles sorting with orderBy but without orderDirection', async () => {
+    const promise = firstValueFrom(service.getRoles({ sort: { orderBy: 'name' } }));
+
+    const req = httpMock.expectOne(
+      (request) =>
+        request.url === '/v1/role' &&
+        request.params.get('orderBy') === 'name' &&
+        !request.params.has('orderDirection'),
+    );
+    req.flush({ items: [], total: 0 });
+    await promise;
+  });
 });
