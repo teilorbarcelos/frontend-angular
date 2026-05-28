@@ -1,7 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
-import { LucideAngularModule, ChevronRight, Home } from 'lucide-angular';
+import { LucideAngularModule, ChevronRight, House } from 'lucide-angular';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 
@@ -22,17 +22,17 @@ const routeMap: Record<string, string> = {
     <nav class="flex mb-4" aria-label="Breadcrumb">
       <ol class="flex items-center space-x-2">
         <li>
-          <a
-            routerLink="/dashboard"
-            class="text-gray-400 hover:text-indigo-600 transition-colors"
-          >
+          <a routerLink="/dashboard" class="text-gray-400 hover:text-indigo-600 transition-colors">
             <lucide-angular [img]="HomeIcon" class="w-4 h-4"></lucide-angular>
           </a>
         </li>
 
         @for (item of breadcrumbs(); track item.to) {
           <li class="flex items-center">
-            <lucide-angular [img]="ChevronIcon" class="w-4 h-4 text-gray-400 mx-1 shrink-0"></lucide-angular>
+            <lucide-angular
+              [img]="ChevronIcon"
+              class="w-4 h-4 text-gray-400 mx-1 shrink-0"
+            ></lucide-angular>
             @if (item.isLast) {
               <span class="text-sm font-semibold text-indigo-600 truncate max-w-[200px]">
                 {{ item.displayName }}
@@ -53,19 +53,21 @@ const routeMap: Record<string, string> = {
 })
 export class BreadcrumbComponent {
   private router = inject(Router);
-  readonly HomeIcon = Home;
+  readonly HomeIcon = House;
   readonly ChevronIcon = ChevronRight;
 
   private url = toSignal(
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
-      map((event) => (event as NavigationEnd).urlAfterRedirects)
+      map((event) => (event as NavigationEnd).urlAfterRedirects),
     ),
-    { initialValue: this.router.url }
+    { initialValue: this.router.url },
   );
 
   breadcrumbs = computed(() => {
-    const pathnames = this.url().split('/').filter((x) => x);
+    const pathnames = this.url()
+      .split('/')
+      .filter((x) => x);
     return pathnames
       .map((value, index) => {
         if (index > 0 && pathnames[index - 1] === 'update') return null;
@@ -75,8 +77,7 @@ export class BreadcrumbComponent {
           pathnames[index + 1] === undefined ||
           pathnames[index] === 'update';
         const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-        const displayName =
-          routeMap[value] || value.charAt(0).toUpperCase() + value.slice(1);
+        const displayName = routeMap[value] || value.charAt(0).toUpperCase() + value.slice(1);
 
         return { to, displayName, isLast };
       })

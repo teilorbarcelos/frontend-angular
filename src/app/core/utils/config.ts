@@ -7,9 +7,9 @@ interface WindowWithEnv extends Window {
 export const getApiUrl = (): string => {
   const env = (window as WindowWithEnv).env;
 
-  if (env && env.API_URL) {
+  if (env?.API_URL) {
     return env.API_URL;
   }
 
-  return 'http://localhost:8888';
+  return 'http://localhost:8888'; // nosonar
 };

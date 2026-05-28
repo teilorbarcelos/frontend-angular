@@ -72,7 +72,7 @@ export function createListPageController<T>(config: ListPageConfig<T>) {
     } catch (error) {
       console.error(`Error loading ${config.feature}s`, error);
       toastService.error(
-        config.messages?.loadError || `Erro ao carregar a listagem de ${config.feature}s.`,
+        config.messages?.loadError ?? `Erro ao carregar a listagem de ${config.feature}s.`,
       );
     } finally {
       isLoading.set(false);
@@ -124,14 +124,14 @@ export function createListPageController<T>(config: ListPageConfig<T>) {
     try {
       await firstValueFrom(config.toggleStatus(id, active));
       toastService.success(
-        config.messages?.toggleSuccess?.(active) ||
+        config.messages?.toggleSuccess?.(active) ??
           `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} ${active ? 'ativado' : 'desativado'} com sucesso!`,
       );
       loadItems();
     } catch (error) {
       console.error(`Error toggling status for ${config.feature}`, error);
       toastService.error(
-        config.messages?.toggleError || `Erro ao alterar o status do ${config.feature}.`,
+        config.messages?.toggleError ?? `Erro ao alterar o status do ${config.feature}.`,
       );
     }
   }
@@ -141,13 +141,13 @@ export function createListPageController<T>(config: ListPageConfig<T>) {
     try {
       await firstValueFrom(config.delete(id));
       toastService.success(
-        config.messages?.deleteSuccess ||
+        config.messages?.deleteSuccess ??
           `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} excluído com sucesso!`,
       );
       loadItems();
     } catch (error) {
       console.error(`Error deleting ${config.feature}`, error);
-      toastService.error(config.messages?.deleteError || `Erro ao excluir o ${config.feature}.`);
+      toastService.error(config.messages?.deleteError ?? `Erro ao excluir o ${config.feature}.`);
     }
   }
 

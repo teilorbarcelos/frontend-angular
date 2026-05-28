@@ -45,7 +45,7 @@ export class SearchInputComponent implements OnInit, OnDestroy {
     this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.searched.emit(value || '');
+        this.searched.emit(value ?? '');
       });
   }
 

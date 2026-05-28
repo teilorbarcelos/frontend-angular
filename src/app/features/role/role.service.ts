@@ -115,7 +115,7 @@ export class RoleService {
     );
 
     return {
-      items: res.items as Role[],
+      items: res.items,
       hasMore: (page + 1) * size < res.total,
     };
   };

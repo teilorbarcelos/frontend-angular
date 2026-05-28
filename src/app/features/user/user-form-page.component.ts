@@ -139,8 +139,8 @@ export class UserFormPageComponent implements OnInit, OnDestroy {
         name: user.name,
         email: user.email,
         id_role: user.id_role,
-        phone: user.phone || '',
-        document: user.document || '',
+        phone: user.phone ?? '',
+        document: user.document ?? '',
         password: '',
       });
     },

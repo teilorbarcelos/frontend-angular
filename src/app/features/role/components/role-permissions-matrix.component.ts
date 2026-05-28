@@ -14,11 +14,31 @@ import { Feature } from '../role.service';
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Feature</th>
-              <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ver</th>
-              <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Criar/Editar</th>
-              <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Deletar</th>
-              <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ativar/Inativar</th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Feature
+              </th>
+              <th
+                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Ver
+              </th>
+              <th
+                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Criar/Editar
+              </th>
+              <th
+                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Deletar
+              </th>
+              <th
+                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Ativar/Inativar
+              </th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200" [formGroup]="parentForm">
@@ -76,11 +96,11 @@ export class RolePermissionsMatrixComponent {
 
   getFeatureName(index: number): string {
     const idFeature = this.permissionsFormArray.at(index).get('id_feature')?.value;
-    return this.features.find(f => f.id === idFeature)?.name || '';
+    return this.features.find((f) => f.id === idFeature)?.name ?? '';
   }
 
   getFeatureDescription(index: number): string {
     const idFeature = this.permissionsFormArray.at(index).get('id_feature')?.value;
-    return this.features.find(f => f.id === idFeature)?.description || '';
+    return this.features.find((f) => f.id === idFeature)?.description ?? '';
   }
 }

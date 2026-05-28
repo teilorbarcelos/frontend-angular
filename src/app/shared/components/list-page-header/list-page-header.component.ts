@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Plus, Filter } from 'lucide-angular';
+import { LucideAngularModule, Plus, Funnel } from 'lucide-angular';
 import { ButtonComponent } from '../button/button.component';
 import { SearchInputComponent } from '../search-input/search-input.component';
 
@@ -53,5 +53,5 @@ export class ListPageHeaderComponent {
   @Output() createClick = new EventEmitter<void>();
 
   readonly PlusIcon = Plus;
-  readonly FilterIcon = Filter;
+  readonly FilterIcon = Funnel;
 }
