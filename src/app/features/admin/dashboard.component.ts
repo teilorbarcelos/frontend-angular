@@ -2,7 +2,7 @@ import { Component, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { subDays } from 'date-fns';
-import { LucideAngularModule, Loader2 } from 'lucide-angular';
+import { LucideAngularModule, LoaderCircle } from 'lucide-angular';
 import { DateRangePickerComponent } from '../../shared/components/date-range-picker/date-range-picker.component';
 import { SummaryCardsComponent } from './components/summary-cards.component';
 import { UserCreationsChartComponent } from './components/user-creations-chart.component';
@@ -79,7 +79,7 @@ import { DashboardService, DashboardStats } from './dashboard.service';
 export class DashboardComponent {
   private dashboardService = inject(DashboardService);
 
-  readonly LoaderIcon = Loader2;
+  readonly LoaderIcon = LoaderCircle;
 
   dateRange = signal<{ start: string; end: string } | null>({
     start: subDays(new Date(), 30).toISOString().split('T')[0],

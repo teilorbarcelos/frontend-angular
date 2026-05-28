@@ -26,7 +26,7 @@ export interface User {
 })
 export class AuthService {
   private http = inject(HttpClient);
-  
+
   private userState = signal<User | null>(null);
   private loadingState = signal<boolean>(true);
 
@@ -62,7 +62,7 @@ export class AuthService {
 
     try {
       const res = await firstValueFrom(this.http.get<{ user: User }>('/v1/auth/me'));
-      this.setSession(token, localStorage.getItem('refreshToken') || '', res.user);
+      this.setSession(token, localStorage.getItem('refreshToken') ?? '', res.user);
     } catch {
       this.logout();
     } finally {
@@ -92,7 +92,7 @@ export class AuthService {
 
   hasPermission(feature: string, action: keyof Omit<Permission, 'feature'>): boolean {
     const user = this.userState();
-    if (!user || !user.role) return false;
+    if (!user?.role) return false;
     const permissions = user.role.permissions || [];
     const permission = permissions.find((p) => p.feature === feature);
     return permission ? !!permission[action] : false;

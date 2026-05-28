@@ -61,7 +61,7 @@ export function createFormPageController<T, D = unknown>(config: FormPageConfig<
     } catch (error) {
       console.error(`Error loading ${config.feature}`, error);
       toastService.error(
-        config.messages?.loadError || `Erro ao carregar os dados do ${config.feature}.`,
+        config.messages?.loadError ?? `Erro ao carregar os dados do ${config.feature}.`,
       );
       router.navigate([config.baseRoute]);
     } finally {
@@ -100,13 +100,13 @@ export function createFormPageController<T, D = unknown>(config: FormPageConfig<
       if (isEditing()) {
         await firstValueFrom(config.update(id()!, data));
         toastService.success(
-          config.messages?.updateSuccess ||
+          config.messages?.updateSuccess ??
             `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} atualizado com sucesso!`,
         );
       } else {
         await firstValueFrom(config.create(data));
         toastService.success(
-          config.messages?.createSuccess ||
+          config.messages?.createSuccess ??
             `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} cadastrado com sucesso!`,
         );
       }
@@ -114,7 +114,7 @@ export function createFormPageController<T, D = unknown>(config: FormPageConfig<
     } catch (error) {
       console.error(`Error saving ${config.feature}`, error);
       toastService.error(
-        config.messages?.saveError || `Ocorreu um erro ao salvar o ${config.feature}.`,
+        config.messages?.saveError ?? `Ocorreu um erro ao salvar o ${config.feature}.`,
       );
     } finally {
       isPending.set(false);

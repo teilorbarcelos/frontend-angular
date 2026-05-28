@@ -214,7 +214,7 @@ export class DynamicSelectComponent<T extends { id: string | number }>
     });
 
     this.searchControl.valueChanges.subscribe((val) => {
-      this.engine.setSearch(val || '');
+      this.engine.setSearch(val ?? '');
     });
   }
 
@@ -324,7 +324,12 @@ export class DynamicSelectComponent<T extends { id: string | number }>
 
   writeValue(value: unknown): void {
     if (this.engine) {
-      const ids = Array.isArray(value) ? value : value ? [String(value)] : [];
+      let ids: string[] = [];
+      if (Array.isArray(value)) {
+        ids = value;
+      } else if (value) {
+        ids = [String(value)];
+      }
       this.engine.setValue(ids);
     }
   }

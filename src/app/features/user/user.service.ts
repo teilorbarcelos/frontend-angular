@@ -36,10 +36,11 @@ export class UserService {
   }): Observable<UserResponse> {
     const { page = 0, size = 25, searchWord, searchFields, filters = {}, sort, all } = options;
 
-    const params: Record<string, string | number | boolean> = {
+    type QueryParam = string | number | boolean;
+    const params: Record<string, QueryParam> = {
       page,
       size,
-      ...(filters as Record<string, string | number | boolean>),
+      ...(filters as Record<string, QueryParam>),
     };
 
     if (searchWord) {

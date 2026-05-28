@@ -9,7 +9,7 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Edit2, Trash2, MoreHorizontal } from 'lucide-angular';
+import { LucideAngularModule, Pen, Trash2, Ellipsis } from 'lucide-angular';
 import { ModalComponent } from '../modal/modal.component';
 import { ActionMenuService } from '../../../core/services/action-menu.service';
 
@@ -87,7 +87,7 @@ export class DataTableActionsComponent {
   private menuService = inject(ActionMenuService);
 
   isDeleteDialogOpen = signal(false);
-  readonly MoreIcon = MoreHorizontal;
+  readonly MoreIcon = Ellipsis;
 
   isMenuOpen() {
     return this.menuService.state()?.context === this;
@@ -99,7 +99,7 @@ export class DataTableActionsComponent {
     if (this.showEdit) {
       list.push({
         label: 'Editar',
-        icon: Edit2,
+        icon: Pen,
         onClick: () => this.edit.emit(this.id),
       });
     }

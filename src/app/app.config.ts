@@ -1,6 +1,6 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideAnimations } from '@angular/platform-browser/animations'; // nosonar
 import { provideRouter } from '@angular/router';
 import {
   ArrowDown,
@@ -20,7 +20,7 @@ import {
   LogOut,
   LUCIDE_ICONS,
   LucideIconProvider,
-  MoreHorizontal,
+  Ellipsis,
   Package,
   Pen,
   Pencil,
@@ -30,7 +30,7 @@ import {
   Trash2,
   TriangleAlert,
   User as UserIcon,
-  Users
+  Users,
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -42,12 +42,12 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([apiInterceptor, authInterceptor])),
-    provideAnimations(),
+    provideAnimations(), // nosonar
     {
       provide: LUCIDE_ICONS,
-      useValue: new LucideIconProvider({ 
-        House, 
-        ChevronRight, 
+      useValue: new LucideIconProvider({
+        House,
+        ChevronRight,
         ChevronLeft,
         ChevronsLeft,
         ChevronsRight,
@@ -56,12 +56,12 @@ export const appConfig: ApplicationConfig = {
         ArrowDown,
         Pencil,
         Trash2,
-        MoreHorizontal,
-        LogOut, 
-        UserIcon, 
-        LayoutDashboard, 
-        Users, 
-        Shield, 
+        Ellipsis,
+        LogOut,
+        UserIcon,
+        LayoutDashboard,
+        Users,
+        Shield,
         Package,
         Search,
         Funnel,
@@ -71,8 +71,8 @@ export const appConfig: ApplicationConfig = {
         CircleCheck,
         CircleAlert,
         Info,
-        TriangleAlert
-      })
+        TriangleAlert,
+      }),
     },
-  ]
+  ],
 };

@@ -6,6 +6,7 @@ export default defineConfig({
     fileParallelism: false,
     maxWorkers: 1,
     coverage: {
+      enabled: true,
       provider: 'v8',
       include: ['src/app/**/*.ts'],
       exclude: [
@@ -20,7 +21,8 @@ export default defineConfig({
         branches: 90,
         functions: 90,
         lines: 90,
-      }
+      },
+      reporter: ['text', 'lcov', 'clover', 'html'],
     }
   },
 });

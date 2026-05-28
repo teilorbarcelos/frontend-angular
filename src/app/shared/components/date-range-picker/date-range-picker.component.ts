@@ -140,7 +140,7 @@ export class DateRangePickerComponent implements ControlValueAccessor, OnDestroy
   writeValue(value: unknown): void {
     if (this.fpInstance) {
       const val = value as { start?: string; end?: string } | null;
-      if (val && val.start && val.end) {
+      if (val?.start && val.end) {
         this.fpInstance.setDate([val.start, val.end]);
       } else {
         this.fpInstance.clear();

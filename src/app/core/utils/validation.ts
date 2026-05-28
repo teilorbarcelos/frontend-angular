@@ -21,7 +21,7 @@ export const formatDateRange = (
   const result: Record<string, string> = {};
   result[`${name}_start`] = format(from, 'yyyy-MM-dd');
 
-  const endDate = to ? to : from;
+  const endDate = to ?? from;
   result[`${name}_end`] = format(endDate, 'yyyy-MM-dd');
 
   return result;
